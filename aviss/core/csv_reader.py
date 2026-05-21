@@ -26,26 +26,6 @@
     This banner notice must not be removed.
     -------------------------------------------------------------------------
 
-The CsvReader class parses an AViSS CSV file and returns a list of Session
-objects. The first row of the CSV must be a header row defining column names.
-Rows and values are separated by ';' (preferred) or ',' (fallback).
-
-Required columns (names are read from cfg.sync):
-    - audio_file, audio_clap
-    - video_file, video_clap
-    - delay, duration
-
-Optional columns:
-    - video_crop_x, video_crop_y, video_crop_w, video_crop_h
-    - a second set of audio/video columns (same names suffixed with "2",
-      e.g. audio_file2, video_file2, audio_clap2, video_clap2,
-      video_crop_x2, video_crop_y2, video_crop_w2, video_crop_h2)
-    - any column declared in cfg.output.output_name_cols
-    - any other column (stored as free metadata in Session.metadata)
-
-Relative file paths in the CSV are resolved against the directory that
-contains the CSV file.
-
 """
 
 import os

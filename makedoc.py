@@ -44,7 +44,7 @@ opts_export.copyright = aviss.__copyright__
 opts_export.url = 'https://github.com/brigitte-bigi/AViSS.git'
 opts_export.title = 'AViSS doc'
 # ... statics is the relative path to a folder with the CSS, JS, etc.
-opts_export.wexa_statics = './Whakerexa-3.0/wexa_statics'
+opts_export.wexa_statics = './Whakerexa-2.1/wexa_statics'
 opts_export.statics = './statics'
 # ... the theme must correspond to a statics/<theme>.css file
 opts_export.theme = 'light'

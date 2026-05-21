@@ -135,6 +135,56 @@ Example:
 
 See ClammingPy for additional details and examples: <https://clamming.sourceforge.io/>.
 
+### File headers
+
+A file header contains **only** legal and metadata information:
+
+```
+"""
+:filename: my_module.py
+:author: Firstname Lastname
+:contact: email@example.org
+:summary: One-line summary of the file.
+
+..
+    Copyright notice and license text.
+    This banner notice must not be removed.
+    -------------------------------------------------------------------------
+
+"""
+```
+
+**Rules:**
+
+- No descriptive text after the legal block. No list of functions or classes.
+- The `:summary:` line is a one-line title only (≤ 79 characters).
+- Any description of what the module does belongs in the class docstring,
+  not in the file header.
+
+### Class docstrings
+
+The class docstring is the primary documentation of a module. It must explain:
+
+- What the class represents or does.
+- The key design decisions or constraints (e.g. external tools used, ordering
+  of operations).
+- At least one `:example:` block showing typical usage.
+
+Do not duplicate information already visible from method signatures.
+
+### Package documentation (README.md)
+
+Each Python package directory (`__init__.py`) must contain a `README.md` file.
+Its purpose is to explain how the classes of the package articulate — something
+that no individual class docstring can cover.
+
+Contents of a package README:
+
+- A short description of the package's role.
+- A table listing each class and its one-line role.
+- A workflow diagram or ordered list showing how the classes interact
+  (data flow, call order, dependencies).
+
 ### Justification for Style Adaptations
 
 The author of the SPPAS has a visual impairment, and these modifications 

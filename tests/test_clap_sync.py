@@ -111,6 +111,66 @@ class TestClapSyncInit(unittest.TestCase):
         sync = ClapSync(self.__session, fps=25)
         self.assertAlmostEqual(25., sync.fps, places=3)
 
+    # -----------------------------------------------------------------------
+
+    def test_video_clap_overrides_session_video(self):
+        # session.video.clap_time = 6.0 → clap_frame_index = 150 at 25fps
+        # override with 8.0 → clap_frame_index = 200 at 25fps
+        sync = ClapSync(self.__session, fps=25., video_clap=8.0)
+        self.assertEqual(200, sync.clap_frame_index)
+
+    # -----------------------------------------------------------------------
+
+    def test_video_clap_type_error(self):
+        with self.assertRaises(TypeError):
+            ClapSync(self.__session, fps=25., video_clap="bad")
+
+    # -----------------------------------------------------------------------
+
+    def test_video_clap_negative_raises(self):
+        with self.assertRaises(ValueError):
+            ClapSync(self.__session, fps=25., video_clap=-1.0)
+
+    # -----------------------------------------------------------------------
+
+    def test_clap_delta_is_non_negative(self):
+        sync = ClapSync(self.__session, fps=25.)
+        self.assertGreaterEqual(sync.clap_delta, 0.)
+
+    # -----------------------------------------------------------------------
+
+    def test_clap_delta_less_than_one_frame(self):
+        sync = ClapSync(self.__session, fps=25.)
+        self.assertLess(sync.clap_delta, 1. / 25.)
+
+    # -----------------------------------------------------------------------
+
+    def test_reference_delta_cross_sync(self):
+        # Reference video: 25fps, video_clap=6.0 → frame 150 → frame_time=6.0 → delta=0.0
+        # Secondary video: 60fps, video_clap=8.0, reference_delta=0.0
+        # → target = 8.0 - 0.0 = 8.0 → frame int(8.0*60)=480 → delta=0.0
+        # Both deltas must be equal (cross-sync).
+        audio = MediaFile("rec.wav", 3.843)
+        video = MediaFile("rec.mp4", 6.0)
+        session = Session(audio, video, delay=0.0, duration=10.0)
+        ref_sync = ClapSync(session, fps=25.)
+        ref_delta = ref_sync.clap_delta
+        other_sync = ClapSync(session, fps=60., video_clap=8.0,
+                              reference_delta=ref_delta)
+        self.assertAlmostEqual(ref_sync.clap_delta, other_sync.clap_delta, places=6)
+
+    # -----------------------------------------------------------------------
+
+    def test_reference_delta_type_error(self):
+        with self.assertRaises(TypeError):
+            ClapSync(self.__session, fps=25., reference_delta="bad")
+
+    # -----------------------------------------------------------------------
+
+    def test_reference_delta_negative_raises(self):
+        with self.assertRaises(ValueError):
+            ClapSync(self.__session, fps=25., reference_delta=-0.1)
+
 
 # ---------------------------------------------------------------------------
 

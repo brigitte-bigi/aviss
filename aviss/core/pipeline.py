@@ -26,21 +26,6 @@
     This banner notice must not be removed.
     -------------------------------------------------------------------------
 
-The Pipeline class orchestrates all steps of the AViSS synchronization
-process for a single Session.
-
-Processing steps:
-    0. Prepare the working directory and verify external dependencies.
-    1. Compute frame-accurate synchronization boundaries (ClapSync).
-    2. Extract the audio track from the video and verify the video duration.
-    3. Synchronize each audio file to the clap frame time.
-    4. Trim each video between the clap frame and the end frame.
-    5. Apply crop, copyright overlay, and rotation to each video if needed.
-    6. Optionally produce a SPPAS-ready mono 16kHz audio file.
-
-Each step logs its progress to the SyncResult report. On error, the
-exception is caught, logged, and the SyncResult.success flag is set to False.
-
 """
 
 import os
@@ -104,12 +89,10 @@ class Pipeline:
         """
         try:
             self.__step_prepare()
-            sync   = self.__step_clap_sync()
-            v_dur  = self.__step_extract_video_audio()
-            sync.check_video_duration(v_dur)
-            self.__step_sync_audios(sync)
-            self.__step_trim_videos(sync)
-            self.__step_post_process_videos()
+            pairs = self.__step_build_pairs()
+            self.__step_sync_audios(pairs)
+            self.__step_trim_videos(pairs)
+            self.__step_post_process_videos(pairs)
             self.__result.success = True
 
         except Exception as e:
@@ -154,71 +137,90 @@ class Pipeline:
 
     # -----------------------------------------------------------------------
 
-    def __step_clap_sync(self) -> ClapSync:
-        """Compute frame-accurate synchronization boundaries.
+    def __step_build_pairs(self) -> list:
+        """Compute one ClapSync per video and assemble (video, audio, sync, audio_out, video_out) tuples.
 
-        The fps is read from the primary video file. If the session carries a
-        secondary video with a different fps, a dedicated ClapSync must be
-        computed by the export module.
+        Each pair drives one complete audio+video output. The secondary video
+        gets its own ClapSync built from its own clap time and fps. When only
+        one audio is present, it is reused for the secondary video.
 
-        :return: (ClapSync) Synchronization boundaries for the primary video.
+        :return: (list) List of (video_media, audio_media, ClapSync, audio_out_name, video_out_name).
 
         """
-        self.__result.add_message("Step 1: Compute clap synchronization boundaries.")
+        self.__result.add_message("Step 1: Compute synchronization boundaries.")
 
-        fps  = VideoOps.get_video_info(self.__session.video.path)["fps"]
-        sync = ClapSync(self.__session, fps)
+        pairs = []
 
-        self.__result.add_message(
-            f"  Clap frame: {sync.clap_frame_index} ({sync.clap_frame_time:.3f}s)"
-        )
-        self.__result.add_message(
-            f"  End frame:  {sync.end_frame_index} ({sync.end_frame_time:.3f}s)"
-        )
-        return sync
+        info1 = VideoOps.get_video_info(self.__session.video.path)
+
+        if self.__session.has_second_video() is True:
+            info2 = VideoOps.get_video_info(self.__session.video2.path)
+
+            # The video with the lowest fps defines the reference delta.
+            # All videos share this delta so the clap appears at the same
+            # sub-frame position in every output (cross-video synchronization).
+            if info2["fps"] < info1["fps"]:
+                ref_sync = ClapSync(self.__session, info2["fps"],
+                                    video_clap=self.__session.video2.clap_time)
+                ref_delta = ref_sync.clap_delta
+                sync1 = ClapSync(self.__session, info1["fps"],
+                                 reference_delta=ref_delta)
+                sync2 = ref_sync
+            else:
+                sync1 = ClapSync(self.__session, info1["fps"])
+                ref_delta = sync1.clap_delta
+                sync2 = ClapSync(self.__session, info2["fps"],
+                                 video_clap=self.__session.video2.clap_time,
+                                 reference_delta=ref_delta)
+
+            sync1.check_video_duration(info1["duration"])
+            sync2.check_video_duration(info2["duration"])
+            self.__result.add_message(f"  Reference delta: {ref_delta:.6f}s")
+            self.__result.add_message(
+                f"  Primary:   clap frame {sync1.clap_frame_index} ({sync1.clap_frame_time:.3f}s), "
+                f"delta {sync1.clap_delta:.6f}s, "
+                f"end frame {sync1.end_frame_index} ({sync1.end_frame_time:.3f}s)"
+            )
+
+            if self.__session.has_second_audio() is True:
+                audio2 = self.__session.audio2
+            else:
+                audio2 = self.__session.audio
+            pairs.append((self.__session.video, self.__session.audio, sync1,
+                          self.__stem + ".wav", self.__stem + ".mkv"))
+            self.__result.add_message(
+                f"  Secondary: clap frame {sync2.clap_frame_index} ({sync2.clap_frame_time:.3f}s), "
+                f"delta {sync2.clap_delta:.6f}s, "
+                f"end frame {sync2.end_frame_index} ({sync2.end_frame_time:.3f}s)"
+            )
+            pairs.append((self.__session.video2, audio2, sync2,
+                          self.__stem + "_2.wav", self.__stem + "_2.mkv"))
+
+        else:
+            sync1 = ClapSync(self.__session, info1["fps"])
+            sync1.check_video_duration(info1["duration"])
+            self.__result.add_message(
+                f"  Primary:   clap frame {sync1.clap_frame_index} ({sync1.clap_frame_time:.3f}s), "
+                f"delta {sync1.clap_delta:.6f}s, "
+                f"end frame {sync1.end_frame_index} ({sync1.end_frame_time:.3f}s)"
+            )
+            pairs.append((self.__session.video, self.__session.audio, sync1,
+                          self.__stem + ".wav", self.__stem + ".mkv"))
+
+        return pairs
 
     # -----------------------------------------------------------------------
 
-    def __step_extract_video_audio(self) -> float:
-        """Read the primary video metadata and return its duration.
+    def __step_sync_audios(self, pairs: list) -> None:
+        """Align each audio to its video's clap frame time and trim to duration.
 
-        The duration is used to verify that the video is long enough
-        to cover the requested synchronization range.
-
-        :return: (float) Duration of the primary video in seconds.
+        :param pairs: (list) List of (video_media, audio_media, ClapSync, audio_out, video_out).
 
         """
-        self.__result.add_message("Step 2: Read primary video duration.")
+        self.__result.add_message("Step 2: Synchronize audio files.")
 
-        info     = VideoOps.get_video_info(self.__session.video.path)
-        duration = info["duration"]
-
-        self.__result.add_message(f"  Primary video duration: {duration:.3f}s")
-        return duration
-
-    # -----------------------------------------------------------------------
-
-    def __step_sync_audios(self, sync: ClapSync) -> None:
-        """Align all audio files to the clap frame time and trim to duration.
-
-        Each audio is processed in two passes:
-            1. Align: shift the audio so that its clap matches
-               sync.audio_reference_clap.
-            2. Duration: pad or trim to sync.end_frame_time.
-
-        Intermediate files are removed after each audio is processed.
-
-        :param sync: (ClapSync) Synchronization boundaries.
-
-        """
-        self.__result.add_message("Step 3: Synchronize audio files.")
-
-        audio_items = [(self.__session.audio, self.__stem + ".wav")]
-        if self.__session.has_second_audio() is True:
-            audio_items.append((self.__session.audio2, self.__stem + "_2.wav"))
-
-        for media, out_name in audio_items:
-            self.__sync_one_audio(media.path, media.clap_time, sync, out_name)
+        for _video, audio, sync, audio_out, _video_out in pairs:
+            self.__sync_one_audio(audio.path, audio.clap_time, sync, audio_out)
 
     # -----------------------------------------------------------------------
 
@@ -259,22 +261,18 @@ class Pipeline:
 
     # -----------------------------------------------------------------------
 
-    def __step_trim_videos(self, sync: ClapSync) -> None:
-        """Trim all video files between the clap frame and the end frame.
+    def __step_trim_videos(self, pairs: list) -> None:
+        """Trim each video between its own clap frame and end frame.
 
-        :param sync: (ClapSync) Synchronization boundaries.
+        :param pairs: (list) List of (video_media, audio_media, ClapSync, audio_out, video_out).
 
         """
-        self.__result.add_message("Step 4: Trim video files.")
+        self.__result.add_message("Step 3: Trim video files.")
 
-        video_items = [(self.__session.video, self.__stem + ".mkv")]
-        if self.__session.has_second_video() is True:
-            video_items.append((self.__session.video2, self.__stem + "_2.mkv"))
-
-        for media, out_name in video_items:
-            out_path = os.path.join(self.__work_dir, out_name)
+        for video, _audio, sync, _audio_out, video_out in pairs:
+            out_path = os.path.join(self.__work_dir, video_out)
             VideoOps.trim(
-                media.path,
+                video.path,
                 sync.clap_frame_index,
                 sync.end_frame_index,
                 out_path
@@ -284,23 +282,17 @@ class Pipeline:
 
     # -----------------------------------------------------------------------
 
-    def __step_post_process_videos(self) -> None:
-        """Apply crop, copyright overlay and rotation to each trimmed video.
+    def __step_post_process_videos(self, pairs: list) -> None:
+        """Apply crop and copyright overlay to each trimmed video.
 
-        Each operation is applied in sequence if relevant. Intermediate MKV
-        files are removed after each step. The final MKV replaces the
-        trimmed MKV in the result file list.
+        :param pairs: (list) List of (video_media, audio_media, ClapSync, audio_out, video_out).
 
         """
-        self.__result.add_message("Step 5: Post-process video files.")
+        self.__result.add_message("Step 4: Post-process video files.")
 
-        video_items = [(self.__session.video, self.__stem + ".mkv")]
-        if self.__session.has_second_video() is True:
-            video_items.append((self.__session.video2, self.__stem + "_2.mkv"))
-
-        for media, out_name in video_items:
-            current = os.path.join(self.__work_dir, out_name)
-            current = self.__apply_crop(media, current)
+        for video, _audio, _sync, _audio_out, video_out in pairs:
+            current = os.path.join(self.__work_dir, video_out)
+            current = self.__apply_crop(video, current)
             current = self.__apply_copyright(current)
             self.__result.add_message(f"  Video post-processed: {current!r}")
 

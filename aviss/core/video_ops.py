@@ -26,22 +26,6 @@
     This banner notice must not be removed.
     -------------------------------------------------------------------------
 
-This module provides video file operations used by the AViSS pipeline.
-All operations are grouped in the VideoOps class as static methods.
-
-sppasVideoReader (OpenCV wrapper from SPPAS) is used for reading video
-metadata. It guarantees frame-accurate seeking, which is essential for
-synchronization. ffmpeg is used for all video transformations.
-
-The recommended processing order when trimming a video is:
-    1. trim  (frame-accurate, re-encode to MKV/H265)
-    2. crop  (if requested)
-    3. copyright overlay (if configured)
-    4. rotate (if requested)
-
-Each step produces an intermediate MKV file. Intermediate files are removed
-after each step to save disk space.
-
 """
 
 import os

@@ -26,24 +26,6 @@
     This banner notice must not be removed.
     -------------------------------------------------------------------------
 
-This module provides audio file operations used by the AViSS pipeline.
-All operations are implemented as functions that wrap sox and audioopy calls.
-
-audioopy is used for reading audio metadata (duration, framerate, channels,
-sample width). sox is used for all audio transformations (trim, silence,
-concatenation, resampling, channel mixing).
-
-Functions:
-    - get_audio_info: return framerate, nchannels, sampwidth, duration.
-    - open_audio: open an audio file with audioopy, converting if needed.
-    - extract_audio_from_video: extract and re-encode the audio track of a video.
-    - audio_duration: return the duration of an audio file.
-    - trim_audio: trim the beginning or end of an audio file.
-    - add_silence: prepend or append silence to an audio file.
-    - adjust_audio_at_clap: align an audio file to a reference clap time.
-    - adjust_audio_duration: pad or trim an audio to a target duration.
-    - to_mono_16k: convert a (stereo) audio file to mono at 16000 Hz for SPPAS.
-
 """
 
 import os
@@ -58,6 +40,20 @@ from aviss.utils import check_file, run_command
 # ---------------------------------------------------------------------------
 
 class AudioOps:
+    """Static methods for audio file operations used by the AViSS pipeline.
+
+    audioopy is used for reading audio metadata (duration, framerate, channels,
+    sample width). sox is used for all audio transformations (trim, silence,
+    concatenation, resampling, channel mixing).
+
+    :example:
+    >>> info = AudioOps.get_audio_info("/data/rec.wav")
+    >>> info["duration"]
+    248.32
+    >>> AudioOps.audio_duration("/data/rec.wav")
+    248.32
+
+    """
 
     @staticmethod
     def get_audio_info(path: str) -> dict:

@@ -26,25 +26,6 @@
     This banner notice must not be removed.
     -------------------------------------------------------------------------
 
-This module implements the clap-based synchronization logic of AViSS.
-
-The ClapSync class computes the frame-accurate time boundaries shared by
-all media files in a session, given a reference video. All audio files are
-then aligned to those boundaries.
-
-The synchronization principle is:
-    1. The clap frame index is derived from the video clap time and fps.
-       This snaps the start position to an exact frame boundary, which is
-       essential for frame-accurate video trimming.
-    2. The end frame index is derived from clap time + expected duration.
-    3. Audio files are aligned so that their clap matches the frame-snapped
-       clap time of the video (clap_frame_time), plus the delay.
-    4. Audio files are then padded or trimmed to match the exact frame
-       duration of the video output (end_frame_time - clap_frame_time).
-
-The delay is applied after the clap: the actual cut starts at
-clap_frame_time + delay, not at the raw clap time.
-
 """
 
 from aviss.models import Session
@@ -78,15 +59,27 @@ class ClapSync:
 
     """
 
-    def __init__(self, session: Session, fps: float):
+    def __init__(self, session: Session, fps: float, video_clap: float = None,
+                 reference_delta: float = None):
         """Compute synchronization boundaries from the given session and fps.
 
         :param session: (Session) Session containing media files and timing.
         :param fps: (float) Frame rate of the reference video (frames/second).
+        :param video_clap: (float|None) Clap time in the video (seconds). When
+            None, session.video.clap_time is used. Pass session.video2.clap_time
+            to compute boundaries for the secondary video.
+        :param reference_delta: (float|None) Delta imposed by the reference video
+            (the one with the lowest fps). When provided, the clap frame is the
+            frame whose start time is closest to (clap_with_delay - reference_delta),
+            ensuring all videos share the same sub-frame offset at the clap.
+            When None, each video independently snaps to its own frame boundary.
         :raises: TypeError: session is not a Session instance.
         :raises: TypeError: fps is not a number.
         :raises: ValueError: fps is not strictly positive.
-        :raises: ValueError: The computed end frame time exceeds the video duration.
+        :raises: TypeError: video_clap is not a number when not None.
+        :raises: ValueError: video_clap is negative.
+        :raises: TypeError: reference_delta is not a number when not None.
+        :raises: ValueError: reference_delta is negative.
 
         """
         if isinstance(session, Session) is False:
@@ -95,19 +88,43 @@ class ClapSync:
             raise TypeError("fps must be a number.")
         if float(fps) <= 0.:
             raise ValueError("fps must be strictly positive.")
+        if video_clap is None:
+            raw_video_clap = session.video.clap_time
+        else:
+            if isinstance(video_clap, (int, float)) is False:
+                raise TypeError("video_clap must be a number.")
+            if float(video_clap) < 0.:
+                raise ValueError("video_clap must be zero or positive.")
+            raw_video_clap = float(video_clap)
+        if reference_delta is not None:
+            if isinstance(reference_delta, (int, float)) is False:
+                raise TypeError("reference_delta must be a number.")
+            if float(reference_delta) < 0.:
+                raise ValueError("reference_delta must be zero or positive.")
 
         self.__session = session
         self.__fps     = float(fps)
 
         # The reference clap time in the video, shifted by delay.
         # Cutting starts after the clap, not on it.
-        video_clap_with_delay = session.video.clap_time + session.delay
+        video_clap_with_delay = raw_video_clap + session.delay
 
-        # Frame index of the clap: snaps to the nearest lower frame boundary.
-        self.__clap_frame_index = VideoOps.time_to_frame(video_clap_with_delay, self.__fps)
+        # Frame index of the clap.
+        # With reference_delta: snap to the frame whose start equals
+        # (clap_with_delay - reference_delta), so all videos share the same
+        # sub-frame offset at the clap (cross-video synchronization).
+        # Without reference_delta: snap independently to the containing frame.
+        if reference_delta is None:
+            self.__clap_frame_index = VideoOps.time_to_frame(video_clap_with_delay, self.__fps)
+        else:
+            target_time = video_clap_with_delay - float(reference_delta)
+            self.__clap_frame_index = VideoOps.time_to_frame(target_time, self.__fps)
 
         # Exact start time corresponding to that frame boundary.
         self.__clap_frame_time = VideoOps.frame_to_time(self.__clap_frame_index, self.__fps)
+
+        # Delta: gap between the actual clap time and the frame boundary.
+        self.__clap_delta = video_clap_with_delay - self.__clap_frame_time
 
         # Index of the first frame NOT included in the output.
         self.__end_frame_index = VideoOps.end_frame_index(
@@ -144,6 +161,22 @@ class ClapSync:
         return self.__clap_frame_index
 
     clap_frame_index = property(get_clap_frame_index, None)
+
+    # -----------------------------------------------------------------------
+
+    def get_clap_delta(self) -> float:
+        """Return the gap between the actual clap time and its frame boundary (seconds).
+
+        This is the sub-frame offset used for cross-video synchronization:
+        all videos in a session share the same delta so the clap appears at
+        the same position in every output file.
+
+        :return: (float) Delta in seconds (always in [0, 1/fps[).
+
+        """
+        return self.__clap_delta
+
+    clap_delta = property(get_clap_delta, None)
 
     # -----------------------------------------------------------------------
 

@@ -222,12 +222,10 @@ for session in sessions:
 
 ### Customizing settings
 
-Copy `aviss/settings.py` to `settings_user.py` at the root of the project,
+Place a `settings_user.py` file in the same directory as your CSV file,
 then override only what you need:
 
 ```python
-from aviss.settings import cfg
-
 cfg.output.crf              = 14
 cfg.output.video_fps        = 25.
 cfg.output.copyright        = "Copyright (C) 2026 CNRS | LPL"
@@ -240,7 +238,7 @@ cfg.output.output_name_cols = [
 ]
 ```
 
-`settings_user.py` is loaded automatically at import time and is ignored by git.
+`settings_user.py` is loaded automatically from the CSV directory at sync time.
 
 
 ## Test the source code

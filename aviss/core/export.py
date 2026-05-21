@@ -26,20 +26,6 @@
     This banner notice must not be removed.
     -------------------------------------------------------------------------
 
-The Exporter class handles all post-pipeline output operations for a
-synchronized session. It takes a SyncResult produced by Pipeline.run()
-and applies optional transformations to the synced files.
-
-Available export operations:
-
-    - rotate: rotate one or both videos (e.g. to portrait mode).
-    - to_sppas: produce a mono 16kHz WAV from the primary audio for SPPAS.
-    - montage: merge a video and its synchronized audio into a compressed
-               MP4 suitable for distribution (H264/AAC, CRF 18, 25fps).
-
-The montage output is intentionally lower quality than the sync outputs:
-it is intended for sharing and viewing, not for acoustic or phonetic analysis.
-
 """
 
 import os

@@ -400,17 +400,39 @@ class TestAViSSSettings(unittest.TestCase):
     # -----------------------------------------------------------------------
 
     def test_load_user_settings_exception_is_caught(self):
-        orig_dir = os.getcwd()
         with tempfile.TemporaryDirectory() as tmp:
             bad_file = os.path.join(tmp, "settings_user.py")
             with open(bad_file, "w") as fh:
                 fh.write("raise RuntimeError('bad settings')\n")
-            os.chdir(tmp)
-            try:
-                settings = AViSSSettings()
-                self.assertIsInstance(settings.sync, AViSSSyncSettings)
-            finally:
-                os.chdir(orig_dir)
+            settings = AViSSSettings()
+            settings.load_user_settings(tmp)
+            self.assertIsInstance(settings.sync, AViSSSyncSettings)
+
+    # -----------------------------------------------------------------------
+
+    def test_load_user_settings_applies_overrides(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            cfg_file = os.path.join(tmp, "settings_user.py")
+            with open(cfg_file, "w") as fh:
+                fh.write("cfg.output.crf = 5\n")
+            settings = AViSSSettings()
+            settings.load_user_settings(tmp)
+            self.assertEqual(5, settings.output.crf)
+
+    # -----------------------------------------------------------------------
+
+    def test_load_user_settings_no_file(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            settings = AViSSSettings()
+            settings.load_user_settings(tmp)
+            self.assertEqual(18, settings.output.crf)
+
+    # -----------------------------------------------------------------------
+
+    def test_load_user_settings_type_error(self):
+        settings = AViSSSettings()
+        with self.assertRaises(TypeError):
+            settings.load_user_settings("")
 
 # ---------------------------------------------------------------------------
 

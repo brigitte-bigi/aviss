@@ -55,6 +55,7 @@ Override CRF for this run::
 
 """
 
+import os
 import sys
 import argparse
 
@@ -253,6 +254,7 @@ def _cmd_sync(args: argparse.Namespace) -> int:
 
     """
     _apply_overrides(args)
+    cfg.load_user_settings(os.path.dirname(os.path.abspath(args.csv)))
 
     try:
         reader = CsvReader(args.csv)

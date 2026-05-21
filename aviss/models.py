@@ -26,20 +26,10 @@
     This banner notice must not be removed.
     -------------------------------------------------------------------------
 
-Three classes are defined here:
-
-    - MediaFile: represents a single audio or video file with its clap time
-      and optional crop parameters.
-    - Session: represents one row of the input CSV, grouping the media files,
-      timing parameters, output name metadata, and free metadata.
-    - SyncResult: represents the output of a synchronization pipeline run,
-      grouping the paths of the produced files and a processing report.
-
 """
 
 import os
 from audioopy.aio import extensions as audio_extensions
-from sppas.src.videodata import video_extensions 
 
 
 # ---------------------------------------------------------------------------
@@ -74,18 +64,10 @@ class MediaFile:
         :raises: TypeError: path is not a non-empty string.
         :raises: TypeError: clap_time is not a number.
         :raises: ValueError: clap_time is negative.
-        :raises: ValueError: The file extension is not recognized.
 
         """
         if isinstance(path, str) is False or len(path.strip()) == 0:
             raise TypeError("path must be a non-empty string.")
-        ext = os.path.splitext(path.strip())[-1].lower()
-        if ext not in audio_extensions and ext not in video_extensions:
-            raise ValueError(
-                f"Unrecognized file extension '{ext}'. "
-                f"Expected one of: "
-                f"{list(audio_extensions) + list(video_extensions)}."
-            )
         if isinstance(clap_time, (int, float)) is False:
             raise TypeError("clap_time must be a number.")
         if float(clap_time) < 0.:
@@ -117,15 +99,11 @@ class MediaFile:
 
         :param value: (str) Absolute or relative path to the media file.
         :raises: TypeError: The given value is not a non-empty string.
-        :raises: ValueError: The file extension is not recognized.
 
         """
         if isinstance(value, str) is False or len(value.strip()) == 0:
             raise TypeError("path must be a non-empty string.")
         self.__path = value.strip()
-        if self.is_audio() is False and self.is_video() is False:
-            ext = os.path.splitext(self.__path)[-1].lower()
-            raise ValueError(f"Unrecognized file extension '{ext}'.")
 
     path = property(get_path, set_path)
 
@@ -285,11 +263,10 @@ class MediaFile:
     def is_video(self) -> bool:
         """Return True if this file is a video file.
 
-        :return: (bool) True if the file extension is a known video extension.
+        :return: (bool) True if the file extension is not a known audio extension.
 
         """
-        ext = os.path.splitext(self.__path)[-1].lower()
-        return ext in video_extensions
+        return self.is_audio() is False
 
     # -----------------------------------------------------------------------
 

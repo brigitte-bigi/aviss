@@ -26,14 +26,6 @@
     This banner notice must not be removed.
     -------------------------------------------------------------------------
 
-To customize without modifying the source code:
-    1. Copy this file as settings_user.py at the root of the project.
-    2. Modify only the desired values via the cfg instance.
-    3. settings_user.py is ignored by git.
-
-AViSSSettings loads settings_user.py automatically if it exists in the
-current working directory, overriding the default values defined here.
-
 """
 
 import os
@@ -559,9 +551,9 @@ class AViSSSettings:
     This class groups synchronization column settings (AViSSSyncSettings)
     and output settings (AViSSOutputSettings) into a single entry point.
 
-    At instantiation, settings_user.py is loaded automatically if it exists
-    in the current working directory. That file may override any attribute
-    of cfg.sync or cfg.output.
+    User overrides are loaded explicitly by calling load_user_settings(directory)
+    with the directory that contains the CSV file being processed. Each corpus
+    directory may have its own settings_user.py.
 
     :example:
     >>> cfg.sync.col_audio_file
@@ -575,35 +567,41 @@ class AViSSSettings:
     """
 
     def __init__(self):
-        """Initialize AViSS settings and load user overrides if available.
+        """Initialize AViSS settings with default values.
 
         """
         self.__sync   = AViSSSyncSettings()
         self.__output = AViSSOutputSettings()
-        self.__load_user_settings()
 
     # -----------------------------------------------------------------------
 
-    def __load_user_settings(self) -> None:
-        """Load settings_user.py from the current working directory if found.
+    def load_user_settings(self, directory: str) -> None:
+        """Load settings_user.py from the given directory if it exists.
 
-        The user file is expected to modify cfg.sync or cfg.output attributes
-        after importing cfg from this module. If settings_user.py raises any
-        exception, a warning is printed and the default settings are kept.
+        The file may override any attribute of cfg.sync or cfg.output.
+        Call this method once, passing the directory that contains the CSV
+        file being processed. If the file raises any exception, a warning is
+        printed and the default settings are kept.
+
+        :param directory: (str) Directory to search for settings_user.py.
+        :raises: TypeError: directory is not a non-empty string.
 
         :example: (in settings_user.py)
-        >>> from aviss.settings import cfg
         >>> cfg.output.crf = 14
         >>> cfg.sync.col_audio_file = "my_audio"
 
         """
-        user_file = os.path.join(os.getcwd(), "settings_user.py")
+        if isinstance(directory, str) is False or len(directory.strip()) == 0:
+            raise TypeError("directory must be a non-empty string.")
+
+        user_file = os.path.join(directory.strip(), "settings_user.py")
         if os.path.isfile(user_file) is False:
             return
 
         try:
             spec   = importlib.util.spec_from_file_location("settings_user", user_file)
             module = importlib.util.module_from_spec(spec)
+            module.__dict__["cfg"] = self
             spec.loader.exec_module(module)
         except Exception as e:
             print(f"Warning: settings_user.py could not be loaded ({e}). Default settings are used.")

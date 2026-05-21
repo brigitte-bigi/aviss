@@ -26,16 +26,6 @@
     This banner notice must not be removed.
     -------------------------------------------------------------------------
 
-This module provides small, stateless utility functions used throughout AViSS.
-All functions are pure or have only local side effects (filesystem, subprocess).
-
-Functions are grouped into four sections:
-
-    - Time conversions: time_to_seconds, seconds_to_time.
-    - Filesystem helpers: check_file, create_working_dir.
-    - External command helpers: is_command_available, check_command, run_command.
-    - Output filename builder: build_output_name.
-
 """
 
 import os

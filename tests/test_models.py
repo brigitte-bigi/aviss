@@ -98,12 +98,6 @@ class TestMediaFile(unittest.TestCase):
 
     # -----------------------------------------------------------------------
 
-    def test_init_value_error_unknown_extension(self):
-        with self.assertRaises(ValueError):
-            MediaFile("rec.xyz", 1.0)
-
-    # -----------------------------------------------------------------------
-
     def test_set_path_valid(self):
         m = MediaFile("rec.wav", 1.0)
         m.path = "other.wav"
@@ -116,13 +110,6 @@ class TestMediaFile(unittest.TestCase):
         m.path = "rec.mp4"
         self.assertTrue(m.is_video())
         self.assertFalse(m.is_audio())
-
-    # -----------------------------------------------------------------------
-
-    def test_set_path_invalid_extension(self):
-        m = MediaFile("rec.wav", 1.0)
-        with self.assertRaises(ValueError):
-            m.path = "rec.xyz"
 
     # -----------------------------------------------------------------------
 
