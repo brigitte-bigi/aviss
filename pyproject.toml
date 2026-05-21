@@ -1,0 +1,85 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+# ---------------------------------------------------------------------------
+# Project metadata
+# ---------------------------------------------------------------------------
+
+[project]
+name = "aviss"
+version = "0.1"
+description = "Audio-Video Synchronization — frame-accurate clap-based sync for corpus recording."
+readme = "README.md"
+license = { text = "GNU Affero General Public License v3 or later (AGPLv3+)" }
+authors = [
+    { name = "Brigitte Bigi", email = "contact@sppas.org" }
+]
+keywords = [
+    "audio", "video", "synchronization", "clap", "corpus",
+    "phonetics", "speech", "SPPAS"
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Multimedia :: Sound/Audio",
+    "Topic :: Multimedia :: Video",
+    "Topic :: Scientific/Engineering",
+]
+requires-python = ">=3.10"
+
+# ---------------------------------------------------------------------------
+# Dependencies
+# ---------------------------------------------------------------------------
+
+# See README.md for installation instructions.
+dependencies = [
+    "sppas",
+    "opencv-python-headless",
+]
+
+[project.optional-dependencies]
+dev = []
+
+# ---------------------------------------------------------------------------
+# Entry points
+# ---------------------------------------------------------------------------
+
+[project.scripts]
+aviss = "aviss.cli:main"
+
+# ---------------------------------------------------------------------------
+# Package discovery
+# ---------------------------------------------------------------------------
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["aviss*"]
+exclude = ["tests*", "scripts*"]
+
+# ---------------------------------------------------------------------------
+# Pytest configuration
+# ---------------------------------------------------------------------------
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+verbosity = 2
+
+# ---------------------------------------------------------------------------
+# Coverage configuration
+# ---------------------------------------------------------------------------
+
+[tool.coverage.run]
+source = ["aviss"]
+omit = ["/tmp/*"]
+
+[tool.coverage.report]
+omit = ["/tmp/*"]

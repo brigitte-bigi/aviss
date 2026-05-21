@@ -1,0 +1,48 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Coverage
+.coverage
+htmlcov/
+coverage.xml
+
+# Tests — generated data (rebuilt by make_test_data.sh)
+tests/data/
+
+# Pipeline working directories (generated at runtime)
+demo_S01/
+*_work/
+
+# User settings override (contains local paths, never commit)
+settings_user.py
+
+# Distribution
+*.whl
+*.tar.gz
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary / reference scripts (not part of the public package)
+Temp/
