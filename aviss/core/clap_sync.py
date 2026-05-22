@@ -127,9 +127,16 @@ class ClapSync:
         self.__clap_delta = video_clap_with_delay - self.__clap_frame_time
 
         # Index of the first frame NOT included in the output.
+        # When reference_delta is used, the start frame is shifted earlier by
+        # int(reference_delta * fps) frames; the end frame is shifted by the
+        # same amount, so the output spans the same number of frames as the
+        # reference video (mirrors the original montage.py behaviour).
         self.__end_frame_index = VideoOps.end_frame_index(
             video_clap_with_delay, session.duration, self.__fps
         )
+        if reference_delta is not None:
+            shift_frames = int(float(reference_delta) * self.__fps)
+            self.__end_frame_index = self.__end_frame_index + shift_frames
 
         # Exact end time of the last included frame.
         self.__end_frame_time = VideoOps.frame_to_time(self.__end_frame_index, self.__fps)
