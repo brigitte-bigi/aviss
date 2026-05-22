@@ -309,8 +309,8 @@ class Session:
     """Represent one row of the input CSV file.
 
     A Session groups:
-        - one or two MediaFile instances for audio,
-        - one or two MediaFile instances for video,
+        - one or more MediaFile instances for audio,
+        - one or more MediaFile instances for video,
         - timing parameters (delay and duration),
         - output filename metadata (values used to build the output name),
         - free metadata (any other CSV column, stored as a dict).
@@ -359,14 +359,11 @@ class Session:
         if float(duration) <= 0.:
             raise ValueError("duration must be strictly positive.")
 
-        self.__audio      = audio
-        self.__video      = video
-        self.__audio2     = None
-        self.__video2     = None
-        self.__video_name  = None
-        self.__video_name2 = None
-        self.__delay      = float(delay)
-        self.__duration   = float(duration)
+        self.__audios      = [audio]
+        self.__videos      = [video]
+        self.__video_names = [None]
+        self.__delay       = float(delay)
+        self.__duration    = float(duration)
 
         # Values from CSV columns used to build the output filename.
         # Keys are CSV column names; values are raw strings from the CSV.
@@ -376,138 +373,103 @@ class Session:
         self.__metadata = {}
 
     # -----------------------------------------------------------------------
-    # Primary media files
+    # Media file lists
     # -----------------------------------------------------------------------
 
-    def get_audio(self) -> MediaFile:
-        """Return the primary audio MediaFile.
+    def get_audios(self) -> list:
+        """Return a copy of the list of audio MediaFile objects.
 
-        :return: (MediaFile) Primary audio file.
-
-        """
-        return self.__audio
-
-    audio = property(get_audio, None)
-
-    # -----------------------------------------------------------------------
-
-    def get_video(self) -> MediaFile:
-        """Return the primary video MediaFile.
-
-        :return: (MediaFile) Primary video file.
+        :return: (list) List of MediaFile instances (audio).
 
         """
-        return self.__video
+        return list(self.__audios)
 
-    video = property(get_video, None)
-
-    # -----------------------------------------------------------------------
-    # Optional secondary media files
-    # -----------------------------------------------------------------------
-
-    def get_audio2(self) -> MediaFile | None:
-        """Return the secondary audio MediaFile, or None if not set.
-
-        :return: (MediaFile|None) Secondary audio file, or None.
-
-        """
-        return self.__audio2
-
-    def set_audio2(self, value: MediaFile | None) -> None:
-        """Set the optional secondary audio MediaFile.
-
-        :param value: (MediaFile|None) Secondary audio file, or None to unset.
-        :raises: TypeError: The given value is not a MediaFile or None.
-        :raises: ValueError: The given value is not an audio file.
-
-        """
-        if value is not None:
-            if isinstance(value, MediaFile) is False:
-                raise TypeError("audio2 must be a MediaFile instance or None.")
-            if value.is_audio() is False:
-                raise ValueError(f"audio2 does not have an audio extension: {value.path!r}.")
-        self.__audio2 = value
-
-    audio2 = property(get_audio2, set_audio2)
+    audios = property(get_audios, None)
 
     # -----------------------------------------------------------------------
 
-    def get_video2(self) -> MediaFile | None:
-        """Return the secondary video MediaFile, or None if not set.
+    def get_videos(self) -> list:
+        """Return a copy of the list of video MediaFile objects.
 
-        :return: (MediaFile|None) Secondary video file, or None.
-
-        """
-        return self.__video2
-
-    def set_video2(self, value: MediaFile | None) -> None:
-        """Set the optional secondary video MediaFile.
-
-        :param value: (MediaFile|None) Secondary video file, or None to unset.
-        :raises: TypeError: The given value is not a MediaFile or None.
-        :raises: ValueError: The given value is not a video file.
+        :return: (list) List of MediaFile instances (video).
 
         """
-        if value is not None:
-            if isinstance(value, MediaFile) is False:
-                raise TypeError("video2 must be a MediaFile instance or None.")
-            if value.is_video() is False:
-                raise ValueError(f"video2 does not have a video extension: {value.path!r}.")
-        self.__video2 = value
+        return list(self.__videos)
 
-    video2 = property(get_video2, set_video2)
-
-    # -----------------------------------------------------------------------
-    # Optional video labels (output file name suffixes)
-    # -----------------------------------------------------------------------
-
-    def get_video_name(self) -> str | None:
-        """Return the optional label for the primary video output file, or None.
-
-        :return: (str|None) Video label, or None if not set.
-
-        """
-        return self.__video_name
-
-    def set_video_name(self, value: str | None) -> None:
-        """Set the optional label for the primary video output file.
-
-        :param value: (str|None) Video label, or None to unset.
-        :raises: TypeError: The given value is not a non-empty string or None.
-
-        """
-        if value is not None:
-            if isinstance(value, str) is False or len(value.strip()) == 0:
-                raise TypeError("video_name must be a non-empty string or None.")
-            value = value.strip()
-        self.__video_name = value
-
-    video_name = property(get_video_name, set_video_name)
+    videos = property(get_videos, None)
 
     # -----------------------------------------------------------------------
 
-    def get_video_name2(self) -> str | None:
-        """Return the optional label for the secondary video output file, or None.
+    def get_video_names(self) -> list:
+        """Return a copy of the list of optional video output labels.
 
-        :return: (str|None) Secondary video label, or None if not set.
+        Each element corresponds to the video at the same index.
+        None means no label is set for that video.
 
-        """
-        return self.__video_name2
-
-    def set_video_name2(self, value: str | None) -> None:
-        """Set the optional label for the secondary video output file.
-
-        :param value: (str|None) Secondary video label, or None to unset.
-        :raises: TypeError: The given value is not a non-empty string or None.
+        :return: (list) List of str|None values.
 
         """
-        if value is not None:
-            if isinstance(value, str) is False or len(value.strip()) == 0:
-                raise TypeError("video_name2 must be a non-empty string or None.")
-            value = value.strip()
-        self.__video_name2 = value
+        return list(self.__video_names)
 
-    video_name2 = property(get_video_name2, set_video_name2)
+    video_names = property(get_video_names, None)
+
+    # -----------------------------------------------------------------------
+
+    def add_audio(self, audio: MediaFile) -> None:
+        """Append an audio MediaFile to the session.
+
+        :param audio: (MediaFile) Audio file to add.
+        :raises: TypeError: audio is not a MediaFile instance.
+        :raises: ValueError: audio is not an audio file.
+
+        """
+        if isinstance(audio, MediaFile) is False:
+            raise TypeError("audio must be a MediaFile instance.")
+        if audio.is_audio() is False:
+            raise ValueError(f"The given MediaFile does not have an audio extension: {audio.path!r}.")
+        self.__audios.append(audio)
+
+    # -----------------------------------------------------------------------
+
+    def add_video(self, video: MediaFile, name: str | None = None) -> None:
+        """Append a video MediaFile to the session with an optional output label.
+
+        :param video: (MediaFile) Video file to add.
+        :param name: (str|None) Optional label used as suffix in the output filename.
+        :raises: TypeError: video is not a MediaFile instance.
+        :raises: ValueError: video is not a video file.
+        :raises: TypeError: name is not a non-empty string or None.
+
+        """
+        if isinstance(video, MediaFile) is False:
+            raise TypeError("video must be a MediaFile instance.")
+        if video.is_video() is False:
+            raise ValueError(f"The given MediaFile does not have a video extension: {video.path!r}.")
+        if name is not None:
+            if isinstance(name, str) is False or len(name.strip()) == 0:
+                raise TypeError("name must be a non-empty string or None.")
+            name = name.strip()
+        self.__videos.append(video)
+        self.__video_names.append(name)
+
+    # -----------------------------------------------------------------------
+
+    def set_video_name(self, index: int, name: str | None) -> None:
+        """Set the output label for the video at the given index.
+
+        :param index: (int) Index of the video (0-based).
+        :param name: (str|None) Label, or None to clear.
+        :raises: IndexError: index is out of range.
+        :raises: TypeError: name is not a non-empty string or None.
+
+        """
+        if index < 0 or index >= len(self.__videos):
+            raise IndexError(f"Video index {index} is out of range.")
+        if name is not None:
+            if isinstance(name, str) is False or len(name.strip()) == 0:
+                raise TypeError("name must be a non-empty string or None.")
+            name = name.strip()
+        self.__video_names[index] = name
 
     # -----------------------------------------------------------------------
     # Timing
@@ -618,22 +580,22 @@ class Session:
     # -----------------------------------------------------------------------
 
     def has_second_audio(self) -> bool:
-        """Return True if a secondary audio file is set.
+        """Return True if more than one audio file is set.
 
-        :return: (bool) True if audio2 is not None.
+        :return: (bool) True if the session has at least two audio files.
 
         """
-        return self.__audio2 is not None
+        return len(self.__audios) > 1
 
     # -----------------------------------------------------------------------
 
     def has_second_video(self) -> bool:
-        """Return True if a secondary video file is set.
+        """Return True if more than one video file is set.
 
-        :return: (bool) True if video2 is not None.
+        :return: (bool) True if the session has at least two video files.
 
         """
-        return self.__video2 is not None
+        return len(self.__videos) > 1
 
     # -----------------------------------------------------------------------
 
@@ -643,12 +605,7 @@ class Session:
         :return: (bool) True if every defined MediaFile exists on disk.
 
         """
-        files = [self.__audio, self.__video]
-        if self.__audio2 is not None:
-            files.append(self.__audio2)
-        if self.__video2 is not None:
-            files.append(self.__video2)
-        for media in files:
+        for media in self.__audios + self.__videos:
             if media.exists() is False:
                 return False
         return True
@@ -656,10 +613,8 @@ class Session:
     # -----------------------------------------------------------------------
 
     def __repr__(self) -> str:
-        n_audio = 2 if self.__audio2 is not None else 1
-        n_video = 2 if self.__video2 is not None else 1
         return (
-            f"Session({n_audio} audio, {n_video} video, "
+            f"Session({len(self.__audios)} audio, {len(self.__videos)} video, "
             f"delay={self.__delay:.3f}s, duration={self.__duration:.3f}s, "
             f"meta={self.__output_name_meta})"
         )

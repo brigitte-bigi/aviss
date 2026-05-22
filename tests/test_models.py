@@ -242,12 +242,12 @@ class TestSession(unittest.TestCase):
 
     def test_init(self):
         s = Session(self.__audio, self.__video, delay=0.2, duration=216.0)
-        self.assertIs(self.__audio, s.audio)
-        self.assertIs(self.__video, s.video)
+        self.assertEqual(1, len(s.audios))
+        self.assertEqual(1, len(s.videos))
+        self.assertEqual(1, len(s.video_names))
+        self.assertIsNone(s.video_names[0])
         self.assertAlmostEqual(0.2,   s.delay,    places=3)
         self.assertAlmostEqual(216.0, s.duration, places=3)
-        self.assertIsNone(s.audio2)
-        self.assertIsNone(s.video2)
         self.assertFalse(s.has_second_audio())
         self.assertFalse(s.has_second_video())
         self.assertEqual({}, s.output_name_meta)
@@ -313,112 +313,89 @@ class TestSession(unittest.TestCase):
 
     # -----------------------------------------------------------------------
 
-    def test_set_audio2_valid(self):
+    def test_add_audio_valid(self):
         s = Session(self.__audio, self.__video, delay=0., duration=10.)
         audio2 = MediaFile("rec2.wav", 2.0)
-        s.audio2 = audio2
-        self.assertIs(audio2, s.audio2)
+        s.add_audio(audio2)
+        self.assertEqual(2, len(s.audios))
         self.assertTrue(s.has_second_audio())
+        self.assertIs(audio2, s.audios[1])
 
     # -----------------------------------------------------------------------
 
-    def test_set_audio2_none(self):
-        s = Session(self.__audio, self.__video, delay=0., duration=10.)
-        s.audio2 = MediaFile("rec2.wav", 2.0)
-        s.audio2 = None
-        self.assertIsNone(s.audio2)
-        self.assertFalse(s.has_second_audio())
-
-    # -----------------------------------------------------------------------
-
-    def test_set_audio2_type_error(self):
+    def test_add_audio_type_error(self):
         s = Session(self.__audio, self.__video, delay=0., duration=10.)
         with self.assertRaises(TypeError):
-            s.audio2 = "not_a_media"
+            s.add_audio("not_a_media")
 
     # -----------------------------------------------------------------------
 
-    def test_set_audio2_value_error_not_audio(self):
+    def test_add_audio_value_error_not_audio(self):
         s = Session(self.__audio, self.__video, delay=0., duration=10.)
         with self.assertRaises(ValueError):
-            s.audio2 = MediaFile("other.mp4", 1.0)
+            s.add_audio(MediaFile("other.mp4", 1.0))
 
     # -----------------------------------------------------------------------
 
-    def test_set_video2_valid(self):
+    def test_add_video_valid(self):
         s = Session(self.__audio, self.__video, delay=0., duration=10.)
         video2 = MediaFile("rec2.mp4", 5.0)
-        s.video2 = video2
-        self.assertIs(video2, s.video2)
+        s.add_video(video2)
+        self.assertEqual(2, len(s.videos))
         self.assertTrue(s.has_second_video())
+        self.assertIs(video2, s.videos[1])
 
     # -----------------------------------------------------------------------
 
-    def test_set_video2_value_error_not_video(self):
+    def test_add_video_with_name(self):
         s = Session(self.__audio, self.__video, delay=0., duration=10.)
-        with self.assertRaises(ValueError):
-            s.video2 = MediaFile("other.wav", 1.0)
+        video2 = MediaFile("rec2.mp4", 5.0)
+        s.add_video(video2, name="side")
+        self.assertEqual("side", s.video_names[1])
 
     # -----------------------------------------------------------------------
 
-    def test_set_video2_type_error(self):
+    def test_add_video_type_error(self):
         s = Session(self.__audio, self.__video, delay=0., duration=10.)
         with self.assertRaises(TypeError):
-            s.video2 = "not_a_media"
+            s.add_video("not_a_media")
 
     # -----------------------------------------------------------------------
 
-    def test_video_name_default_none(self):
+    def test_add_video_value_error_not_video(self):
         s = Session(self.__audio, self.__video, delay=0., duration=10.)
-        self.assertIsNone(s.video_name)
-        self.assertIsNone(s.video_name2)
+        with self.assertRaises(ValueError):
+            s.add_video(MediaFile("other.wav", 1.0))
+
+    # -----------------------------------------------------------------------
+
+    def test_add_video_name_type_error(self):
+        s = Session(self.__audio, self.__video, delay=0., duration=10.)
+        video2 = MediaFile("rec2.mp4", 5.0)
+        with self.assertRaises(TypeError):
+            s.add_video(video2, name="")
 
     # -----------------------------------------------------------------------
 
     def test_set_video_name_valid(self):
         s = Session(self.__audio, self.__video, delay=0., duration=10.)
-        s.video_name = "front"
-        self.assertEqual("front", s.video_name)
-
-    # -----------------------------------------------------------------------
-
-    def test_set_video_name2_valid(self):
-        s = Session(self.__audio, self.__video, delay=0., duration=10.)
-        s.video_name2 = "side"
-        self.assertEqual("side", s.video_name2)
-
-    # -----------------------------------------------------------------------
-
-    def test_set_video_name_strips(self):
-        s = Session(self.__audio, self.__video, delay=0., duration=10.)
-        s.video_name = "  front  "
-        self.assertEqual("front", s.video_name)
+        s.set_video_name(0, "front")
+        self.assertEqual("front", s.video_names[0])
 
     # -----------------------------------------------------------------------
 
     def test_set_video_name_none(self):
         s = Session(self.__audio, self.__video, delay=0., duration=10.)
-        s.video_name = "front"
-        s.video_name = None
-        self.assertIsNone(s.video_name)
+        s.set_video_name(0, "front")
+        s.set_video_name(0, None)
+        self.assertIsNone(s.video_names[0])
 
     # -----------------------------------------------------------------------
 
-    def test_set_video_name_type_error(self):
+    def test_set_video_name_index_error(self):
         s = Session(self.__audio, self.__video, delay=0., duration=10.)
-        with self.assertRaises(TypeError):
-            s.video_name = ""
-        with self.assertRaises(TypeError):
-            s.video_name = 42
-
-    # -----------------------------------------------------------------------
-
-    def test_set_video_name2_type_error(self):
-        s = Session(self.__audio, self.__video, delay=0., duration=10.)
-        with self.assertRaises(TypeError):
-            s.video_name2 = ""
-        with self.assertRaises(TypeError):
-            s.video_name2 = 42
+        with self.assertRaises(IndexError):
+            s.set_video_name(5, "x")
 
     # -----------------------------------------------------------------------
 
@@ -490,14 +467,6 @@ class TestSession(unittest.TestCase):
 
     def test_all_files_exist_false(self):
         s = Session(self.__audio, self.__video, delay=0., duration=10.)
-        self.assertFalse(s.all_files_exist())
-
-    # -----------------------------------------------------------------------
-
-    def test_all_files_exist_with_secondary_false(self):
-        s = Session(self.__audio, self.__video, delay=0., duration=10.)
-        s.audio2 = MediaFile("rec2.wav", 1.0)
-        s.video2 = MediaFile("rec2.mp4", 2.0)
         self.assertFalse(s.all_files_exist())
 
     # -----------------------------------------------------------------------

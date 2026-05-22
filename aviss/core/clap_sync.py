@@ -66,8 +66,7 @@ class ClapSync:
         :param session: (Session) Session containing media files and timing.
         :param fps: (float) Frame rate of the reference video (frames/second).
         :param video_clap: (float|None) Clap time in the video (seconds). When
-            None, session.video.clap_time is used. Pass session.video2.clap_time
-            to compute boundaries for the secondary video.
+            None, session.videos[0].clap_time is used.
         :param reference_delta: (float|None) Delta imposed by the reference video
             (the one with the lowest fps). When provided, the clap frame is the
             frame whose start time is closest to (clap_with_delay - reference_delta),
@@ -89,7 +88,7 @@ class ClapSync:
         if float(fps) <= 0.:
             raise ValueError("fps must be strictly positive.")
         if video_clap is None:
-            raw_video_clap = session.video.clap_time
+            raw_video_clap = session.videos[0].clap_time
         else:
             if isinstance(video_clap, (int, float)) is False:
                 raise TypeError("video_clap must be a number.")

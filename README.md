@@ -180,6 +180,27 @@ Rotate to portrait and produce montage:
 > aviss sync -c corpus/sessions.csv -l 1 --rotate 2 --montage
 ```
 
+Rotate video 1 to portrait, video 2 unchanged:
+
+```bash
+> aviss sync -c corpus/sessions.csv -l 1 --rotate 2
+```
+
+Rotate video 1 and video 2 independently:
+
+```bash
+> aviss sync -c corpus/sessions.csv -l 1 --rotate 2 1
+```
+
+`--rotate` accepts one value per video, in order. Transpose values:
+
+| Value | Effect |
+|---|---|
+| `0` | 90° counter-clockwise + vertical flip |
+| `1` | 90° clockwise |
+| `2` | 90° counter-clockwise — portrait mode |
+| `3` | 90° clockwise + vertical flip |
+
 Override encoding quality for this run:
 
 ```bash
@@ -284,15 +305,51 @@ If `coverage` is not installed, run the tests without it:
 
 ### Integration test
 
-The integration test uses a pair of synthetic media files built from the
-demo files shipped in `tests/demo/`. Generate the test data first:
+The integration test uses synthetic media files built from the demo files
+shipped in `tests/demo/`.
+
+#### Generate test data
+
+```
+bash make_test_data.sh [demo_dir] [output_dir] [n_videos] [n_audios]
+```
+
+| Argument | Default | Description |
+|---|---|---|
+| `demo_dir` | `demo` | Directory containing `demo.mp4` and `demo.wav` |
+| `output_dir` | `data` | Directory where test files are written |
+| `n_videos` | `1` | Number of video files to generate |
+| `n_audios` | `1` | Number of audio files to generate |
+
+Each generated video/audio file contains random silence/black before and
+after the content so that every run exercises a different synchronization
+offset.
+
+**Single video + single audio (default):**
 
 ```bash
 > cd tests && bash make_test_data.sh && cd ..
 ```
 
-This writes `tests/data/test_audio.wav`, `tests/data/test_video.mp4` and
-`tests/data/test.csv`. Then run the pipeline on the first CSV row:
+Writes `tests/data/test_audio.wav`, `tests/data/test_video.mp4` and
+`tests/data/test.csv`.
+
+**Two videos + one audio:**
+
+```bash
+> cd tests && bash make_test_data.sh demo data 2 1 && cd ..
+```
+
+Writes `test_video.mp4`, `test_video2.mp4`, `test_audio.wav` and a CSV
+with columns `video_file`, `video_file2`.
+
+**Two videos + two audios:**
+
+```bash
+> cd tests && bash make_test_data.sh demo data 2 2 && cd ..
+```
+
+Then run the pipeline on the first CSV row:
 
 ```bash
 > .venv/bin/python cli.py sync -c tests/data/test.csv -l 1 --verbose
@@ -312,6 +369,27 @@ Duration: 00:00:10.47, start: 0.000000, bitrate: 3288 kb/s
 ```
 
 Both files must have the same duration as `tests/demo/demo.mp4`.
+
+
+## Scripts
+
+### mix_mono.py — mix two mono audio files
+
+Combines two mono WAV files into a single mono WAV by averaging both
+channels. Useful when two microphones recorded the same speaker and the
+result must be a single audio file before synchronization.
+
+```bash
+> python scripts/mix_mono.py audio1.wav audio2.wav output.wav
+```
+
+| Argument | Description |
+|---|---|
+| `audio1` | First mono WAV file |
+| `audio2` | Second mono WAV file |
+| `output` | Output mono WAV file (must not already exist) |
+
+Requires `sox`. Both input files must be mono WAV at the same sample rate.
 
 
 ## Projects using AViSS
@@ -373,8 +451,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 - Version 0.1:
 
     * Initial version.
-    * Refactoring and packaging of montage.py (2021) and
-      montage_step1/step2.py (2024) into a unified, documented package.
-    * Support for 1 or 2 audio files and 1 or 2 video files per session.
+    * Support for ANY audio files and ANY video files per session.
     * Optional crop, copyright overlay, rotation, SPPAS export,
       MP4 and WebM montage.

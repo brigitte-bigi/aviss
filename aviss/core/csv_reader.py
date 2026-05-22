@@ -407,51 +407,64 @@ class CsvReader:
 
         session = Session(audio, video, delay=delay, duration=duration)
 
-        # Optional secondary audio
-        audio2_raw = self.__get_cell(header, row, cfg.sync.col_audio_file + "2")
-        if len(audio2_raw) > 0:
-            audio2 = self.__build_media_file(
-                header, row,
-                cfg.sync.col_audio_file + "2",
-                cfg.sync.col_audio_clap + "2",
-                (None, None, None, None), row_index
-            )
-            session.audio2 = audio2
-
-        # Optional secondary video (with optional crop)
-        video2_raw = self.__get_cell(header, row, cfg.sync.col_video_file + "2")
-        if len(video2_raw) > 0:
-            video2_crop = self.__build_crop(header, row, suffix="2")
-            video2 = self.__build_media_file(
-                header, row,
-                cfg.sync.col_video_file + "2",
-                cfg.sync.col_video_clap + "2",
-                video2_crop, row_index
-            )
-            session.video2 = video2
-
-        # Optional video names (output file name suffixes)
+        # Primary video name
         video_name_raw = self.__get_cell(header, row, cfg.sync.col_video_name)
         if len(video_name_raw) > 0:
-            session.video_name = video_name_raw
+            session.set_video_name(0, video_name_raw)
 
-        video_name2_raw = self.__get_cell(header, row, cfg.sync.col_video_name + "2")
-        if len(video_name2_raw) > 0:
-            session.video_name2 = video_name2_raw
+        # Additional audios: audio_file2, audio_file3, ...
+        i = 2
+        while True:
+            col_file = cfg.sync.col_audio_file + str(i)
+            if col_file not in header:
+                break
+            audio_raw = self.__get_cell(header, row, col_file)
+            if len(audio_raw) > 0:
+                audio_n = self.__build_media_file(
+                    header, row, col_file, cfg.sync.col_audio_clap + str(i),
+                    (None, None, None, None), row_index
+                )
+                session.add_audio(audio_n)
+            i += 1
+
+        # Additional videos: video_file2, video_file3, ...
+        i = 2
+        while True:
+            col_file = cfg.sync.col_video_file + str(i)
+            if col_file not in header:
+                break
+            video_raw = self.__get_cell(header, row, col_file)
+            if len(video_raw) > 0:
+                video_crop = self.__build_crop(header, row, suffix=str(i))
+                video_n = self.__build_media_file(
+                    header, row, col_file, cfg.sync.col_video_clap + str(i),
+                    video_crop, row_index
+                )
+                name_raw = self.__get_cell(header, row, cfg.sync.col_video_name + str(i))
+                session.add_video(video_n, name=name_raw if len(name_raw) > 0 else None)
+            i += 1
 
         # Output filename metadata
         sync_cols = {
             cfg.sync.col_audio_file, cfg.sync.col_audio_clap,
-            cfg.sync.col_audio_file + "2", cfg.sync.col_audio_clap + "2",
             cfg.sync.col_video_file, cfg.sync.col_video_clap,
-            cfg.sync.col_video_file + "2", cfg.sync.col_video_clap + "2",
-            cfg.sync.col_video_name, cfg.sync.col_video_name + "2",
+            cfg.sync.col_video_name,
             cfg.sync.col_video_crop_x, cfg.sync.col_video_crop_y,
             cfg.sync.col_video_crop_w, cfg.sync.col_video_crop_h,
-            cfg.sync.col_video_crop_x + "2", cfg.sync.col_video_crop_y + "2",
-            cfg.sync.col_video_crop_w + "2", cfg.sync.col_video_crop_h + "2",
             cfg.sync.col_delay, cfg.sync.col_duration,
         }
+        for j in range(2, 20):
+            suffix = str(j)
+            sync_cols.add(cfg.sync.col_audio_file + suffix)
+            sync_cols.add(cfg.sync.col_audio_clap + suffix)
+            sync_cols.add(cfg.sync.col_video_file + suffix)
+            sync_cols.add(cfg.sync.col_video_clap + suffix)
+            sync_cols.add(cfg.sync.col_video_name + suffix)
+            sync_cols.add(cfg.sync.col_video_crop_x + suffix)
+            sync_cols.add(cfg.sync.col_video_crop_y + suffix)
+            sync_cols.add(cfg.sync.col_video_crop_w + suffix)
+            sync_cols.add(cfg.sync.col_video_crop_h + suffix)
+
         name_col_names = {entry[0] for entry in cfg.output.output_name_cols}
 
         output_name_meta = {}
@@ -461,7 +474,6 @@ class CsvReader:
                 output_name_meta[col_name] = value
         session.output_name_meta = output_name_meta
 
-        # Free metadata: every column not used for sync or output naming
         metadata = {}
         for col_name in header:
             if col_name in sync_cols:

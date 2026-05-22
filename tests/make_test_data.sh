@@ -16,15 +16,15 @@
 # Starting from a known pair (demo.mp4, demo.wav), this script builds
 # synthetic "raw recording" files by adding material before and after:
 #
-#   test_video.mp4 = [X s black] + [1 frame CLAP] + [1 s black]
-#                  + [demo.mp4]
-#                  + [M s black]
+#   test_video[N].mp4 = [X s black] + [1 frame CLAP] + [1 s black]
+#                     + [demo.mp4]
+#                     + [M s black]
 #
-#   test_audio.wav = [Y s silence] + [1 ms noise] + [1 s silence]
-#                  + [demo.wav]
-#                  + [N s silence]
+#   test_audio[N].wav = [Y s silence] + [1 ms noise] + [1 s silence]
+#                     + [demo.wav]
+#                     + [P s silence]
 #
-# X, Y, M, N are drawn independently at random (integer seconds).
+# X, Y, M, P are drawn independently at random (integer seconds) per file.
 # The script writes a ready-to-use test.csv with the exact clap times.
 #
 # A correct AViSS run on test.csv must reproduce demo.mp4 and demo.wav
@@ -32,10 +32,12 @@
 #
 # USAGE
 # -----
-#   ./make_test_data.sh [demo_dir] [output_dir]
+#   ./make_test_data.sh [demo_dir] [output_dir] [n_videos] [n_audios]
 #
 #   demo_dir   : directory containing demo.mp4 and demo.wav (default: demo)
-#   output_dir : directory where test data is written  (default: tests/data)
+#   output_dir : directory where test data is written  (default: data)
+#   n_videos   : number of video files to generate (default: 1)
+#   n_audios   : number of audio files to generate (default: 1)
 #
 # REQUIREMENTS
 # ------------
@@ -50,13 +52,13 @@ set -euo pipefail
 
 DEMO_DIR="${1:-demo}"
 OUT_DIR="${2:-data}"
+N_VIDEOS="${3:-1}"
+N_AUDIOS="${4:-1}"
 
 DEMO_VIDEO="${DEMO_DIR}/demo.mp4"
 DEMO_AUDIO="${DEMO_DIR}/demo.wav"
 
 VIDEO_FPS=30
-# Duration of demo.mp4 in seconds (exact, used in CSV).
-# Derived from ffprobe to avoid hardcoding.
 DEMO_VIDEO_DURATION=""
 DEMO_AUDIO_DURATION=""
 
@@ -64,7 +66,13 @@ DEMO_AUDIO_DURATION=""
 X_MIN=2;  X_MAX=10   # black frames before CLAP in video
 Y_MIN=1;  Y_MAX=8    # silence before noise in audio
 M_MIN=2;  M_MAX=6    # black frames after demo in video
-N_MIN=2;  N_MAX=6    # silence after demo in audio
+P_MIN=2;  P_MAX=6    # silence after demo in audio
+
+# Arrays filled during generation.
+VIDEO_CLAP_STRS=()
+AUDIO_CLAP_STRS=()
+VIDEO_NAMES=()
+AUDIO_NAMES=()
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -82,14 +90,12 @@ require_command() {
 }
 
 random_int() {
-    # Return a random integer in [min, max].
     local min="$1"
     local max="$2"
     echo $(( min + RANDOM % (max - min + 1) ))
 }
 
 seconds_to_time() {
-    # Convert a float number of seconds to MM:SS.mmm for the CSV.
     local total="$1"
     local mins
     local secs
@@ -101,7 +107,6 @@ seconds_to_time() {
 }
 
 get_duration() {
-    # Return the duration of a media file in seconds (float).
     ffprobe -v error \
             -show_entries format=duration \
             -of default=noprint_wrappers=1:nokey=1 \
@@ -130,7 +135,7 @@ TMP_DIR=$(mktemp -d)
 trap 'rm -rf "${TMP_DIR}"' EXIT
 
 # ---------------------------------------------------------------------------
-# Read demo durations
+# Read demo durations and properties
 # ---------------------------------------------------------------------------
 
 DEMO_VIDEO_DURATION=$(get_duration "${DEMO_VIDEO}")
@@ -138,92 +143,22 @@ DEMO_AUDIO_DURATION=$(get_duration "${DEMO_AUDIO}")
 log "demo.mp4 duration : ${DEMO_VIDEO_DURATION}s"
 log "demo.wav duration : ${DEMO_AUDIO_DURATION}s"
 
-# ---------------------------------------------------------------------------
-# Draw random values
-# ---------------------------------------------------------------------------
-
-X=$(random_int ${X_MIN} ${X_MAX})   # seconds of black before CLAP
-Y=$(random_int ${Y_MIN} ${Y_MAX})   # seconds of silence before noise
-M=$(random_int ${M_MIN} ${M_MAX})   # seconds of black after demo
-N=$(random_int ${N_MIN} ${N_MAX})   # seconds of silence after demo
-
-log "Random values drawn:"
-log "  X = ${X}s  (black before CLAP in video)"
-log "  Y = ${Y}s  (silence before noise in audio)"
-log "  M = ${M}s  (black after demo in video)"
-log "  N = ${N}s  (silence after demo in audio)"
-
-# ---------------------------------------------------------------------------
-# Compute exact clap times for the CSV
-# ---------------------------------------------------------------------------
-
-# video_clap : time of the CLAP frame = X seconds (first frame of the CLAP).
-# The CLAP is exactly 1 frame long (1/fps seconds).
-VIDEO_CLAP_SECONDS=$(echo "${X}" | awk '{printf "%.6f", $1}')
-
-# audio_clap : time of the 1ms noise burst = Y seconds.
-AUDIO_CLAP_SECONDS=$(echo "${Y}" | awk '{printf "%.6f", $1}')
-
-VIDEO_CLAP_STR=$(seconds_to_time "${VIDEO_CLAP_SECONDS}")
-AUDIO_CLAP_STR=$(seconds_to_time "${AUDIO_CLAP_SECONDS}")
-
-# delay : 1 second (the 1s black/silence after the clap).
-DELAY="1.000"
-
-# duration : exact duration of demo.mp4.
-DURATION_STR=$(seconds_to_time "${DEMO_VIDEO_DURATION}")
-
-log "CSV clap times:"
-log "  video_clap = ${VIDEO_CLAP_STR}"
-log "  audio_clap = ${AUDIO_CLAP_STR}"
-log "  delay      = ${DELAY}s"
-log "  duration   = ${DURATION_STR}"
-
-# ---------------------------------------------------------------------------
-# Build test_video.mp4
-# ---------------------------------------------------------------------------
-
-log "Building test_video.mp4 ..."
-
-# Read video properties from demo.mp4.
 VIDEO_WIDTH=$(ffprobe -v error -select_streams v:0 \
     -show_entries stream=width -of csv=p=0 "${DEMO_VIDEO}")
 VIDEO_HEIGHT=$(ffprobe -v error -select_streams v:0 \
     -show_entries stream=height -of csv=p=0 "${DEMO_VIDEO}")
 VIDEO_PIX_FMT=$(ffprobe -v error -select_streams v:0 \
     -show_entries stream=pix_fmt -of csv=p=0 "${DEMO_VIDEO}")
+AUDIO_RATE=$(soxi -r "${DEMO_AUDIO}")
+AUDIO_CHANNELS=$(soxi -c "${DEMO_AUDIO}")
+AUDIO_BITS=$(soxi -b "${DEMO_AUDIO}")
 
-log "  Video: ${VIDEO_WIDTH}x${VIDEO_HEIGHT} @ ${VIDEO_FPS}fps pix_fmt=${VIDEO_PIX_FMT}"
+log "Video: ${VIDEO_WIDTH}x${VIDEO_HEIGHT} @ ${VIDEO_FPS}fps pix_fmt=${VIDEO_PIX_FMT}"
+log "Audio: ${AUDIO_RATE}Hz ${AUDIO_CHANNELS}ch ${AUDIO_BITS}bit"
 
-# Part 1a: X seconds of black (before CLAP).
-BLACK_BEFORE="${TMP_DIR}/black_before.mp4"
-ffmpeg -f lavfi \
-    -i "color=c=black:s=${VIDEO_WIDTH}x${VIDEO_HEIGHT}:r=${VIDEO_FPS}:d=${X}" \
-    -pix_fmt "${VIDEO_PIX_FMT}" \
-    -an "${BLACK_BEFORE}" \
-    -nostdin -y -loglevel error
+DURATION_STR=$(seconds_to_time "${DEMO_VIDEO_DURATION}")
 
-# Part 1b: 1 frame CLAP (white text "CLAP" on black background).
-FRAME_DURATION=$(echo "${VIDEO_FPS}" | awk '{printf "%.6f", 1.0/$1}')
-CLAP_FRAME="${TMP_DIR}/clap_frame.mp4"
-ffmpeg -f lavfi \
-    -i "color=c=black:s=${VIDEO_WIDTH}x${VIDEO_HEIGHT}:r=${VIDEO_FPS}:d=${FRAME_DURATION}" \
-    -vf "drawtext=text='CLAP':fontsize=120:fontcolor=white:x=(w-text_w)/2:y=(h-text_h)/2" \
-    -pix_fmt "${VIDEO_PIX_FMT}" \
-    -frames:v 1 \
-    -an "${CLAP_FRAME}" \
-    -nostdin -y -loglevel error
-
-# Part 1c: 1 second of black (after CLAP).
-BLACK_AFTER_CLAP="${TMP_DIR}/black_after_clap.mp4"
-ffmpeg -f lavfi \
-    -i "color=c=black:s=${VIDEO_WIDTH}x${VIDEO_HEIGHT}:r=${VIDEO_FPS}:d=1" \
-    -pix_fmt "${VIDEO_PIX_FMT}" \
-    -an "${BLACK_AFTER_CLAP}" \
-    -nostdin -y -loglevel error
-
-# Part 2: demo.mp4 (already without audio).
-# Re-encode to ensure identical codec/pixel format for concatenation.
+# Pre-encode demo video once (shared by all outputs).
 DEMO_VIDEO_TMP="${TMP_DIR}/demo_video.mp4"
 ffmpeg -i "${DEMO_VIDEO}" \
     -pix_fmt "${VIDEO_PIX_FMT}" \
@@ -231,77 +166,151 @@ ffmpeg -i "${DEMO_VIDEO}" \
     -an "${DEMO_VIDEO_TMP}" \
     -nostdin -y -loglevel error
 
-# Part 3: M seconds of black (after demo).
-BLACK_END="${TMP_DIR}/black_end.mp4"
-ffmpeg -f lavfi \
-    -i "color=c=black:s=${VIDEO_WIDTH}x${VIDEO_HEIGHT}:r=${VIDEO_FPS}:d=${M}" \
-    -pix_fmt "${VIDEO_PIX_FMT}" \
-    -an "${BLACK_END}" \
-    -nostdin -y -loglevel error
-
-# Concatenate all parts.
-CONCAT_LIST="${TMP_DIR}/video_concat.txt"
-{
-    echo "file '${BLACK_BEFORE}'"
-    echo "file '${CLAP_FRAME}'"
-    echo "file '${BLACK_AFTER_CLAP}'"
-    echo "file '${DEMO_VIDEO_TMP}'"
-    echo "file '${BLACK_END}'"
-} > "${CONCAT_LIST}"
-
-TEST_VIDEO="${OUT_DIR}/test_video.mp4"
-ffmpeg -f concat -safe 0 \
-    -i "${CONCAT_LIST}" \
-    -c:v libx264 -crf 0 -preset ultrafast \
-    -pix_fmt "${VIDEO_PIX_FMT}" \
-    -an "${TEST_VIDEO}" \
-    -nostdin -y -loglevel error
-
-log "  -> ${TEST_VIDEO}"
-
 # ---------------------------------------------------------------------------
-# Build test_audio.wav
+# Functions
 # ---------------------------------------------------------------------------
 
-log "Building test_audio.wav ..."
+build_video() {
+    local idx="$1"
+    local x="$2"
+    local m="$3"
 
-# Read audio properties from demo.wav.
-AUDIO_RATE=$(soxi -r "${DEMO_AUDIO}")
-AUDIO_CHANNELS=$(soxi -c "${DEMO_AUDIO}")
-AUDIO_BITS=$(soxi -b "${DEMO_AUDIO}")
+    local suffix=""
+    if [[ ${idx} -gt 1 ]]; then
+        suffix="${idx}"
+    fi
+    local out_name="test_video${suffix}.mp4"
+    local out_path="${OUT_DIR}/${out_name}"
 
-log "  Audio: ${AUDIO_RATE}Hz ${AUDIO_CHANNELS}ch ${AUDIO_BITS}bit"
+    log "Building ${out_name} (X=${x}s, M=${m}s) ..."
 
-# Part 1: Y seconds of silence (before noise).
-SILENCE_BEFORE="${TMP_DIR}/silence_before.wav"
-sox -n -r "${AUDIO_RATE}" -c "${AUDIO_CHANNELS}" -b "${AUDIO_BITS}" \
-    "${SILENCE_BEFORE}" trim 0.0 "${Y}.0"
+    local clap_seconds
+    clap_seconds=$(echo "${x}" | awk '{printf "%.6f", $1}')
+    local clap_str
+    clap_str=$(seconds_to_time "${clap_seconds}")
 
-# Part 2: 1ms noise burst (the clap sound).
-NOISE_BURST="${TMP_DIR}/noise_burst.wav"
-sox -n -r "${AUDIO_RATE}" -c "${AUDIO_CHANNELS}" -b "${AUDIO_BITS}" \
-    "${NOISE_BURST}" synth 0.001 whitenoise vol 0.8
+    local frame_duration
+    frame_duration=$(echo "${VIDEO_FPS}" | awk '{printf "%.6f", 1.0/$1}')
 
-# Part 3: 1 second of silence (after noise).
-SILENCE_AFTER_CLAP="${TMP_DIR}/silence_after_clap.wav"
-sox -n -r "${AUDIO_RATE}" -c "${AUDIO_CHANNELS}" -b "${AUDIO_BITS}" \
-    "${SILENCE_AFTER_CLAP}" trim 0.0 1.0
+    local black_before="${TMP_DIR}/black_before${suffix}.mp4"
+    ffmpeg -f lavfi \
+        -i "color=c=black:s=${VIDEO_WIDTH}x${VIDEO_HEIGHT}:r=${VIDEO_FPS}:d=${x}" \
+        -pix_fmt "${VIDEO_PIX_FMT}" \
+        -an "${black_before}" \
+        -nostdin -y -loglevel error
 
-# Part 4: N seconds of silence (after demo).
-SILENCE_END="${TMP_DIR}/silence_end.wav"
-sox -n -r "${AUDIO_RATE}" -c "${AUDIO_CHANNELS}" -b "${AUDIO_BITS}" \
-    "${SILENCE_END}" trim 0.0 "${N}.0"
+    local clap_frame="${TMP_DIR}/clap_frame${suffix}.mp4"
+    ffmpeg -f lavfi \
+        -i "color=c=black:s=${VIDEO_WIDTH}x${VIDEO_HEIGHT}:r=${VIDEO_FPS}:d=${frame_duration}" \
+        -vf "drawtext=text='CLAP':fontsize=120:fontcolor=white:x=(w-text_w)/2:y=(h-text_h)/2" \
+        -pix_fmt "${VIDEO_PIX_FMT}" \
+        -frames:v 1 \
+        -an "${clap_frame}" \
+        -nostdin -y -loglevel error
 
-# Concatenate all parts.
-TEST_AUDIO="${OUT_DIR}/test_audio.wav"
-sox "${SILENCE_BEFORE}" \
-    "${NOISE_BURST}" \
-    "${SILENCE_AFTER_CLAP}" \
-    "${DEMO_AUDIO}" \
-    "${SILENCE_END}" \
-    "${TEST_AUDIO}"
+    local black_after_clap="${TMP_DIR}/black_after_clap${suffix}.mp4"
+    ffmpeg -f lavfi \
+        -i "color=c=black:s=${VIDEO_WIDTH}x${VIDEO_HEIGHT}:r=${VIDEO_FPS}:d=1" \
+        -pix_fmt "${VIDEO_PIX_FMT}" \
+        -an "${black_after_clap}" \
+        -nostdin -y -loglevel error
 
-log "  -> ${TEST_AUDIO}"
+    local black_end="${TMP_DIR}/black_end${suffix}.mp4"
+    ffmpeg -f lavfi \
+        -i "color=c=black:s=${VIDEO_WIDTH}x${VIDEO_HEIGHT}:r=${VIDEO_FPS}:d=${m}" \
+        -pix_fmt "${VIDEO_PIX_FMT}" \
+        -an "${black_end}" \
+        -nostdin -y -loglevel error
+
+    local concat_list="${TMP_DIR}/video_concat${suffix}.txt"
+    {
+        echo "file '${black_before}'"
+        echo "file '${clap_frame}'"
+        echo "file '${black_after_clap}'"
+        echo "file '${DEMO_VIDEO_TMP}'"
+        echo "file '${black_end}'"
+    } > "${concat_list}"
+
+    ffmpeg -f concat -safe 0 \
+        -i "${concat_list}" \
+        -c:v libx264 -crf 0 -preset ultrafast \
+        -pix_fmt "${VIDEO_PIX_FMT}" \
+        -an "${out_path}" \
+        -nostdin -y -loglevel error
+
+    log "  -> ${out_path}"
+
+    VIDEO_CLAP_STRS+=("${clap_str}")
+    VIDEO_NAMES+=("${out_name}")
+}
+
+build_audio() {
+    local idx="$1"
+    local y="$2"
+    local p="$3"
+
+    local suffix=""
+    if [[ ${idx} -gt 1 ]]; then
+        suffix="${idx}"
+    fi
+    local out_name="test_audio${suffix}.wav"
+    local out_path="${OUT_DIR}/${out_name}"
+
+    log "Building ${out_name} (Y=${y}s, P=${p}s) ..."
+
+    local clap_seconds
+    clap_seconds=$(echo "${y}" | awk '{printf "%.6f", $1}')
+    local clap_str
+    clap_str=$(seconds_to_time "${clap_seconds}")
+
+    local silence_before="${TMP_DIR}/silence_before${suffix}.wav"
+    sox -n -r "${AUDIO_RATE}" -c "${AUDIO_CHANNELS}" -b "${AUDIO_BITS}" \
+        "${silence_before}" trim 0.0 "${y}.0"
+
+    local noise_burst="${TMP_DIR}/noise_burst${suffix}.wav"
+    sox -n -r "${AUDIO_RATE}" -c "${AUDIO_CHANNELS}" -b "${AUDIO_BITS}" \
+        "${noise_burst}" synth 0.001 whitenoise vol 0.8
+
+    local silence_after_clap="${TMP_DIR}/silence_after_clap${suffix}.wav"
+    sox -n -r "${AUDIO_RATE}" -c "${AUDIO_CHANNELS}" -b "${AUDIO_BITS}" \
+        "${silence_after_clap}" trim 0.0 1.0
+
+    local silence_end="${TMP_DIR}/silence_end${suffix}.wav"
+    sox -n -r "${AUDIO_RATE}" -c "${AUDIO_CHANNELS}" -b "${AUDIO_BITS}" \
+        "${silence_end}" trim 0.0 "${p}.0"
+
+    sox "${silence_before}" \
+        "${noise_burst}" \
+        "${silence_after_clap}" \
+        "${DEMO_AUDIO}" \
+        "${silence_end}" \
+        "${out_path}"
+
+    log "  -> ${out_path}"
+
+    AUDIO_CLAP_STRS+=("${clap_str}")
+    AUDIO_NAMES+=("${out_name}")
+}
+
+# ---------------------------------------------------------------------------
+# Generate video files
+# ---------------------------------------------------------------------------
+
+for (( i=1; i<=N_VIDEOS; i++ )); do
+    x=$(random_int ${X_MIN} ${X_MAX})
+    m=$(random_int ${M_MIN} ${M_MAX})
+    build_video "${i}" "${x}" "${m}"
+done
+
+# ---------------------------------------------------------------------------
+# Generate audio files
+# ---------------------------------------------------------------------------
+
+for (( i=1; i<=N_AUDIOS; i++ )); do
+    y=$(random_int ${Y_MIN} ${Y_MAX})
+    p=$(random_int ${P_MIN} ${P_MAX})
+    build_audio "${i}" "${y}" "${p}"
+done
 
 # ---------------------------------------------------------------------------
 # Write test.csv
@@ -310,30 +319,51 @@ log "  -> ${TEST_AUDIO}"
 log "Writing test.csv ..."
 
 TEST_CSV="${OUT_DIR}/test.csv"
+
+HEADER="ID;Session;Serie;audio_file;video_file;audio_clap;video_clap;delay;duration"
+for (( i=2; i<=N_AUDIOS; i++ )); do
+    HEADER="${HEADER};audio_file${i};audio_clap${i}"
+done
+for (( i=2; i<=N_VIDEOS; i++ )); do
+    HEADER="${HEADER};video_file${i};video_clap${i}"
+done
+
+ROW="demo;1;1;${AUDIO_NAMES[0]};${VIDEO_NAMES[0]};${AUDIO_CLAP_STRS[0]};${VIDEO_CLAP_STRS[0]};1.000;${DURATION_STR}"
+for (( i=2; i<=N_AUDIOS; i++ )); do
+    idx=$(( i - 1 ))
+    ROW="${ROW};${AUDIO_NAMES[${idx}]};${AUDIO_CLAP_STRS[${idx}]}"
+done
+for (( i=2; i<=N_VIDEOS; i++ )); do
+    idx=$(( i - 1 ))
+    ROW="${ROW};${VIDEO_NAMES[${idx}]};${VIDEO_CLAP_STRS[${idx}]}"
+done
+
 {
-    echo "ID;Session;Serie;audio_file;video_file;audio_clap;video_clap;delay;duration"
-    echo "demo;1;1;test_audio.wav;test_video.mp4;${AUDIO_CLAP_STR};${VIDEO_CLAP_STR};${DELAY};${DURATION_STR}"
+    echo "${HEADER}"
+    echo "${ROW}"
 } > "${TEST_CSV}"
 
 log "  -> ${TEST_CSV}"
 
 # ---------------------------------------------------------------------------
-# Write expected values for the integration test
+# Write expected values
 # ---------------------------------------------------------------------------
 
 EXPECTED_FILE="${OUT_DIR}/expected.txt"
 {
     echo "# Generated by make_test_data.sh — do not edit manually."
-    echo "X=${X}"
-    echo "Y=${Y}"
-    echo "M=${M}"
-    echo "N=${N}"
-    echo "VIDEO_CLAP=${VIDEO_CLAP_SECONDS}"
-    echo "AUDIO_CLAP=${AUDIO_CLAP_SECONDS}"
+    echo "N_VIDEOS=${N_VIDEOS}"
+    echo "N_AUDIOS=${N_AUDIOS}"
+    for (( i=0; i<N_VIDEOS; i++ )); do
+        echo "VIDEO_CLAP_$((i+1))=${VIDEO_CLAP_STRS[${i}]}"
+    done
+    for (( i=0; i<N_AUDIOS; i++ )); do
+        echo "AUDIO_CLAP_$((i+1))=${AUDIO_CLAP_STRS[${i}]}"
+    done
     echo "DEMO_VIDEO_DURATION=${DEMO_VIDEO_DURATION}"
     echo "DEMO_AUDIO_DURATION=${DEMO_AUDIO_DURATION}"
     echo "VIDEO_FPS=${VIDEO_FPS}"
-} > "${EXPECTED_FIecho "demo;1;1;${TEST_AUDIO};LE}"
+} > "${EXPECTED_FILE}"
 
 log "  -> ${EXPECTED_FILE}"
 
@@ -343,10 +373,8 @@ log "  -> ${EXPECTED_FILE}"
 
 log ""
 log "Done. Test data written to: ${OUT_DIR}"
+log "  ${N_VIDEOS} video(s), ${N_AUDIOS} audio(s)"
 log ""
 log "To run the AViSS integration test:"
-log "  python -m cli.py sync -c ${TEST_CSV} -l 1 --verbose"
+log "  python cli.py sync -c ${TEST_CSV} -l 1 --verbose"
 log ""
-log "Expected output files:"
-log "  demo_S01_s1.wav  (must match ${DEMO_AUDIO} exactly)"
-log "  demo_S01_s1.mkv  (must match ${DEMO_VIDEO} frame-for-frame)"

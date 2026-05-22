@@ -373,14 +373,38 @@ class AudioOps:
 
 
     @staticmethod
+    def to_mono(audio_in: str, audio_out: str) -> None:
+        """Mix all channels down to mono, keeping the original sample rate.
+
+        If the input is already mono, the file is copied unchanged.
+
+        :param audio_in: (str) Path to the input audio file.
+        :param audio_out: (str) Path for the output mono WAV file.
+        :raises: TypeError: audio_in or audio_out is not a non-empty string.
+        :raises: FileNotFoundError: audio_in does not exist.
+
+        """
+        if isinstance(audio_in, str) is False or len(audio_in.strip()) == 0:
+            raise TypeError("audio_in must be a non-empty string.")
+        if isinstance(audio_out, str) is False or len(audio_out.strip()) == 0:
+            raise TypeError("audio_out must be a non-empty string.")
+        check_file(audio_in)
+
+        info = AudioOps.get_audio_info(audio_in)
+        if info["nchannels"] == 1:
+            shutil.copy(audio_in, audio_out)
+            return
+
+        command = f"sox '{audio_in}' '{audio_out}' channels 1"
+        run_command(command)
+
+    # ---------------------------------------------------------------------------
+
+    @staticmethod
     def to_mono_16k(audio_in: str, audio_out: str) -> None:
-        """Convert a stereo audio file to mono at 16000 Hz for SPPAS processing.
+        """Convert an audio file to mono at 16000 Hz for SPPAS processing.
 
-        Both channels are mixed down to a single channel using sox remix 1,2.
-        This operation is required before passing audio to SPPAS automatic
-        annotation tools.
-
-        :param audio_in: (str) Path to the input audio file (typically stereo).
+        :param audio_in: (str) Path to the input audio file.
         :param audio_out: (str) Path for the output mono 16000 Hz WAV file.
         :raises: TypeError: audio_in or audio_out is not a non-empty string.
         :raises: FileNotFoundError: audio_in does not exist.
@@ -392,6 +416,6 @@ class AudioOps:
             raise TypeError("audio_out must be a non-empty string.")
         check_file(audio_in)
 
-        command = f"sox '{audio_in}' -r 16000 '{audio_out}' remix 1,2"
+        command = f"sox '{audio_in}' -r 16000 '{audio_out}' channels 1"
         run_command(command)
 

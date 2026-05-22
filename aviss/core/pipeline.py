@@ -32,7 +32,7 @@ import os
 
 from aviss.settings import cfg
 from aviss.models import Session, SyncResult
-from aviss.utils import build_output_name, check_command, create_working_dir
+from aviss.utils import aviss_logger, build_output_name, check_command, create_working_dir
 from aviss.core.audio_ops import AudioOps
 from aviss.core.video_ops import VideoOps
 from aviss.core.clap_sync import ClapSync
@@ -89,17 +89,26 @@ class Pipeline:
         """
         try:
             self.__step_prepare()
-            pairs = self.__step_build_pairs()
-            self.__step_sync_audios(pairs)
-            self.__step_trim_videos(pairs)
-            self.__step_post_process_videos(pairs)
+            audio_items, video_items = self.__step_build_items()
+            self.__step_sync_audios(audio_items)
+            self.__step_trim_videos(video_items)
+            self.__step_post_process_videos(video_items)
             self.__result.success = True
 
         except Exception as e:
-            self.__result.add_message(f"ERROR: {e}")
+            self.__log(f"ERROR: {e}")
             self.__result.success = False
 
         return self.__result
+
+    def __log(self, message: str) -> None:
+        """Add a message to the result report and write it to the logger.
+
+        :param message: (str) Message to log.
+
+        """
+        self.__result.add_message(message)
+        aviss_logger.write(message)
 
     # -----------------------------------------------------------------------
     # Pipeline steps (private)
@@ -109,7 +118,7 @@ class Pipeline:
         """Verify dependencies, build the output stem and create the working dir.
 
         """
-        self.__result.add_message("Step 0: Prepare.")
+        self.__log("Step 0: Prepare.")
 
         for cmd in Pipeline.REQUIRED_COMMANDS:
             check_command(cmd)
@@ -132,98 +141,115 @@ class Pipeline:
 
         work_dir_name = self.__stem + cfg.output.work_dir_suffix
         self.__work_dir = create_working_dir(work_dir_name)
-        self.__result.add_message(f"  Working directory: {self.__work_dir!r}")
-        self.__result.add_message(f"  Output stem: {self.__stem!r}")
+        self.__log(f"  Working directory: {self.__work_dir!r}")
+        self.__log(f"  Output stem: {self.__stem!r}")
 
     # -----------------------------------------------------------------------
 
-    def __step_build_pairs(self) -> list:
-        """Compute one ClapSync per video and assemble (video, audio, sync, audio_out, video_out) tuples.
+    def __step_build_items(self) -> tuple:
+        """Compute sync objects and build independent audio and video item lists.
 
-        Each pair drives one complete audio+video output. The secondary video
-        gets its own ClapSync built from its own clap time and fps. When only
-        one audio is present, it is reused for the secondary video.
+        All media share the same clap event. The video with the lowest fps
+        defines the reference ClapSync used by all audios. Each video gets
+        its own ClapSync (frame-accurate at its own fps).
 
-        :return: (list) List of (video_media, audio_media, ClapSync, audio_out_name, video_out_name).
+        Audio suffixes (from CSV column index):
+            audio_file  -> ""
+            audio_file2 -> "_audio2", audio_file3 -> "_audio3", ...
+
+        Video suffixes (from video_name or CSV column index):
+            single video           -> ""
+            multiple, named        -> "_" + video_name
+            multiple, unnamed      -> "_video2", "_video3", ...
+
+        :return: (tuple) (audio_items, video_items) where each list contains
+                 (MediaFile, ClapSync, out_name) tuples.
 
         """
-        self.__result.add_message("Step 1: Compute synchronization boundaries.")
+        self.__log("Step 1: Compute synchronization boundaries.")
 
-        pairs = []
+        videos = self.__session.videos
+        audios = self.__session.audios
+        names  = self.__session.video_names
+        n      = len(videos)
+        m      = len(audios)
 
-        info1 = VideoOps.get_video_info(self.__session.video.path)
+        infos = [VideoOps.get_video_info(v.path) for v in videos]
 
-        if self.__session.has_second_video() is True:
-            info2 = VideoOps.get_video_info(self.__session.video2.path)
+        # Reference sync: always the lowest-fps video.
+        ref_idx  = min(range(n), key=lambda i: infos[i]["fps"])
+        ref_sync = ClapSync(self.__session, infos[ref_idx]["fps"],
+                            video_clap=videos[ref_idx].clap_time)
+        ref_delta = ref_sync.clap_delta
 
-            # The video with the lowest fps defines the reference delta.
-            # All videos share this delta so the clap appears at the same
-            # sub-frame position in every output (cross-video synchronization).
-            if info2["fps"] < info1["fps"]:
-                ref_sync = ClapSync(self.__session, info2["fps"],
-                                    video_clap=self.__session.video2.clap_time)
-                ref_delta = ref_sync.clap_delta
-                sync1 = ClapSync(self.__session, info1["fps"],
-                                 reference_delta=ref_delta)
-                sync2 = ref_sync
-            else:
-                sync1 = ClapSync(self.__session, info1["fps"])
-                ref_delta = sync1.clap_delta
-                sync2 = ClapSync(self.__session, info2["fps"],
-                                 video_clap=self.__session.video2.clap_time,
-                                 reference_delta=ref_delta)
-
-            sync1.check_video_duration(info1["duration"])
-            sync2.check_video_duration(info2["duration"])
-            self.__result.add_message(f"  Reference delta: {ref_delta:.6f}s")
-            self.__result.add_message(
-                f"  Primary:   clap frame {sync1.clap_frame_index} ({sync1.clap_frame_time:.3f}s), "
-                f"delta {sync1.clap_delta:.6f}s, "
-                f"end frame {sync1.end_frame_index} ({sync1.end_frame_time:.3f}s)"
+        if n > 1:
+            self.__log(
+                f"  Reference delta: {ref_delta:.6f}s "
+                f"(video {ref_idx + 1}, {infos[ref_idx]['fps']:.2f} fps)"
             )
 
-            if self.__session.has_second_audio() is True:
-                audio2 = self.__session.audio2
+        # Build one ClapSync per video.
+        video_syncs = []
+        for i in range(n):
+            if i == ref_idx:
+                video_syncs.append(ref_sync)
             else:
-                audio2 = self.__session.audio
+                video_syncs.append(ClapSync(
+                    self.__session, infos[i]["fps"],
+                    video_clap=videos[i].clap_time,
+                    reference_delta=ref_delta
+                ))
 
-            suffix1 = "_" + self.__session.video_name  if self.__session.video_name  is not None else "_1"
-            suffix2 = "_" + self.__session.video_name2 if self.__session.video_name2 is not None else "_2"
-
-            pairs.append((self.__session.video, self.__session.audio, sync1,
-                          self.__stem + suffix1 + ".wav", self.__stem + suffix1 + ".mkv"))
-            self.__result.add_message(
-                f"  Secondary: clap frame {sync2.clap_frame_index} ({sync2.clap_frame_time:.3f}s), "
-                f"delta {sync2.clap_delta:.6f}s, "
-                f"end frame {sync2.end_frame_index} ({sync2.end_frame_time:.3f}s)"
+        # Validate and log each video sync.
+        for i, (sync, info) in enumerate(zip(video_syncs, infos)):
+            sync.check_video_duration(info["duration"])
+            self.__log(
+                f"  Video {i + 1}: clap frame {sync.clap_frame_index} "
+                f"({sync.clap_frame_time:.3f}s), "
+                f"delta {sync.clap_delta:.6f}s, "
+                f"end frame {sync.end_frame_index} ({sync.end_frame_time:.3f}s)"
             )
-            pairs.append((self.__session.video2, audio2, sync2,
-                          self.__stem + suffix2 + ".wav", self.__stem + suffix2 + ".mkv"))
 
+        # Video suffixes.
+        if n == 1:
+            video_suffixes = [""]
         else:
-            sync1 = ClapSync(self.__session, info1["fps"])
-            sync1.check_video_duration(info1["duration"])
-            self.__result.add_message(
-                f"  Primary:   clap frame {sync1.clap_frame_index} ({sync1.clap_frame_time:.3f}s), "
-                f"delta {sync1.clap_delta:.6f}s, "
-                f"end frame {sync1.end_frame_index} ({sync1.end_frame_time:.3f}s)"
-            )
-            pairs.append((self.__session.video, self.__session.audio, sync1,
-                          self.__stem + ".wav", self.__stem + ".mkv"))
+            video_suffixes = []
+            for i, name in enumerate(names):
+                if name is not None:
+                    video_suffixes.append("_" + name)
+                else:
+                    video_suffixes.append("_video" + str(i + 1))
 
-        return pairs
+        # Audio suffixes (independent of videos).
+        if m == 1:
+            audio_suffixes = [""]
+        else:
+            audio_suffixes = [""] + ["_audio" + str(i + 1) for i in range(1, m)]
+
+        # Build video items: (video_media, sync, out_name).
+        video_items = []
+        for video, sync, suffix in zip(videos, video_syncs, video_suffixes):
+            video_items.append((video, sync, self.__stem + suffix + ".mkv"))
+
+        # Build audio items: (audio_media, ref_sync, out_name).
+        audio_items = []
+        for audio, suffix in zip(audios, audio_suffixes):
+            audio_items.append((audio, ref_sync, self.__stem + suffix + ".wav"))
+
+        return audio_items, video_items
 
     # -----------------------------------------------------------------------
 
-    def __step_sync_audios(self, pairs: list) -> None:
-        """Align each audio to its video's clap frame time and trim to duration.
+    def __step_sync_audios(self, audio_items: list) -> None:
+        """Align and trim each audio file to the reference synchronization.
 
-        :param pairs: (list) List of (video_media, audio_media, ClapSync, audio_out, video_out).
+        :param audio_items: (list) List of (audio_media, ClapSync, out_name) tuples.
 
         """
-        self.__result.add_message("Step 2: Synchronize audio files.")
+        self.__log("Step 2: Synchronize audio files.")
 
-        for _video, audio, sync, audio_out, _video_out in pairs:
+        for audio, sync, audio_out in audio_items:
             self.__sync_one_audio(audio.path, audio.clap_time, sync, audio_out)
 
     # -----------------------------------------------------------------------
@@ -240,9 +266,11 @@ class Pipeline:
         """
         effective_clap = sync.get_audio_clap_with_delay(raw_clap)
 
-        tmp_clap = os.path.join(self.__work_dir, "_audio_clap.wav")
-        tmp_dur  = os.path.join(self.__work_dir, "_audio_dur.wav")
-        final    = os.path.join(self.__work_dir, out_name)
+        tmp_clap  = os.path.join(self.__work_dir, "_audio_clap.wav")
+        tmp_dur   = os.path.join(self.__work_dir, "_audio_dur.wav")
+        raw_name  = out_name.replace(".wav", "-audio.wav")
+        final_raw = os.path.join(self.__work_dir, raw_name)
+        final     = os.path.join(self.__work_dir, out_name)
 
         # Pass 1: align to clap frame time.
         AudioOps.adjust_audio_at_clap(
@@ -253,27 +281,32 @@ class Pipeline:
         AudioOps.adjust_audio_duration(tmp_clap, sync.end_frame_time, tmp_dur)
 
         # Pass 3: trim the leading silence up to clap_frame_time.
-        AudioOps.trim_audio(tmp_dur, sync.clap_frame_time, final, begin=True)
+        AudioOps.trim_audio(tmp_dur, sync.clap_frame_time, final_raw, begin=True)
+
+        # Pass 4: convert to 16kHz mono (standard format for annotation tools).
+        AudioOps.to_mono_16k(final_raw, final)
 
         if os.path.isfile(tmp_clap) is True:
             os.remove(tmp_clap)
         if os.path.isfile(tmp_dur) is True:
             os.remove(tmp_dur)
 
+        self.__result.add_synced_file(final_raw)
         self.__result.add_synced_file(final)
-        self.__result.add_message(f"  Audio synced: {final!r}")
+        self.__log(f"  Audio (original): {final_raw!r}")
+        self.__log(f"  Audio (16kHz/mono): {final!r}")
 
     # -----------------------------------------------------------------------
 
-    def __step_trim_videos(self, pairs: list) -> None:
+    def __step_trim_videos(self, video_items: list) -> None:
         """Trim each video between its own clap frame and end frame.
 
-        :param pairs: (list) List of (video_media, audio_media, ClapSync, audio_out, video_out).
+        :param video_items: (list) List of (video_media, ClapSync, out_name) tuples.
 
         """
-        self.__result.add_message("Step 3: Trim video files.")
+        self.__log("Step 3: Trim video files.")
 
-        for video, _audio, sync, _audio_out, video_out in pairs:
+        for video, sync, video_out in video_items:
             out_path = os.path.join(self.__work_dir, video_out)
             VideoOps.trim(
                 video.path,
@@ -282,23 +315,23 @@ class Pipeline:
                 out_path
             )
             self.__result.add_synced_file(out_path)
-            self.__result.add_message(f"  Video trimmed: {out_path!r}")
+            self.__log(f"  Video trimmed: {out_path!r}")
 
     # -----------------------------------------------------------------------
 
-    def __step_post_process_videos(self, pairs: list) -> None:
+    def __step_post_process_videos(self, video_items: list) -> None:
         """Apply crop and copyright overlay to each trimmed video.
 
-        :param pairs: (list) List of (video_media, audio_media, ClapSync, audio_out, video_out).
+        :param video_items: (list) List of (video_media, ClapSync, out_name) tuples.
 
         """
-        self.__result.add_message("Step 4: Post-process video files.")
+        self.__log("Step 4: Post-process video files.")
 
-        for video, _audio, _sync, _audio_out, video_out in pairs:
+        for video, _sync, video_out in video_items:
             current = os.path.join(self.__work_dir, video_out)
             current = self.__apply_crop(video, current)
             current = self.__apply_copyright(current)
-            self.__result.add_message(f"  Video post-processed: {current!r}")
+            self.__log(f"  Video post-processed: {current!r}")
 
     # -----------------------------------------------------------------------
 
@@ -313,7 +346,7 @@ class Pipeline:
         if media.has_crop() is False:
             return video_path
 
-        self.__result.add_message(
+        self.__log(
             f"  Crop: x={media.crop_x} y={media.crop_y} "
             f"w={media.crop_w} h={media.crop_h}"
         )
@@ -336,7 +369,7 @@ class Pipeline:
         if cfg.output.copyright is None:
             return video_path
 
-        self.__result.add_message(f"  Copyright: {cfg.output.copyright!r}")
+        self.__log(f"  Copyright: {cfg.output.copyright!r}")
         tmp_path = video_path.replace(".mkv", "_tmp_copy.mkv")
         VideoOps.add_copyright(video_path, cfg.output.copyright, tmp_path)
         os.remove(video_path)

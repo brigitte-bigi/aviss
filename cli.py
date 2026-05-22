@@ -63,7 +63,7 @@ from aviss.settings import cfg
 from aviss.core.csv_reader import CsvReader
 from aviss.core.pipeline import Pipeline
 from aviss.core.export import Exporter
-from aviss.utils import build_output_name
+from aviss.utils import aviss_logger, build_output_name
 
 # ---------------------------------------------------------------------------
 
@@ -143,27 +143,16 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Produce a WebM montage (libvpx-vp9, two-pass) for web distribution."
     )
     sync_parser.add_argument(
-        "--sppas",
-        action="store_true",
-        default=False,
-        help="Produce a mono 16kHz WAV file for SPPAS automatic annotation."
-    )
-    sync_parser.add_argument(
         "--rotate",
         type=int,
+        nargs="+",
         default=None,
         metavar="T",
-        choices=[0, 1, 2, 3],
         help=(
-            "Rotate the primary video using the ffmpeg transpose filter. "
+            "Rotate one or more videos using the ffmpeg transpose filter. "
+            "One value per video, in order: --rotate 2 0 rotates video 1 (CCW) and video 2 (CW). "
             "Values: 0=CCW+vflip, 1=CW, 2=CCW (portrait), 3=CW+vflip."
         )
-    )
-    sync_parser.add_argument(
-        "--rotate-secondary",
-        action="store_true",
-        default=False,
-        help="Also rotate the secondary video (requires --rotate)."
     )
     sync_parser.add_argument(
         "--verbose",
@@ -207,9 +196,12 @@ def _process_session(session, args: argparse.Namespace) -> bool:
     )
     work_dir = stem + cfg.output.work_dir_suffix
 
+    aviss_logger.configure(os.path.join(work_dir, stem + ".log"))
+
     print(f"  Processing: {stem}")
 
     result = Pipeline(session).run()
+    aviss_logger.close()
 
     if args.verbose is True:
         for message in result.report:
@@ -223,14 +215,12 @@ def _process_session(session, args: argparse.Namespace) -> bool:
         return False
 
     # Optional export operations.
-    if args.montage is True or args.webm is True or args.sppas is True or args.rotate is not None:
+    if args.montage is True or args.webm is True or args.rotate is not None:
         try:
             exporter = Exporter(result, stem=stem, work_dir=work_dir)
 
             if args.rotate is not None:
-                exporter.rotate(transpose=args.rotate, secondary=args.rotate_secondary)
-            if args.sppas is True:
-                exporter.to_sppas()
+                exporter.rotate(transpose_list=args.rotate)
             if args.montage is True:
                 exporter.montage()
             if args.webm is True:

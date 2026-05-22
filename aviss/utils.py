@@ -213,11 +213,68 @@ def check_command(name: str) -> None:
 # ---------------------------------------------------------------------------
 
 
+class AViSSLogger:
+    """Write log messages to stdout and optionally to a log file.
+
+    Use the module-level singleton aviss_logger. Call configure() with
+    the target log path before processing a session. The file is opened
+    lazily on the first write once its parent directory exists.
+    Call close() after processing.
+
+    """
+
+    def __init__(self):
+        """Initialize with no file configured.
+
+        """
+        self.__path = None
+        self.__fh   = None
+
+    def configure(self, path: str) -> None:
+        """Set the log file path (file is opened lazily).
+
+        :param path: (str) Full path to the log file.
+
+        """
+        self.__path = path
+        self.__fh   = None
+
+    def write(self, message: str) -> None:
+        """Write a message to stdout and to the log file when available.
+
+        :param message: (str) Message to log.
+
+        """
+        print(message)
+        if self.__fh is None and self.__path is not None:
+            parent = os.path.dirname(self.__path)
+            if parent == "" or os.path.isdir(parent) is True:
+                self.__fh = open(self.__path, "w", encoding="utf-8")
+        if self.__fh is not None:
+            self.__fh.write(message + "\n")
+            self.__fh.flush()
+
+    def close(self) -> None:
+        """Close the log file and reset the configuration.
+
+        """
+        if self.__fh is not None:
+            self.__fh.close()
+        self.__fh   = None
+        self.__path = None
+
+
+aviss_logger = AViSSLogger()
+
+# ---------------------------------------------------------------------------
+
+
 def run_command(command: str) -> list:
-    """Execute a shell command and return its output lines.
+    """Execute a shell command, log it, and return its output lines.
 
     The command is split with shlex so it is safe to pass a full command
-    string including arguments.
+    string including arguments. The command and all output lines are written
+    to aviss_logger.
 
     :param command: (str) Full command string to execute.
     :return: (list) List of non-empty output lines (stdout + stderr).
@@ -230,6 +287,9 @@ def run_command(command: str) -> list:
     """
     if isinstance(command, str) is False or len(command.strip()) == 0:
         raise TypeError("command must be a non-empty string.")
+
+    aviss_logger.write("Run command:")
+    aviss_logger.write(command)
 
     args = shlex.split(command)
     try:
@@ -248,6 +308,9 @@ def run_command(command: str) -> list:
             for line in stream.decode(errors="replace").splitlines():
                 if len(line.strip()) > 0:
                     lines.append(line.strip())
+
+    for line in lines:
+        aviss_logger.write(line)
 
     return lines
 

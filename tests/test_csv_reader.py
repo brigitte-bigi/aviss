@@ -246,13 +246,13 @@ class TestCsvReaderSessionValues(unittest.TestCase):
 
     def test_audio_clap_time(self):
         # 00:03.843 = 3.843s
-        self.assertAlmostEqual(3.843, self.__session.audio.clap_time, places=3)
+        self.assertAlmostEqual(3.843, self.__session.audios[0].clap_time, places=3)
 
     # -----------------------------------------------------------------------
 
     def test_video_clap_time(self):
         # 00:06.410 = 6.410s
-        self.assertAlmostEqual(6.410, self.__session.video.clap_time, places=3)
+        self.assertAlmostEqual(6.410, self.__session.videos[0].clap_time, places=3)
 
     # -----------------------------------------------------------------------
 
@@ -269,12 +269,12 @@ class TestCsvReaderSessionValues(unittest.TestCase):
 
     def test_audio_path_resolved(self):
         # Relative paths are resolved against the CSV directory.
-        self.assertTrue(os.path.isabs(self.__session.audio.path))
+        self.assertTrue(os.path.isabs(self.__session.audios[0].path))
 
     # -----------------------------------------------------------------------
 
     def test_video_path_resolved(self):
-        self.assertTrue(os.path.isabs(self.__session.video.path))
+        self.assertTrue(os.path.isabs(self.__session.videos[0].path))
 
     # -----------------------------------------------------------------------
 
@@ -342,7 +342,7 @@ class TestCsvReaderSecondaryMedia(unittest.TestCase):
         path = _write_csv(self.__tmp_dir, CSV_WITH_SECONDARY)
         session = CsvReader(path).read()[0]
         self.assertTrue(session.has_second_audio())
-        self.assertAlmostEqual(4.0, session.audio2.clap_time, places=3)
+        self.assertAlmostEqual(4.0, session.audios[1].clap_time, places=3)
 
     # -----------------------------------------------------------------------
 
@@ -350,7 +350,7 @@ class TestCsvReaderSecondaryMedia(unittest.TestCase):
         path = _write_csv(self.__tmp_dir, CSV_WITH_SECONDARY)
         session = CsvReader(path).read()[0]
         self.assertTrue(session.has_second_video())
-        self.assertAlmostEqual(7.0, session.video2.clap_time, places=3)
+        self.assertAlmostEqual(7.0, session.videos[1].clap_time, places=3)
 
 # ---------------------------------------------------------------------------
 
@@ -368,8 +368,8 @@ class TestCsvReaderVideoNames(unittest.TestCase):
     def test_video_names_loaded(self):
         path = _write_csv(self.__tmp_dir, CSV_WITH_VIDEO_NAMES)
         session = CsvReader(path).read()[0]
-        self.assertEqual("front", session.video_name)
-        self.assertEqual("side",  session.video_name2)
+        self.assertEqual("front", session.video_names[0])
+        self.assertEqual("side",  session.video_names[1])
 
     # -----------------------------------------------------------------------
 
@@ -384,8 +384,7 @@ class TestCsvReaderVideoNames(unittest.TestCase):
     def test_video_name_absent_is_none(self):
         path = _write_csv(self.__tmp_dir, CSV_MINIMAL)
         session = CsvReader(path).read()[0]
-        self.assertIsNone(session.video_name)
-        self.assertIsNone(session.video_name2)
+        self.assertIsNone(session.video_names[0])
 
 # ---------------------------------------------------------------------------
 
@@ -403,18 +402,18 @@ class TestCsvReaderCrop(unittest.TestCase):
     def test_crop_loaded(self):
         path = _write_csv(self.__tmp_dir, CSV_WITH_CROP)
         session = CsvReader(path).read()[0]
-        self.assertTrue(session.video.has_crop())
-        self.assertEqual(0,    session.video.crop_x)
-        self.assertEqual(32,   session.video.crop_y)
-        self.assertEqual(1600, session.video.crop_w)
-        self.assertEqual(960,  session.video.crop_h)
+        self.assertTrue(session.videos[0].has_crop())
+        self.assertEqual(0,    session.videos[0].crop_x)
+        self.assertEqual(32,   session.videos[0].crop_y)
+        self.assertEqual(1600, session.videos[0].crop_w)
+        self.assertEqual(960,  session.videos[0].crop_h)
 
     # -----------------------------------------------------------------------
 
     def test_no_crop_when_columns_absent(self):
         path = _write_csv(self.__tmp_dir, CSV_MINIMAL)
         session = CsvReader(path).read()[0]
-        self.assertFalse(session.video.has_crop())
+        self.assertFalse(session.videos[0].has_crop())
 
 # ---------------------------------------------------------------------------
 
@@ -433,13 +432,13 @@ class TestCsvReaderReadRow(unittest.TestCase):
     def test_read_row_1(self):
         session = CsvReader(self.__path).read_row(1)
         self.assertIsInstance(session, Session)
-        self.assertAlmostEqual(3.843, session.audio.clap_time, places=3)
+        self.assertAlmostEqual(3.843, session.audios[0].clap_time, places=3)
 
     # -----------------------------------------------------------------------
 
     def test_read_row_2(self):
         session = CsvReader(self.__path).read_row(2)
-        self.assertAlmostEqual(4.787, session.audio.clap_time, places=3)
+        self.assertAlmostEqual(4.787, session.audios[0].clap_time, places=3)
 
     # -----------------------------------------------------------------------
 
