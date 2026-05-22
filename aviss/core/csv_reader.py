@@ -430,12 +430,22 @@ class CsvReader:
             )
             session.video2 = video2
 
+        # Optional video names (output file name suffixes)
+        video_name_raw = self.__get_cell(header, row, cfg.sync.col_video_name)
+        if len(video_name_raw) > 0:
+            session.video_name = video_name_raw
+
+        video_name2_raw = self.__get_cell(header, row, cfg.sync.col_video_name + "2")
+        if len(video_name2_raw) > 0:
+            session.video_name2 = video_name2_raw
+
         # Output filename metadata
         sync_cols = {
             cfg.sync.col_audio_file, cfg.sync.col_audio_clap,
             cfg.sync.col_audio_file + "2", cfg.sync.col_audio_clap + "2",
             cfg.sync.col_video_file, cfg.sync.col_video_clap,
             cfg.sync.col_video_file + "2", cfg.sync.col_video_clap + "2",
+            cfg.sync.col_video_name, cfg.sync.col_video_name + "2",
             cfg.sync.col_video_crop_x, cfg.sync.col_video_crop_y,
             cfg.sync.col_video_crop_w, cfg.sync.col_video_crop_h,
             cfg.sync.col_video_crop_x + "2", cfg.sync.col_video_crop_y + "2",

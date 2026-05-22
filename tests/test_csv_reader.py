@@ -75,6 +75,16 @@ CSV_WITH_SECONDARY = (
     "audio/RME_0038b.wav;video/MVI_0038b.MP4;00:04.000;00:07.000\n"
 )
 
+# CSV with video name columns (primary and secondary).
+CSV_WITH_VIDEO_NAMES = (
+    "ID;Session;Serie;"
+    "audio_file;video_file;audio_clap;video_clap;video_name;delay;duration;"
+    "video_file2;video_clap2;video_name2\n"
+    "Laurent;9;2;"
+    "audio/RME_0038.wav;video/MVI_0038.MP4;00:03.843;00:06.410;front;0.200;04:08.250;"
+    "video/MVI_0038b.MP4;00:07.000;side\n"
+)
+
 # CSV with crop columns.
 CSV_WITH_CROP = (
     "ID;Session;Serie;audio_file;video_file;audio_clap;video_clap;delay;duration;"
@@ -341,6 +351,41 @@ class TestCsvReaderSecondaryMedia(unittest.TestCase):
         session = CsvReader(path).read()[0]
         self.assertTrue(session.has_second_video())
         self.assertAlmostEqual(7.0, session.video2.clap_time, places=3)
+
+# ---------------------------------------------------------------------------
+
+
+class TestCsvReaderVideoNames(unittest.TestCase):
+
+    def setUp(self):
+        self.__tmp_dir = tempfile.mkdtemp()
+
+    def tearDown(self):
+        shutil.rmtree(self.__tmp_dir, ignore_errors=True)
+
+    # -----------------------------------------------------------------------
+
+    def test_video_names_loaded(self):
+        path = _write_csv(self.__tmp_dir, CSV_WITH_VIDEO_NAMES)
+        session = CsvReader(path).read()[0]
+        self.assertEqual("front", session.video_name)
+        self.assertEqual("side",  session.video_name2)
+
+    # -----------------------------------------------------------------------
+
+    def test_video_name_not_in_metadata(self):
+        path = _write_csv(self.__tmp_dir, CSV_WITH_VIDEO_NAMES)
+        session = CsvReader(path).read()[0]
+        self.assertNotIn("video_name",  session.metadata)
+        self.assertNotIn("video_name2", session.metadata)
+
+    # -----------------------------------------------------------------------
+
+    def test_video_name_absent_is_none(self):
+        path = _write_csv(self.__tmp_dir, CSV_MINIMAL)
+        session = CsvReader(path).read()[0]
+        self.assertIsNone(session.video_name)
+        self.assertIsNone(session.video_name2)
 
 # ---------------------------------------------------------------------------
 

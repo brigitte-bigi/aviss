@@ -61,6 +61,7 @@ class AViSSSyncSettings:
         self.__col_audio_clap  = "audio_clap"
         self.__col_video_file  = "video_file"
         self.__col_video_clap  = "video_clap"
+        self.__col_video_name  = "video_name"
         self.__col_video_crop_x = "video_crop_x"
         self.__col_video_crop_y = "video_crop_y"
         self.__col_video_crop_w = "video_crop_w"
@@ -167,6 +168,31 @@ class AViSSSyncSettings:
         self.__col_video_clap = value.strip()
 
     col_video_clap = property(get_col_video_clap, set_col_video_clap)
+
+    # -----------------------------------------------------------------------
+    # col_video_name
+    # -----------------------------------------------------------------------
+
+    def get_col_video_name(self) -> str:
+        """Return the CSV column name for the optional video label.
+
+        :return: (str) Column name.
+
+        """
+        return self.__col_video_name
+
+    def set_col_video_name(self, value: str) -> None:
+        """Set the CSV column name for the optional video label.
+
+        :param value: (str) Column name.
+        :raises: TypeError: The given value is not a non-empty string.
+
+        """
+        if isinstance(value, str) is False or len(value.strip()) == 0:
+            raise TypeError("col_video_name must be a non-empty string.")
+        self.__col_video_name = value.strip()
+
+    col_video_name = property(get_col_video_name, set_col_video_name)
 
     # -----------------------------------------------------------------------
     # col_video_crop_x

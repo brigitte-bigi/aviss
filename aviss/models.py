@@ -359,12 +359,14 @@ class Session:
         if float(duration) <= 0.:
             raise ValueError("duration must be strictly positive.")
 
-        self.__audio    = audio
-        self.__video    = video
-        self.__audio2   = None
-        self.__video2   = None
-        self.__delay    = float(delay)
-        self.__duration = float(duration)
+        self.__audio      = audio
+        self.__video      = video
+        self.__audio2     = None
+        self.__video2     = None
+        self.__video_name  = None
+        self.__video_name2 = None
+        self.__delay      = float(delay)
+        self.__duration   = float(duration)
 
         # Values from CSV columns used to build the output filename.
         # Keys are CSV column names; values are raw strings from the CSV.
@@ -454,6 +456,58 @@ class Session:
         self.__video2 = value
 
     video2 = property(get_video2, set_video2)
+
+    # -----------------------------------------------------------------------
+    # Optional video labels (output file name suffixes)
+    # -----------------------------------------------------------------------
+
+    def get_video_name(self) -> str | None:
+        """Return the optional label for the primary video output file, or None.
+
+        :return: (str|None) Video label, or None if not set.
+
+        """
+        return self.__video_name
+
+    def set_video_name(self, value: str | None) -> None:
+        """Set the optional label for the primary video output file.
+
+        :param value: (str|None) Video label, or None to unset.
+        :raises: TypeError: The given value is not a non-empty string or None.
+
+        """
+        if value is not None:
+            if isinstance(value, str) is False or len(value.strip()) == 0:
+                raise TypeError("video_name must be a non-empty string or None.")
+            value = value.strip()
+        self.__video_name = value
+
+    video_name = property(get_video_name, set_video_name)
+
+    # -----------------------------------------------------------------------
+
+    def get_video_name2(self) -> str | None:
+        """Return the optional label for the secondary video output file, or None.
+
+        :return: (str|None) Secondary video label, or None if not set.
+
+        """
+        return self.__video_name2
+
+    def set_video_name2(self, value: str | None) -> None:
+        """Set the optional label for the secondary video output file.
+
+        :param value: (str|None) Secondary video label, or None to unset.
+        :raises: TypeError: The given value is not a non-empty string or None.
+
+        """
+        if value is not None:
+            if isinstance(value, str) is False or len(value.strip()) == 0:
+                raise TypeError("video_name2 must be a non-empty string or None.")
+            value = value.strip()
+        self.__video_name2 = value
+
+    video_name2 = property(get_video_name2, set_video_name2)
 
     # -----------------------------------------------------------------------
     # Timing

@@ -186,15 +186,19 @@ class Pipeline:
                 audio2 = self.__session.audio2
             else:
                 audio2 = self.__session.audio
+
+            suffix1 = "_" + self.__session.video_name  if self.__session.video_name  is not None else "_1"
+            suffix2 = "_" + self.__session.video_name2 if self.__session.video_name2 is not None else "_2"
+
             pairs.append((self.__session.video, self.__session.audio, sync1,
-                          self.__stem + ".wav", self.__stem + ".mkv"))
+                          self.__stem + suffix1 + ".wav", self.__stem + suffix1 + ".mkv"))
             self.__result.add_message(
                 f"  Secondary: clap frame {sync2.clap_frame_index} ({sync2.clap_frame_time:.3f}s), "
                 f"delta {sync2.clap_delta:.6f}s, "
                 f"end frame {sync2.end_frame_index} ({sync2.end_frame_time:.3f}s)"
             )
             pairs.append((self.__session.video2, audio2, sync2,
-                          self.__stem + "_2.wav", self.__stem + "_2.mkv"))
+                          self.__stem + suffix2 + ".wav", self.__stem + suffix2 + ".mkv"))
 
         else:
             sync1 = ClapSync(self.__session, info1["fps"])
@@ -313,11 +317,12 @@ class Pipeline:
             f"  Crop: x={media.crop_x} y={media.crop_y} "
             f"w={media.crop_w} h={media.crop_h}"
         )
-        cropped = video_path.replace(".mkv", "_crop.mkv")
+        tmp_path = video_path.replace(".mkv", "_tmp_crop.mkv")
         VideoOps.crop(video_path, media.crop_x, media.crop_y,
-                      media.crop_w, media.crop_h, cropped)
+                      media.crop_w, media.crop_h, tmp_path)
         os.remove(video_path)
-        return cropped
+        os.rename(tmp_path, video_path)
+        return video_path
 
     # -----------------------------------------------------------------------
 
@@ -332,7 +337,8 @@ class Pipeline:
             return video_path
 
         self.__result.add_message(f"  Copyright: {cfg.output.copyright!r}")
-        copy_path = video_path.replace(".mkv", "_copy.mkv")
-        VideoOps.add_copyright(video_path, cfg.output.copyright, copy_path)
+        tmp_path = video_path.replace(".mkv", "_tmp_copy.mkv")
+        VideoOps.add_copyright(video_path, cfg.output.copyright, tmp_path)
         os.remove(video_path)
-        return copy_path
+        os.rename(tmp_path, video_path)
+        return video_path

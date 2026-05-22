@@ -368,6 +368,60 @@ class TestSession(unittest.TestCase):
 
     # -----------------------------------------------------------------------
 
+    def test_video_name_default_none(self):
+        s = Session(self.__audio, self.__video, delay=0., duration=10.)
+        self.assertIsNone(s.video_name)
+        self.assertIsNone(s.video_name2)
+
+    # -----------------------------------------------------------------------
+
+    def test_set_video_name_valid(self):
+        s = Session(self.__audio, self.__video, delay=0., duration=10.)
+        s.video_name = "front"
+        self.assertEqual("front", s.video_name)
+
+    # -----------------------------------------------------------------------
+
+    def test_set_video_name2_valid(self):
+        s = Session(self.__audio, self.__video, delay=0., duration=10.)
+        s.video_name2 = "side"
+        self.assertEqual("side", s.video_name2)
+
+    # -----------------------------------------------------------------------
+
+    def test_set_video_name_strips(self):
+        s = Session(self.__audio, self.__video, delay=0., duration=10.)
+        s.video_name = "  front  "
+        self.assertEqual("front", s.video_name)
+
+    # -----------------------------------------------------------------------
+
+    def test_set_video_name_none(self):
+        s = Session(self.__audio, self.__video, delay=0., duration=10.)
+        s.video_name = "front"
+        s.video_name = None
+        self.assertIsNone(s.video_name)
+
+    # -----------------------------------------------------------------------
+
+    def test_set_video_name_type_error(self):
+        s = Session(self.__audio, self.__video, delay=0., duration=10.)
+        with self.assertRaises(TypeError):
+            s.video_name = ""
+        with self.assertRaises(TypeError):
+            s.video_name = 42
+
+    # -----------------------------------------------------------------------
+
+    def test_set_video_name2_type_error(self):
+        s = Session(self.__audio, self.__video, delay=0., duration=10.)
+        with self.assertRaises(TypeError):
+            s.video_name2 = ""
+        with self.assertRaises(TypeError):
+            s.video_name2 = 42
+
+    # -----------------------------------------------------------------------
+
     def test_set_delay(self):
         s = Session(self.__audio, self.__video, delay=0., duration=10.)
         s.delay = 0.5

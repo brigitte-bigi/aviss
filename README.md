@@ -240,6 +240,21 @@ cfg.output.output_name_cols = [
 
 `settings_user.py` is loaded automatically from the CSV directory at sync time.
 
+#### output_name_cols format
+
+Each entry is a 3-tuple `(csv_column_name, prefix, fmt)`:
+
+| Field | Type | Description |
+|---|---|---|
+| `csv_column_name` | str | CSV column header whose value is used |
+| `prefix` | str | String prepended to the value (`"S"`, `"T"`, `""` for none) |
+| `fmt` | str or None | `None` → raw string · `"02d"` → zero-padded integer · `"d"` → plain integer |
+
+Tokens are joined with `cfg.output.output_sep` (default `"_"`).
+A column whose cell is empty in the CSV is silently skipped.
+
+Example: with `("Session", "S", "02d")` and cell value `9`, the token is `S09`.
+
 
 ## Test the source code
 
