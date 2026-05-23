@@ -31,14 +31,14 @@
 import os
 
 from aviss.settings import cfg
-from aviss.models import MediaFile, Session
+from aviss.models import avMediaFile, avSession
 from aviss.utils import time_to_seconds, check_file
 
 # ---------------------------------------------------------------------------
 
 
-class CsvReader:
-    """Parse an AViSS CSV file and produce a list of Session objects.
+class avCsvReader:
+    """Parse an AViSS CSV file and produce a list of avSession objects.
 
     The CSV file must have a header row as its first line. Column names in
     the header are matched against the names declared in cfg.sync and
@@ -49,7 +49,7 @@ class CsvReader:
     video_clap, delay, duration).
 
     :example:
-    >>> reader = CsvReader("corpus/sessions.csv")
+    >>> reader = avCsvReader("corpus/sessions.csv")
     >>> sessions = reader.read()
     >>> len(sessions)
     10
@@ -67,7 +67,7 @@ class CsvReader:
     # -----------------------------------------------------------------------
 
     def __init__(self, csv_path: str):
-        """Initialize the CsvReader with the path to the CSV file.
+        """Initialize the avCsvReader with the path to the CSV file.
 
         :param csv_path: (str) Path to the CSV file.
         :raises: TypeError: csv_path is not a non-empty string.
@@ -101,14 +101,14 @@ class CsvReader:
     # -----------------------------------------------------------------------
 
     def read(self) -> list:
-        """Parse the CSV file and return a list of Session objects.
+        """Parse the CSV file and return a list of avSession objects.
 
         The first row is interpreted as the header. Each subsequent non-empty
-        row produces one Session. Rows with all-empty cells are silently skipped.
+        row produces one avSession. Rows with all-empty cells are silently skipped.
 
-        :return: (list) List of Session instances, one per data row.
+        :return: (list) List of avSession instances, one per data row.
         :raises: ValueError: The header row is missing or invalid.
-        :raises: ValueError: A data row cannot be parsed into a Session.
+        :raises: ValueError: A data row cannot be parsed into a avSession.
 
         """
         raw_lines = self.__read_raw_lines()
@@ -133,16 +133,16 @@ class CsvReader:
 
     # -----------------------------------------------------------------------
 
-    def read_row(self, row_number: int) -> Session:
-        """Parse a single data row and return the corresponding Session.
+    def read_row(self, row_number: int) -> avSession:
+        """Parse a single data row and return the corresponding avSession.
 
         Row numbering starts at 1 (the first data row, after the header).
 
         :param row_number: (int) 1-based index of the data row to parse.
-        :return: (Session) Session built from the given row.
+        :return: (avSession) avSession built from the given row.
         :raises: TypeError: row_number is not an integer.
         :raises: ValueError: row_number is out of range.
-        :raises: ValueError: The row cannot be parsed into a Session.
+        :raises: ValueError: The row cannot be parsed into a avSession.
 
         """
         if isinstance(row_number, int) is False:
@@ -197,13 +197,13 @@ class CsvReader:
         if self.__separator is not None:
             return line.split(self.__separator)
 
-        for sep in CsvReader.SEPARATORS:
+        for sep in avCsvReader.SEPARATORS:
             parts = line.split(sep)
-            if len(parts) >= CsvReader.MIN_COLUMNS:
+            if len(parts) >= avCsvReader.MIN_COLUMNS:
                 self.__separator = sep
                 return parts
 
-        return line.split(CsvReader.SEPARATORS[0])
+        return line.split(avCsvReader.SEPARATORS[0])
 
     # -----------------------------------------------------------------------
 
@@ -218,10 +218,10 @@ class CsvReader:
         columns = self.__split_row(line)
         columns = [c.strip() for c in columns]
 
-        if len(columns) < CsvReader.MIN_COLUMNS:
+        if len(columns) < avCsvReader.MIN_COLUMNS:
             raise ValueError(
                 f"CSV header has only {len(columns)} column(s). "
-                f"At least {CsvReader.MIN_COLUMNS} are required."
+                f"At least {avCsvReader.MIN_COLUMNS} are required."
             )
 
         return columns
@@ -315,8 +315,8 @@ class CsvReader:
 
     def __build_media_file(self, header: list, row: list,
                            col_file: str, col_clap: str,
-                           crop: tuple, row_index: int) -> MediaFile:
-        """Build a MediaFile from the given column names and crop tuple.
+                           crop: tuple, row_index: int) -> avMediaFile:
+        """Build a avMediaFile from the given column names and crop tuple.
 
         :param header: (list) List of column names.
         :param row: (list) List of cell values.
@@ -324,7 +324,7 @@ class CsvReader:
         :param col_clap: (str) Column name for the clap time.
         :param crop: (tuple) (x, y, w, h) as int|None.
         :param row_index: (int) 1-based row number, used in error messages.
-        :return: (MediaFile) Constructed MediaFile instance.
+        :return: (avMediaFile) Constructed avMediaFile instance.
         :raises: ValueError: A required cell is empty or invalid.
 
         """
@@ -345,7 +345,7 @@ class CsvReader:
         except ValueError as e:
             raise ValueError(f"Row {row_index}: invalid clap time in column {col_clap!r}. {e}.")
 
-        media = MediaFile(self.__resolve_path(path_raw), clap_seconds)
+        media = avMediaFile(self.__resolve_path(path_raw), clap_seconds)
 
         x, y, w, h = crop
         if x is not None:
@@ -358,13 +358,13 @@ class CsvReader:
 
     # -----------------------------------------------------------------------
 
-    def __build_session(self, header: list, row: list, row_index: int) -> Session:
-        """Build a Session from a parsed header and data row.
+    def __build_session(self, header: list, row: list, row_index: int) -> avSession:
+        """Build a avSession from a parsed header and data row.
 
         :param header: (list) List of column names.
         :param row: (list) List of cell values.
         :param row_index: (int) 1-based row number, used in error messages.
-        :return: (Session) Constructed Session instance.
+        :return: (avSession) Constructed avSession instance.
         :raises: ValueError: Any required cell is empty or cannot be parsed.
 
         """
@@ -405,7 +405,7 @@ class CsvReader:
                 f"{cfg.sync.col_duration!r}. {e}."
             )
 
-        session = Session(audio, video, delay=delay, duration=duration)
+        session = avSession(audio, video, delay=delay, duration=duration)
 
         # Primary video name
         video_name_raw = self.__get_cell(header, row, cfg.sync.col_video_name)

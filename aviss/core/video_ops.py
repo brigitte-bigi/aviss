@@ -38,7 +38,7 @@ from aviss.utils import check_file, run_command
 # ---------------------------------------------------------------------------
 
 
-class VideoOps:
+class avVideoOps:
     """Static methods for video file operations used by the AViSS pipeline.
 
     All methods wrap ffmpeg commands or sppasVideoReader calls.
@@ -46,7 +46,7 @@ class VideoOps:
     it guarantees frame-accurate seeking via OpenCV.
 
     :example:
-    >>> info = VideoOps.get_video_info("/data/rec.mp4")
+    >>> info = avVideoOps.get_video_info("/data/rec.mp4")
     >>> info["fps"]
     50.0
     >>> info["nframes"]
@@ -63,7 +63,7 @@ class VideoOps:
         """Return basic metadata of a video file via sppasVideoReader.
 
         :example:
-        >>> info = VideoOps.get_video_info("/data/rec.mp4")
+        >>> info = avVideoOps.get_video_info("/data/rec.mp4")
         >>> info["fps"]
         50.0
         >>> info["duration"]
@@ -110,9 +110,9 @@ class VideoOps:
         Frame indices are 0-based: frame 0 covers [0, 1/fps[.
 
         :example:
-        >>> VideoOps.time_to_frame(0.120, 25.)
+        >>> avVideoOps.time_to_frame(0.120, 25.)
         3
-        >>> VideoOps.time_to_frame(0.0, 50.)
+        >>> avVideoOps.time_to_frame(0.0, 50.)
         0
 
         :param time_seconds: (float) Time position in seconds.
@@ -140,9 +140,9 @@ class VideoOps:
         """Return the start time of a frame given its index and the frame rate.
 
         :example:
-        >>> VideoOps.frame_to_time(3, 25.)
+        >>> avVideoOps.frame_to_time(3, 25.)
         0.12
-        >>> VideoOps.frame_to_time(0, 50.)
+        >>> avVideoOps.frame_to_time(0, 50.)
         0.0
 
         :param frame_index: (int) 0-based frame index.
@@ -431,8 +431,8 @@ class VideoOps:
         and muxed into the WebM container. Otherwise the output is video-only.
 
         :example:
-        >>> VideoOps.to_webm("out.mkv", "out.webm")
-        >>> VideoOps.to_webm("out.mkv", "out.webm", audio_in="out.wav")
+        >>> avVideoOps.to_webm("out.mkv", "out.webm")
+        >>> avVideoOps.to_webm("out.mkv", "out.webm", audio_in="out.wav")
 
         :param video_in: (str) Path to the input video file.
         :param webm_out: (str) Path for the output WebM file.

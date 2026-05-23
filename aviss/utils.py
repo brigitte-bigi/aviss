@@ -209,6 +209,7 @@ def check_command(name: str) -> None:
             f"Required command not found: {name!r}. "
             f"Please install it before running AViSS."
         )
+    aviss_logger.write(f"'{name}' is ok.")
 
 # ---------------------------------------------------------------------------
 
@@ -309,8 +310,11 @@ def run_command(command: str) -> list:
                 if len(line.strip()) > 0:
                     lines.append(line.strip())
 
-    for line in lines:
-        aviss_logger.write(line)
+    if len(lines) == 0:
+        aviss_logger.write("Done.")
+    else:
+        for line in lines:
+            aviss_logger.write(line)
 
     return lines
 

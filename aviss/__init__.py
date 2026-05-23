@@ -29,22 +29,22 @@
 """
 
 from aviss.settings import cfg 
-from aviss.models import MediaFile
-from aviss.models import Session
-from aviss.models import SyncResult
-from aviss.core.csv_reader import CsvReader 
-from aviss.core.pipeline import Pipeline
-from aviss.core.export import Exporter  
+from aviss.models import avMediaFile
+from aviss.models import avSession
+from aviss.models import avSyncResult
+from aviss.core.csv_reader import avCsvReader 
+from aviss.core.pipeline import avPipeline
+from aviss.core.export import avExporter  
 
 __author__ = "Brigitte Bigi"
 __copyright__ = "Copyright (C) 2026  Brigitte Bigi, CNRS, Laboratoire Parole et Langage, Aix-en-Provence, France"
-__version__ = "0.1"
+__version__ = "1.0"
 __all__ = (
     "cfg",
-    "MediaFile",
-    "Session",
-    "SyncResult",
-    "CsvReader",
-    "Pipeline",
-    "Exporter"
+    "avMediaFile",
+    "avSession",
+    "avSyncResult",
+    "avCsvReader",
+    "avPipeline",
+    "avExporter"
 )

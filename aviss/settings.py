@@ -29,7 +29,6 @@
 """
 
 import os
-import importlib.util
 
 # ---------------------------------------------------------------------------
 
@@ -393,6 +392,7 @@ class AViSSOutputSettings:
         self.__video_fps      = 50.
         self.__copyright      = None
         self.__work_dir_suffix = ""
+        self.__rotate         = None
 
     # -----------------------------------------------------------------------
     # output_sep
@@ -568,6 +568,51 @@ class AViSSOutputSettings:
 
     work_dir_suffix = property(get_work_dir_suffix, set_work_dir_suffix)
 
+    # -----------------------------------------------------------------------
+    # rotate
+    # -----------------------------------------------------------------------
+
+    def get_rotate(self) -> list | None:
+        """Return the per-video transpose values, or None if no rotation.
+
+        Each element corresponds to one video in order (primary first).
+        None at a given index means no rotation for that video.
+
+        Transpose values:
+            0 = 90° counter-clockwise + vertical flip
+            1 = 90° clockwise
+            2 = 90° counter-clockwise (portrait)
+            3 = 90° clockwise + vertical flip
+
+        :return: (list|None) List of int|None values, or None.
+
+        """
+        return self.__rotate
+
+    def set_rotate(self, value: list | None) -> None:
+        """Set the per-video transpose values.
+
+        :param value: (list|None) List of int|None, one per video, or None.
+        :raises: TypeError: value is not a list or None, or an element is invalid.
+        :raises: ValueError: An integer element is not in [0, 3].
+
+        """
+        if value is None:
+            self.__rotate = None
+            return
+        if isinstance(value, list) is False:
+            raise TypeError("rotate must be a list or None.")
+        for i, item in enumerate(value):
+            if item is None:
+                continue
+            if isinstance(item, int) is False:
+                raise TypeError(f"rotate[{i}] must be an integer or None.")
+            if item < 0 or item > 3:
+                raise ValueError(f"rotate[{i}] must be in [0, 3].")
+        self.__rotate = value
+
+    rotate = property(get_rotate, set_rotate)
+
 # ---------------------------------------------------------------------------
 
 
@@ -602,35 +647,87 @@ class AViSSSettings:
     # -----------------------------------------------------------------------
 
     def load_user_settings(self, directory: str) -> None:
-        """Load settings_user.py from the given directory if it exists.
+        """Load settings_user.toml from the given directory if it exists.
 
         The file may override any attribute of cfg.sync or cfg.output.
         Call this method once, passing the directory that contains the CSV
         file being processed. If the file raises any exception, a warning is
         printed and the default settings are kept.
 
-        :param directory: (str) Directory to search for settings_user.py.
+        :param directory: (str) Directory to search for settings_user.toml.
         :raises: TypeError: directory is not a non-empty string.
-
-        :example: (in settings_user.py)
-        >>> cfg.output.crf = 14
-        >>> cfg.sync.col_audio_file = "my_audio"
 
         """
         if isinstance(directory, str) is False or len(directory.strip()) == 0:
             raise TypeError("directory must be a non-empty string.")
 
-        user_file = os.path.join(directory.strip(), "settings_user.py")
+        user_file = os.path.join(directory.strip(), "settings_user.toml")
         if os.path.isfile(user_file) is False:
             return
 
         try:
-            spec   = importlib.util.spec_from_file_location("settings_user", user_file)
-            module = importlib.util.module_from_spec(spec)
-            module.__dict__["cfg"] = self
-            spec.loader.exec_module(module)
+            try:
+                import tomllib
+            except ImportError:
+                import tomli as tomllib
+
+            with open(user_file, "rb") as fh:
+                data = tomllib.load(fh)
         except Exception as e:
-            print(f"Warning: settings_user.py could not be loaded ({e}). Default settings are used.")
+            print(f"Warning: settings_user.toml could not be loaded ({e}). Default settings are used.")
+            return
+
+        try:
+            self.__apply_toml(data)
+        except Exception as e:
+            print(f"Warning: settings_user.toml contains invalid values ({e}). Default settings are used.")
+
+    # -----------------------------------------------------------------------
+
+    def __apply_toml(self, data: dict) -> None:
+        """Apply settings parsed from a TOML dict.
+
+        :param data: (dict) Parsed TOML data.
+
+        """
+        out  = data.get("output", {})
+        sync = data.get("sync", {})
+
+        if "copyright" in out:
+            self.__output.copyright = out["copyright"]
+        if "crf" in out:
+            self.__output.crf = out["crf"]
+        if "video_fps" in out:
+            self.__output.video_fps = out["video_fps"]
+        if "output_sep" in out:
+            self.__output.output_sep = out["output_sep"]
+        if "work_dir_suffix" in out:
+            self.__output.work_dir_suffix = out["work_dir_suffix"]
+
+        if "rotate" in out:
+            raw = out["rotate"]
+            converted = [None if v == -1 else v for v in raw]
+            if all(v is None for v in converted):
+                self.__output.rotate = None
+            else:
+                self.__output.rotate = converted
+
+        if "name_cols" in out:
+            cols = []
+            for entry in out["name_cols"]:
+                col    = entry["col"]
+                prefix = entry.get("prefix", "")
+                fmt_raw = entry.get("fmt", "")
+                fmt    = None if fmt_raw == "" else fmt_raw
+                cols.append((col, prefix, fmt))
+            self.__output.output_name_cols = cols
+
+        for key in ("col_audio_file", "col_audio_clap", "col_video_file",
+                    "col_video_clap", "col_video_name", "col_video_crop_x",
+                    "col_video_crop_y", "col_video_crop_w", "col_video_crop_h",
+                    "col_delay", "col_duration"):
+            if key in sync:
+                setattr(self.__sync, key, sync[key])
 
     # -----------------------------------------------------------------------
     # sync

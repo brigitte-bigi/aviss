@@ -401,9 +401,9 @@ class TestAViSSSettings(unittest.TestCase):
 
     def test_load_user_settings_exception_is_caught(self):
         with tempfile.TemporaryDirectory() as tmp:
-            bad_file = os.path.join(tmp, "settings_user.py")
+            bad_file = os.path.join(tmp, "settings_user.toml")
             with open(bad_file, "w") as fh:
-                fh.write("raise RuntimeError('bad settings')\n")
+                fh.write("[output\n")
             settings = AViSSSettings()
             settings.load_user_settings(tmp)
             self.assertIsInstance(settings.sync, AViSSSyncSettings)
@@ -412,9 +412,9 @@ class TestAViSSSettings(unittest.TestCase):
 
     def test_load_user_settings_applies_overrides(self):
         with tempfile.TemporaryDirectory() as tmp:
-            cfg_file = os.path.join(tmp, "settings_user.py")
+            cfg_file = os.path.join(tmp, "settings_user.toml")
             with open(cfg_file, "w") as fh:
-                fh.write("cfg.output.crf = 5\n")
+                fh.write("[output]\ncrf = 5\n")
             settings = AViSSSettings()
             settings.load_user_settings(tmp)
             self.assertEqual(5, settings.output.crf)

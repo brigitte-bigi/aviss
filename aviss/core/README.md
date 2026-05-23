@@ -1,31 +1,31 @@
 # aviss.core
 
-Internal processing classes of AViSS. `Pipeline` is the central orchestrator;
+Internal processing classes of AViSS. `avPipeline` is the central orchestrator;
 all other classes are called by it or feed into it.
 
 ## Classes
 
 | Class | Role |
 |---|---|
-| `CsvReader` | Parse the input CSV file and produce `Session` objects |
-| `ClapSync` | Compute frame-accurate start/end boundaries from the video clap and fps |
-| `AudioOps` | Audio operations: extract, trim, pad, align to clap, resample |
-| `VideoOps` | Video operations: read metadata, trim, crop, overlay, rotate |
-| `Pipeline` | Orchestrate all synchronization steps for one `Session` |
-| `Exporter` | Apply optional post-pipeline exports (SPPAS, montage, WebM) |
+| `avCsvReader` | Parse the input CSV file and produce `avSession` objects |
+| `avClapSync` | Compute frame-accurate start/end boundaries from the video clap and fps |
+| `avAudioOps` | Audio operations: extract, trim, pad, align to clap, resample |
+| `avVideoOps` | Video operations: read metadata, trim, crop, overlay, rotate |
+| `avPipeline` | Orchestrate all synchronization steps for one `avSession` |
+| `avExporter` | Apply optional post-pipeline exports (SPPAS, montage, WebM) |
 
-## Processing flow inside Pipeline
+## Processing flow inside avPipeline
 
 ```
-Session
+avSession
    │
-   ├─ VideoOps.get_video_info()       ← read actual fps and duration
+   ├─ avVideoOps.get_video_info()       ← read actual fps and duration
    │
-   ├─ ClapSync(session, fps)          ← compute clap_frame and end_frame
+   ├─ avClapSync(session, fps)          ← compute clap_frame and end_frame
    │
-   ├─ AudioOps.*                      ← align and trim each audio file
+   ├─ avAudioOps.*                      ← align and trim each audio file
    │
-   ├─ VideoOps.trim()                 ← trim each video file
+   ├─ avVideoOps.trim()                 ← trim each video file
    │
-   └─ VideoOps.crop / add_copyright   ← optional post-processing
+   └─ avVideoOps.crop / add_copyright   ← optional post-processing
 ```

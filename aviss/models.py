@@ -35,16 +35,16 @@ from audioopy.aio import extensions as audio_extensions
 # ---------------------------------------------------------------------------
 
 
-class MediaFile:
+class avMediaFile:
     """Represent a single media file (audio or video) with sync parameters.
 
-    A MediaFile stores the path to the original file and the time of the
+    A avMediaFile stores the path to the original file and the time of the
     synchronization clap within that file. For video files, an optional
     crop region (x, y, w, h) can be specified in pixels; if any of the
     four values is None, no crop is applied.
 
     :example:
-    >>> m = MediaFile("/data/rec.wav", 3.843)
+    >>> m = avMediaFile("/data/rec.wav", 3.843)
     >>> m.path
     '/data/rec.wav'
     >>> m.clap_time
@@ -57,7 +57,7 @@ class MediaFile:
     """
 
     def __init__(self, path: str, clap_time: float):
-        """Initialize a MediaFile with a file path and a clap time.
+        """Initialize a avMediaFile with a file path and a clap time.
 
         :param path: (str) Absolute or relative path to the media file.
         :param clap_time: (float) Time of the synchronization clap (seconds).
@@ -300,17 +300,17 @@ class MediaFile:
     def __repr__(self) -> str:
         crop = f" crop=({self.__crop_x},{self.__crop_y},{self.__crop_w},{self.__crop_h})" \
             if self.has_crop() is True else ""
-        return f"MediaFile({self.__path!r}, clap={self.__clap_time:.3f}s{crop})"
+        return f"avMediaFile({self.__path!r}, clap={self.__clap_time:.3f}s{crop})"
 
 # ---------------------------------------------------------------------------
 
 
-class Session:
+class avSession:
     """Represent one row of the input CSV file.
 
-    A Session groups:
-        - one or more MediaFile instances for audio,
-        - one or more MediaFile instances for video,
+    A avSession groups:
+        - one or more avMediaFile instances for audio,
+        - one or more avMediaFile instances for video,
         - timing parameters (delay and duration),
         - output filename metadata (values used to build the output name),
         - free metadata (any other CSV column, stored as a dict).
@@ -318,9 +318,9 @@ class Session:
     At least one audio and one video must be provided.
 
     :example:
-    >>> audio = MediaFile("/data/rec.wav", 3.843)
-    >>> video = MediaFile("/data/rec.mp4", 6.410)
-    >>> s = Session(audio, video, delay=0.2, duration=248.25)
+    >>> audio = avMediaFile("/data/rec.wav", 3.843)
+    >>> video = avMediaFile("/data/rec.mp4", 6.410)
+    >>> s = avSession(audio, video, delay=0.2, duration=248.25)
     >>> s.output_name_meta
     {}
     >>> s.has_second_audio()
@@ -328,30 +328,30 @@ class Session:
 
     """
 
-    def __init__(self, audio: MediaFile, video: MediaFile, delay: float, duration: float):
-        """Initialize a Session with its primary media files and timing.
+    def __init__(self, audio: avMediaFile, video: avMediaFile, delay: float, duration: float):
+        """Initialize a avSession with its primary media files and timing.
 
-        :param audio: (MediaFile) Primary audio file.
-        :param video: (MediaFile) Primary video file.
+        :param audio: (avMediaFile) Primary audio file.
+        :param video: (avMediaFile) Primary video file.
         :param delay: (float) Offset applied after the clap (seconds).
         :param duration: (float) Expected output duration (seconds).
-        :raises: TypeError: audio is not a MediaFile instance.
+        :raises: TypeError: audio is not a avMediaFile instance.
         :raises: ValueError: audio is not an audio file.
-        :raises: TypeError: video is not a MediaFile instance.
+        :raises: TypeError: video is not a avMediaFile instance.
         :raises: ValueError: video is not a video file.
         :raises: TypeError: delay is not a number.
         :raises: TypeError: duration is not a number.
         :raises: ValueError: duration is not strictly positive.
 
         """
-        if isinstance(audio, MediaFile) is False:
-            raise TypeError("audio must be a MediaFile instance.")
+        if isinstance(audio, avMediaFile) is False:
+            raise TypeError("audio must be a avMediaFile instance.")
         if audio.is_audio() is False:
-            raise ValueError(f"The given audio MediaFile does not have an audio extension: {audio.path!r}.")
-        if isinstance(video, MediaFile) is False:
-            raise TypeError("video must be a MediaFile instance.")
+            raise ValueError(f"The given audio avMediaFile does not have an audio extension: {audio.path!r}.")
+        if isinstance(video, avMediaFile) is False:
+            raise TypeError("video must be a avMediaFile instance.")
         if video.is_video() is False:
-            raise ValueError(f"The given video MediaFile does not have a video extension: {video.path!r}.")
+            raise ValueError(f"The given video avMediaFile does not have a video extension: {video.path!r}.")
         if isinstance(delay, (int, float)) is False:
             raise TypeError("delay must be a number.")
         if isinstance(duration, (int, float)) is False:
@@ -377,9 +377,9 @@ class Session:
     # -----------------------------------------------------------------------
 
     def get_audios(self) -> list:
-        """Return a copy of the list of audio MediaFile objects.
+        """Return a copy of the list of audio avMediaFile objects.
 
-        :return: (list) List of MediaFile instances (audio).
+        :return: (list) List of avMediaFile instances (audio).
 
         """
         return list(self.__audios)
@@ -389,9 +389,9 @@ class Session:
     # -----------------------------------------------------------------------
 
     def get_videos(self) -> list:
-        """Return a copy of the list of video MediaFile objects.
+        """Return a copy of the list of video avMediaFile objects.
 
-        :return: (list) List of MediaFile instances (video).
+        :return: (list) List of avMediaFile instances (video).
 
         """
         return list(self.__videos)
@@ -415,36 +415,36 @@ class Session:
 
     # -----------------------------------------------------------------------
 
-    def add_audio(self, audio: MediaFile) -> None:
-        """Append an audio MediaFile to the session.
+    def add_audio(self, audio: avMediaFile) -> None:
+        """Append an audio avMediaFile to the session.
 
-        :param audio: (MediaFile) Audio file to add.
-        :raises: TypeError: audio is not a MediaFile instance.
+        :param audio: (avMediaFile) Audio file to add.
+        :raises: TypeError: audio is not a avMediaFile instance.
         :raises: ValueError: audio is not an audio file.
 
         """
-        if isinstance(audio, MediaFile) is False:
-            raise TypeError("audio must be a MediaFile instance.")
+        if isinstance(audio, avMediaFile) is False:
+            raise TypeError("audio must be a avMediaFile instance.")
         if audio.is_audio() is False:
-            raise ValueError(f"The given MediaFile does not have an audio extension: {audio.path!r}.")
+            raise ValueError(f"The given avMediaFile does not have an audio extension: {audio.path!r}.")
         self.__audios.append(audio)
 
     # -----------------------------------------------------------------------
 
-    def add_video(self, video: MediaFile, name: str | None = None) -> None:
-        """Append a video MediaFile to the session with an optional output label.
+    def add_video(self, video: avMediaFile, name: str | None = None) -> None:
+        """Append a video avMediaFile to the session with an optional output label.
 
-        :param video: (MediaFile) Video file to add.
+        :param video: (avMediaFile) Video file to add.
         :param name: (str|None) Optional label used as suffix in the output filename.
-        :raises: TypeError: video is not a MediaFile instance.
+        :raises: TypeError: video is not a avMediaFile instance.
         :raises: ValueError: video is not a video file.
         :raises: TypeError: name is not a non-empty string or None.
 
         """
-        if isinstance(video, MediaFile) is False:
-            raise TypeError("video must be a MediaFile instance.")
+        if isinstance(video, avMediaFile) is False:
+            raise TypeError("video must be a avMediaFile instance.")
         if video.is_video() is False:
-            raise ValueError(f"The given MediaFile does not have a video extension: {video.path!r}.")
+            raise ValueError(f"The given avMediaFile does not have a video extension: {video.path!r}.")
         if name is not None:
             if isinstance(name, str) is False or len(name.strip()) == 0:
                 raise TypeError("name must be a non-empty string or None.")
@@ -602,7 +602,7 @@ class Session:
     def all_files_exist(self) -> bool:
         """Return True if all media files in this session exist on disk.
 
-        :return: (bool) True if every defined MediaFile exists on disk.
+        :return: (bool) True if every defined avMediaFile exists on disk.
 
         """
         for media in self.__audios + self.__videos:
@@ -614,7 +614,7 @@ class Session:
 
     def __repr__(self) -> str:
         return (
-            f"Session({len(self.__audios)} audio, {len(self.__videos)} video, "
+            f"avSession({len(self.__audios)} audio, {len(self.__videos)} video, "
             f"delay={self.__delay:.3f}s, duration={self.__duration:.3f}s, "
             f"meta={self.__output_name_meta})"
         )
@@ -622,15 +622,15 @@ class Session:
 # ---------------------------------------------------------------------------
 
 
-class SyncResult:
+class avSyncResult:
     """Represent the output of a synchronization pipeline run.
 
-    A SyncResult is produced by the pipeline after processing one Session.
+    A avSyncResult is produced by the pipeline after processing one avSession.
     It stores the paths of the files produced (synchronized media and
     optional montage video) and a human-readable processing report.
 
     :example:
-    >>> r = SyncResult()
+    >>> r = avSyncResult()
     >>> r.add_synced_file("/out/Laurent_S09_s2.wav")
     >>> r.add_synced_file("/out/Laurent_S09_s2.mp4")
     >>> len(r.synced_files)
@@ -644,7 +644,7 @@ class SyncResult:
     """
 
     def __init__(self):
-        """Initialize an empty SyncResult.
+        """Initialize an empty avSyncResult.
 
         """
         self.__synced_files  = []
@@ -763,4 +763,4 @@ class SyncResult:
         status = "OK" if self.__success is True else "FAILED"
         n = len(self.__synced_files)
         montage = f", montage={self.__montage_file!r}" if self.__montage_file is not None else ""
-        return f"SyncResult({status}, {n} synced file(s){montage})"
+        return f"avSyncResult({status}, {n} synced file(s){montage})"

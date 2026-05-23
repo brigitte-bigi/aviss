@@ -28,8 +28,8 @@
 
 Test CSV files are written to a temporary directory and removed after each
 test. File paths in the CSV are intentionally fake (the files do not exist
-on disk): CsvReader only checks paths when building Session objects, and
-MediaFile.exists() is not called during parsing.
+on disk): avCsvReader only checks paths when building avSession objects, and
+avMediaFile.exists() is not called during parsing.
 
 The CSV structure used in these tests mirrors the real corpus format
 (montage.csv), with the column names matching the defaults in cfg.sync.
@@ -41,8 +41,8 @@ import unittest
 import tempfile
 import shutil
 
-from aviss.core.csv_reader import CsvReader
-from aviss.models import Session
+from aviss.core.csv_reader import avCsvReader
+from aviss.models import avSession
 
 # ---------------------------------------------------------------------------
 
@@ -145,24 +145,24 @@ class TestCsvReaderInit(unittest.TestCase):
 
     def test_valid_path(self):
         path = _write_csv(self.__tmp_dir, CSV_MINIMAL)
-        reader = CsvReader(path)
+        reader = avCsvReader(path)
         self.assertEqual(path, reader.csv_path)
 
     # -----------------------------------------------------------------------
 
     def test_type_error(self):
         with self.assertRaises(TypeError):
-            CsvReader(None)
+            avCsvReader(None)
         with self.assertRaises(TypeError):
-            CsvReader("")
+            avCsvReader("")
         with self.assertRaises(TypeError):
-            CsvReader(42)
+            avCsvReader(42)
 
     # -----------------------------------------------------------------------
 
     def test_missing_file(self):
         with self.assertRaises(FileNotFoundError):
-            CsvReader(os.path.join(self.__tmp_dir, "missing.csv"))
+            avCsvReader(os.path.join(self.__tmp_dir, "missing.csv"))
 
     # -----------------------------------------------------------------------
 
@@ -170,7 +170,7 @@ class TestCsvReaderInit(unittest.TestCase):
         path = os.path.join(self.__tmp_dir, "empty.csv")
         open(path, "w").close()
         with self.assertRaises(ValueError):
-            CsvReader(path)
+            avCsvReader(path)
 
 # ---------------------------------------------------------------------------
 
@@ -187,22 +187,22 @@ class TestCsvReaderRead(unittest.TestCase):
 
     def test_read_one_row(self):
         path = _write_csv(self.__tmp_dir, CSV_MINIMAL)
-        sessions = CsvReader(path).read()
+        sessions = avCsvReader(path).read()
         self.assertEqual(1, len(sessions))
-        self.assertIsInstance(sessions[0], Session)
+        self.assertIsInstance(sessions[0], avSession)
 
     # -----------------------------------------------------------------------
 
     def test_read_two_rows(self):
         path = _write_csv(self.__tmp_dir, CSV_TWO_ROWS)
-        sessions = CsvReader(path).read()
+        sessions = avCsvReader(path).read()
         self.assertEqual(2, len(sessions))
 
     # -----------------------------------------------------------------------
 
     def test_read_skips_empty_rows(self):
         path = _write_csv(self.__tmp_dir, CSV_WITH_EMPTY_ROW)
-        sessions = CsvReader(path).read()
+        sessions = avCsvReader(path).read()
         self.assertEqual(2, len(sessions))
 
     # -----------------------------------------------------------------------
@@ -210,34 +210,34 @@ class TestCsvReaderRead(unittest.TestCase):
     def test_read_header_only_raises(self):
         path = _write_csv(self.__tmp_dir, CSV_HEADER_ONLY)
         with self.assertRaises(ValueError):
-            CsvReader(path).read()
+            avCsvReader(path).read()
 
     # -----------------------------------------------------------------------
 
     def test_read_missing_required_column_raises(self):
         path = _write_csv(self.__tmp_dir, CSV_MISSING_REQUIRED)
         with self.assertRaises(ValueError):
-            CsvReader(path).read()
+            avCsvReader(path).read()
 
     # -----------------------------------------------------------------------
 
     def test_read_comma_separator(self):
         path = _write_csv(self.__tmp_dir, CSV_COMMA_SEP)
-        sessions = CsvReader(path).read()
+        sessions = avCsvReader(path).read()
         self.assertEqual(1, len(sessions))
 
 # ---------------------------------------------------------------------------
 
 
 class TestCsvReaderSessionValues(unittest.TestCase):
-    """Verify that parsed Session values match the CSV content.
+    """Verify that parsed avSession values match the CSV content.
 
     """
 
     def setUp(self):
         self.__tmp_dir = tempfile.mkdtemp()
         path = _write_csv(self.__tmp_dir, CSV_MINIMAL)
-        self.__session = CsvReader(path).read()[0]
+        self.__session = avCsvReader(path).read()[0]
 
     def tearDown(self):
         shutil.rmtree(self.__tmp_dir, ignore_errors=True)
@@ -297,7 +297,7 @@ class TestCsvReaderMetadata(unittest.TestCase):
 
     def test_free_metadata_loaded(self):
         path = _write_csv(self.__tmp_dir, CSV_WITH_METADATA)
-        session = CsvReader(path).read()[0]
+        session = avCsvReader(path).read()[0]
         self.assertIn("handedness", session.metadata)
         self.assertIn("gender",     session.metadata)
         self.assertEqual("r", session.metadata["handedness"])
@@ -307,7 +307,7 @@ class TestCsvReaderMetadata(unittest.TestCase):
 
     def test_output_name_meta_loaded(self):
         path = _write_csv(self.__tmp_dir, CSV_MINIMAL)
-        session = CsvReader(path).read()[0]
+        session = avCsvReader(path).read()[0]
         # "ID" and "Session" are in the default OUTPUT_NAME_COLS.
         self.assertIn("ID",      session.output_name_meta)
         self.assertIn("Session", session.output_name_meta)
@@ -317,7 +317,7 @@ class TestCsvReaderMetadata(unittest.TestCase):
 
     def test_sync_columns_not_in_metadata(self):
         path = _write_csv(self.__tmp_dir, CSV_WITH_METADATA)
-        session = CsvReader(path).read()[0]
+        session = avCsvReader(path).read()[0]
         self.assertNotIn("audio_file",  session.metadata)
         self.assertNotIn("video_file",  session.metadata)
         self.assertNotIn("audio_clap",  session.metadata)
@@ -340,7 +340,7 @@ class TestCsvReaderSecondaryMedia(unittest.TestCase):
 
     def test_secondary_audio_loaded(self):
         path = _write_csv(self.__tmp_dir, CSV_WITH_SECONDARY)
-        session = CsvReader(path).read()[0]
+        session = avCsvReader(path).read()[0]
         self.assertTrue(session.has_second_audio())
         self.assertAlmostEqual(4.0, session.audios[1].clap_time, places=3)
 
@@ -348,7 +348,7 @@ class TestCsvReaderSecondaryMedia(unittest.TestCase):
 
     def test_secondary_video_loaded(self):
         path = _write_csv(self.__tmp_dir, CSV_WITH_SECONDARY)
-        session = CsvReader(path).read()[0]
+        session = avCsvReader(path).read()[0]
         self.assertTrue(session.has_second_video())
         self.assertAlmostEqual(7.0, session.videos[1].clap_time, places=3)
 
@@ -367,7 +367,7 @@ class TestCsvReaderVideoNames(unittest.TestCase):
 
     def test_video_names_loaded(self):
         path = _write_csv(self.__tmp_dir, CSV_WITH_VIDEO_NAMES)
-        session = CsvReader(path).read()[0]
+        session = avCsvReader(path).read()[0]
         self.assertEqual("front", session.video_names[0])
         self.assertEqual("side",  session.video_names[1])
 
@@ -375,7 +375,7 @@ class TestCsvReaderVideoNames(unittest.TestCase):
 
     def test_video_name_not_in_metadata(self):
         path = _write_csv(self.__tmp_dir, CSV_WITH_VIDEO_NAMES)
-        session = CsvReader(path).read()[0]
+        session = avCsvReader(path).read()[0]
         self.assertNotIn("video_name",  session.metadata)
         self.assertNotIn("video_name2", session.metadata)
 
@@ -383,7 +383,7 @@ class TestCsvReaderVideoNames(unittest.TestCase):
 
     def test_video_name_absent_is_none(self):
         path = _write_csv(self.__tmp_dir, CSV_MINIMAL)
-        session = CsvReader(path).read()[0]
+        session = avCsvReader(path).read()[0]
         self.assertIsNone(session.video_names[0])
 
 # ---------------------------------------------------------------------------
@@ -401,7 +401,7 @@ class TestCsvReaderCrop(unittest.TestCase):
 
     def test_crop_loaded(self):
         path = _write_csv(self.__tmp_dir, CSV_WITH_CROP)
-        session = CsvReader(path).read()[0]
+        session = avCsvReader(path).read()[0]
         self.assertTrue(session.videos[0].has_crop())
         self.assertEqual(0,    session.videos[0].crop_x)
         self.assertEqual(32,   session.videos[0].crop_y)
@@ -412,7 +412,7 @@ class TestCsvReaderCrop(unittest.TestCase):
 
     def test_no_crop_when_columns_absent(self):
         path = _write_csv(self.__tmp_dir, CSV_MINIMAL)
-        session = CsvReader(path).read()[0]
+        session = avCsvReader(path).read()[0]
         self.assertFalse(session.videos[0].has_crop())
 
 # ---------------------------------------------------------------------------
@@ -430,35 +430,35 @@ class TestCsvReaderReadRow(unittest.TestCase):
     # -----------------------------------------------------------------------
 
     def test_read_row_1(self):
-        session = CsvReader(self.__path).read_row(1)
-        self.assertIsInstance(session, Session)
+        session = avCsvReader(self.__path).read_row(1)
+        self.assertIsInstance(session, avSession)
         self.assertAlmostEqual(3.843, session.audios[0].clap_time, places=3)
 
     # -----------------------------------------------------------------------
 
     def test_read_row_2(self):
-        session = CsvReader(self.__path).read_row(2)
+        session = avCsvReader(self.__path).read_row(2)
         self.assertAlmostEqual(4.787, session.audios[0].clap_time, places=3)
 
     # -----------------------------------------------------------------------
 
     def test_read_row_out_of_range(self):
         with self.assertRaises(ValueError):
-            CsvReader(self.__path).read_row(3)
+            avCsvReader(self.__path).read_row(3)
 
     # -----------------------------------------------------------------------
 
     def test_read_row_zero_raises(self):
         with self.assertRaises(ValueError):
-            CsvReader(self.__path).read_row(0)
+            avCsvReader(self.__path).read_row(0)
 
     # -----------------------------------------------------------------------
 
     def test_read_row_type_error(self):
         with self.assertRaises(TypeError):
-            CsvReader(self.__path).read_row("1")
+            avCsvReader(self.__path).read_row("1")
         with self.assertRaises(TypeError):
-            CsvReader(self.__path).read_row(None)
+            avCsvReader(self.__path).read_row(None)
 
 # ---------------------------------------------------------------------------
 

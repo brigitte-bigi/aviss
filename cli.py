@@ -60,9 +60,9 @@ import sys
 import argparse
 
 from aviss.settings import cfg
-from aviss.core.csv_reader import CsvReader
-from aviss.core.pipeline import Pipeline
-from aviss.core.export import Exporter
+from aviss.core.csv_reader import avCsvReader
+from aviss.core.pipeline import avPipeline
+from aviss.core.export import avExporter
 from aviss.utils import aviss_logger, build_output_name
 
 # ---------------------------------------------------------------------------
@@ -111,26 +111,6 @@ def _build_parser() -> argparse.ArgumentParser:
         )
     )
     sync_parser.add_argument(
-        "--crf",
-        type=int,
-        default=None,
-        metavar="N",
-        help=(
-            f"CRF encoding quality in [0, 51]. "
-            f"Overrides cfg.output.crf (default: {cfg.output.crf})."
-        )
-    )
-    sync_parser.add_argument(
-        "--fps",
-        type=float,
-        default=None,
-        metavar="N",
-        help=(
-            f"Camera frame rate in frames per second. "
-            f"Overrides cfg.output.video_fps (default: {cfg.output.video_fps})."
-        )
-    )
-    sync_parser.add_argument(
         "--montage",
         action="store_true",
         default=False,
@@ -141,18 +121,6 @@ def _build_parser() -> argparse.ArgumentParser:
         action="store_true",
         default=False,
         help="Produce a WebM montage (libvpx-vp9, two-pass) for web distribution."
-    )
-    sync_parser.add_argument(
-        "--rotate",
-        type=int,
-        nargs="+",
-        default=None,
-        metavar="T",
-        help=(
-            "Rotate one or more videos using the ffmpeg transpose filter. "
-            "One value per video, in order: --rotate 2 0 rotates video 1 (CCW) and video 2 (CW). "
-            "Values: 0=CCW+vflip, 1=CW, 2=CCW (portrait), 3=CW+vflip."
-        )
     )
     sync_parser.add_argument(
         "--verbose",
@@ -166,25 +134,10 @@ def _build_parser() -> argparse.ArgumentParser:
 # ---------------------------------------------------------------------------
 
 
-def _apply_overrides(args: argparse.Namespace) -> None:
-    """Apply command-line overrides to cfg before processing.
-
-    :param args: (argparse.Namespace) Parsed command-line arguments.
-
-    """
-    if args.crf is not None:
-        cfg.output.crf = args.crf
-
-    if args.fps is not None:
-        cfg.output.video_fps = args.fps
-
-# ---------------------------------------------------------------------------
-
-
 def _process_session(session, args: argparse.Namespace) -> bool:
     """Run the pipeline and optional exports for a single session.
 
-    :param session: (Session) Session to process.
+    :param session: (avSession) avSession to process.
     :param args: (argparse.Namespace) Parsed command-line arguments.
     :return: (bool) True if processing succeeded.
 
@@ -200,7 +153,7 @@ def _process_session(session, args: argparse.Namespace) -> bool:
 
     print(f"  Processing: {stem}")
 
-    result = Pipeline(session).run()
+    result = avPipeline(session).run()
     aviss_logger.close()
 
     if args.verbose is True:
@@ -215,12 +168,12 @@ def _process_session(session, args: argparse.Namespace) -> bool:
         return False
 
     # Optional export operations.
-    if args.montage is True or args.webm is True or args.rotate is not None:
+    if args.montage is True or args.webm is True or cfg.output.rotate is not None:
         try:
-            exporter = Exporter(result, stem=stem, work_dir=work_dir)
+            exporter = avExporter(result, stem=stem, work_dir=work_dir)
 
-            if args.rotate is not None:
-                exporter.rotate(transpose_list=args.rotate)
+            if cfg.output.rotate is not None:
+                exporter.rotate(transpose_list=cfg.output.rotate)
             if args.montage is True:
                 exporter.montage()
             if args.webm is True:
@@ -243,11 +196,10 @@ def _cmd_sync(args: argparse.Namespace) -> int:
     :return: (int) Exit code: 0 on success, 1 if any session failed.
 
     """
-    _apply_overrides(args)
     cfg.load_user_settings(os.path.dirname(os.path.abspath(args.csv)))
 
     try:
-        reader = CsvReader(args.csv)
+        reader = avCsvReader(args.csv)
     except (TypeError, FileNotFoundError, ValueError) as e:
         print(f"Error: cannot read CSV file: {e}")
         return 1

@@ -1,0 +1,47 @@
+{
+    "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+    "@type": "SoftwareSourceCode",
+    "codeRepository": "https://github.com/brigitte-bigi/AViSS",
+    "contIntegration": "",
+    "dateCreated": "2026-05-23",
+    "datePublished": "2026-05-23",
+    "dateModified": "2026-05-23",
+    "downloadUrl": "https://pypi.org/project/aviss/",
+    "name": "AViSS",
+    "version": "1.0",
+    "description": "AViSS performs frame-accurate, clap-based synchronization of audio and video files for speech corpus recordings. It supports multiple audio and video files per session, optional crop, copyright overlay, rotation, SPPAS export, and MP4/WebM montage.",
+    "applicationCategory": "Speech Technology",
+    "releaseNotes": "",
+    "referencePublication": "https://hdl.handle.net/11403/clelfpc",
+    "keywords": [
+        "audio",
+        "video",
+        "synchronization",
+        "clap",
+        "corpus",
+        "phonetics",
+        "speech",
+        "SPPAS"
+    ],
+    "programmingLanguage": [
+        "Python"
+    ],
+    "operatingSystem": [
+        "Windows",
+        "macOS",
+        "Linux"
+    ],
+    "author": [
+        {
+            "@type": "Person",
+            "@id": "http://orcid.org/0000-0003-1834-6918",
+            "givenName": "Brigitte",
+            "familyName": "Bigi",
+            "email": "contact@sppas.org",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "CNRS, Laboratoire Parole et Langage, Aix-en-Provence, France"
+            }
+        }
+    ]
+}

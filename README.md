@@ -42,7 +42,7 @@ Among others, it allows the following:
 - Optional video crop (x, y, w, h per video)
 - Optional copyright overlay on video
 - Optional video rotation (portrait mode)
-- Optional mono 16 kHz WAV export for SPPAS automatic annotation
+- Optional mono 16 kHz WAV export for automatic annotation
 - Optional MP4 montage (H.264/AAC) for distribution
 - Optional WebM montage (libvpx-vp9, two-pass) for web distribution
 - Batch processing from a CSV file
@@ -50,16 +50,60 @@ Among others, it allows the following:
 
 ### How it works
 
-The synchronization principle is:
+AViSS is a faithful Python migration of the original montage scripts
+(`montage_step1.py` / `montage.py`, B. Bigi, CNRS/LPL 2021-2024)
+distributed with the CLeLfPC corpus (https://hdl.handle.net/11403/clelfpc).
+The algorithm below is reproduced verbatim from those scripts.
 
-1. The clap time in the video is snapped to the nearest frame boundary
-   (frame-accurate, guaranteed by OpenCV via SPPAS).
-2. A configurable delay is applied after the clap — the cut starts after
-   the clap, not on it.
-3. All audio files are shifted (trim or pad with silence) so that their own
-   clap coincides with the video frame boundary.
-4. All audio files are padded or trimmed to match the exact frame duration
-   of the video output.
+**Notation**
+
+| Symbol | Meaning |
+|--------|---------|
+| `vc`   | `video_clap + delay` — effective clap time in the video (seconds) |
+| `fps`  | frame rate of the video (frames/second) |
+| `dur`  | expected output duration (seconds) |
+
+**Step 1 — clap frame (primary / reference video)**
+
+```
+clap_frame_index = int(vc * fps)           # floor, 0-based
+clap_frame_time  = clap_frame_index / fps
+clap_delta       = vc - clap_frame_time    # sub-frame offset, in [0, 1/fps)
+```
+
+**Step 2 — end frame (first excluded frame)**
+
+```
+end_frame_index = 1 + int((vc + dur) * fps)
+end_frame_time  = end_frame_index / fps
+```
+
+**Step 3 — cross-sync (secondary video, fps2 ≠ fps_ref)**
+
+When two cameras have different frame rates, the reference camera is the
+one with the lowest fps. Its `clap_delta` is propagated to the secondary
+camera so both outputs share the same sub-frame offset at the clap.
+
+```
+shift_frames     = int(reference_delta * fps2)
+clap_frame_index = int(vc2 * fps2) - shift_frames
+end_frame_index  = 1 + int((vc2 + dur) * fps2) + shift_frames
+```
+
+Note: the formula uses `int(A*fps) - int(d*fps)`, not `int((A-d)*fps)`.
+These can differ by 1 frame when `frac(A*fps) < frac(d*fps)`.
+
+**Audio alignment (per audio file)**
+
+```
+Pass 1: shift audio so its effective clap (audio_clap + delay)
+        matches vc — trim from the start or prepend silence.
+Pass 2: pad with silence or trim the end to reach end_frame_time.
+Pass 3: trim clap_frame_time from the start.
+```
+
+The output audio starts at the clap frame boundary, preserving the
+`clap_delta` sub-frame offset between the clap and the first sample.
 
 ### Scientific context
 
@@ -120,7 +164,7 @@ The AViSS package includes the following folders and files:
 The input CSV file describes one recording session per row. The first row
 is the header. Columns are separated by `;` (or `,`).
 
-The following columns are required (names are configurable in `settings.py`):
+The following columns are required (names are configurable via `settings_user.toml`):
 
 | Column | Description |
 |---|---|
@@ -131,15 +175,15 @@ The following columns are required (names are configurable in `settings.py`):
 | `delay` | offset after the clap before cutting (seconds) |
 | `duration` | expected output duration (MM:SS.mmm) |
 
-Optional columns for crop, secondary media, and output filename metadata
-are described in `aviss/settings.py`.
+Optional columns for crop, other media files, and output filename metadata
+are described in the `sync` section of [Customizing settings](#customizing-settings).
 
 Example:
 
 ```
-ID;Session;Serie;audio_file;video_file;audio_clap;video_clap;delay;duration
-Laurent;9;2;audio/RME_0038.wav;video/MVI_0038.MP4;00:03.843;00:06.410;0.200;04:08.250
-Laurent;8;1;audio/RME_0035.wav;video/MVI_0035.MP4;00:04.787;00:09.995;6.230;02:57.000
+ID;avSession;Serie;audio_file;video_file;audio_clap;video_clap;delay;duration
+spk1;9;2;audio/RME_0038.wav;video/MVI_0038.MP4;00:03.843;00:06.410;0.200;04:08.250
+spk2;8;1;audio/RME_0035.wav;video/MVI_0035.MP4;00:04.787;00:09.995;6.230;02:57.000
 ```
 
 ### Command-line usage
@@ -168,45 +212,6 @@ Synchronize and produce a WebM for web distribution:
 > aviss sync -c corpus/sessions.csv -l 1 --webm
 ```
 
-Synchronize and produce a SPPAS-ready mono 16 kHz audio:
-
-```bash
-> aviss sync -c corpus/sessions.csv -l 1 --sppas
-```
-
-Rotate to portrait and produce montage:
-
-```bash
-> aviss sync -c corpus/sessions.csv -l 1 --rotate 2 --montage
-```
-
-Rotate video 1 to portrait, video 2 unchanged:
-
-```bash
-> aviss sync -c corpus/sessions.csv -l 1 --rotate 2
-```
-
-Rotate video 1 and video 2 independently:
-
-```bash
-> aviss sync -c corpus/sessions.csv -l 1 --rotate 2 1
-```
-
-`--rotate` accepts one value per video, in order. Transpose values:
-
-| Value | Effect |
-|---|---|
-| `0` | 90° counter-clockwise + vertical flip |
-| `1` | 90° clockwise |
-| `2` | 90° counter-clockwise — portrait mode |
-| `3` | 90° clockwise + vertical flip |
-
-Override encoding quality for this run:
-
-```bash
-> aviss sync -c corpus/sessions.csv --crf 14
-```
-
 Print the full processing report:
 
 ```bash
@@ -216,65 +221,118 @@ Print the full processing report:
 ### Python API usage
 
 ```python
-from aviss import CsvReader, Pipeline, Exporter
+from aviss import avCsvReader, avPipeline, avExporter
 
 # Parse one row from the CSV
-reader  = CsvReader("corpus/sessions.csv")
+reader  = avCsvReader("corpus/sessions.csv")
 session = reader.read_row(1)
 
 # Run the synchronization pipeline
-pipeline = Pipeline(session)
+pipeline = avPipeline(session)
 result   = pipeline.run()
 
 if result.success is True:
-    exporter = Exporter(result,
-                        stem="Laurent_S09_s2",
-                        work_dir="Laurent_S09_s2")
-    exporter.to_sppas()
+    exporter = avExporter(result,
+                        stem="spk1_S09_s2",
+                        work_dir="spk1_S09_s2")
     exporter.montage()
 
 # Process all rows
-sessions = CsvReader("corpus/sessions.csv").read()
+sessions = avCsvReader("corpus/sessions.csv").read()
 for session in sessions:
-    result = Pipeline(session).run()
+    result = avPipeline(session).run()
     if result.success is False:
         print(session, result.report)
 ```
 
 ### Customizing settings
 
-Place a `settings_user.py` file in the same directory as your CSV file,
+Place a `settings_user.toml` file in the same directory as your CSV file,
 then override only what you need:
 
-```python
-cfg.output.crf              = 14
-cfg.output.video_fps        = 25.
-cfg.output.copyright        = "Copyright (C) 2026 CNRS | LPL"
-cfg.sync.col_audio_file     = "my_audio"
+```toml
+[output]
+crf       = 14
+video_fps = 25.0
+copyright = "Copyright (C) 2026 CNRS | LPL"
 
-cfg.output.output_name_cols = [
-    ("ID",         "",  None),
-    ("Session",    "S", "02d"),
-    ("SerieLabel", "",  None),
-]
+# Rotation — one integer per video in order.
+# -1 = no rotation · 0 = CCW+vflip · 1 = CW · 2 = CCW portrait · 3 = CW+vflip
+rotate = [2]        # single video, portrait CCW
+# rotate = [-1, 2] # two videos: front=none, side=CCW portrait
+
+[[output.name_cols]]
+col    = "ID"
+prefix = ""
+fmt    = ""
+
+[[output.name_cols]]
+col    = "avSession"
+prefix = "S"
+fmt    = "02d"
+
+[[output.name_cols]]
+col    = "SerieLabel"
+prefix = ""
+fmt    = ""
+
+[sync]
+col_audio_file = "my_audio"
 ```
 
-`settings_user.py` is loaded automatically from the CSV directory at sync time.
+`settings_user.toml` is loaded automatically from the CSV directory at sync time.
 
-#### output_name_cols format
+#### output keys
 
-Each entry is a 3-tuple `(csv_column_name, prefix, fmt)`:
-
-| Field | Type | Description |
+| Key | Default | Description |
 |---|---|---|
-| `csv_column_name` | str | CSV column header whose value is used |
-| `prefix` | str | String prepended to the value (`"S"`, `"T"`, `""` for none) |
-| `fmt` | str or None | `None` → raw string · `"02d"` → zero-padded integer · `"d"` → plain integer |
+| `crf` | `18` | Video encoding quality (H.264 CRF). Lower = better quality, larger file. Range: 0–51. |
+| `video_fps` | `50.0` | Native frame rate of the recording camera (frames per second). |
+| `copyright` | _(none)_ | Text overlaid on the video (bottom-left). Use `\\:` to escape colons (ffmpeg). |
+| `rotate` | _(none)_ | Per-video transpose list. See values below. |
+| `output_sep` | `"_"` | Separator between tokens in the output filename. |
+| `work_dir_suffix` | `""` | Suffix appended to the working directory name. |
 
-Tokens are joined with `cfg.output.output_sep` (default `"_"`).
+Rotate values (one integer per video, in order — `-1` = no rotation):
+
+| Value | Effect |
+|---|---|
+| `-1` | No rotation |
+| `0` | 90° counter-clockwise + vertical flip |
+| `1` | 90° clockwise |
+| `2` | 90° counter-clockwise (portrait mode) |
+| `3` | 90° clockwise + vertical flip |
+
+#### sync keys
+
+| Key | Default | Description |
+|---|---|---|
+| `col_audio_file` | `"audio_file"` | CSV column name for the audio file path. |
+| `col_audio_clap` | `"audio_clap"` | CSV column name for the audio clap time. |
+| `col_video_file` | `"video_file"` | CSV column name for the video file path. |
+| `col_video_clap` | `"video_clap"` | CSV column name for the video clap time. |
+| `col_video_name` | `"video_name"` | CSV column name for the optional video label (used in output filename suffix). |
+| `col_video_crop_x` | `"video_crop_x"` | CSV column name for the crop left edge (pixels). |
+| `col_video_crop_y` | `"video_crop_y"` | CSV column name for the crop top edge (pixels). |
+| `col_video_crop_w` | `"video_crop_w"` | CSV column name for the crop width (pixels). |
+| `col_video_crop_h` | `"video_crop_h"` | CSV column name for the crop height (pixels). |
+| `col_delay` | `"delay"` | CSV column name for the delay after the clap (seconds). |
+| `col_duration` | `"duration"` | CSV column name for the expected output duration. |
+
+#### output.name_cols format
+
+Each `[[output.name_cols]]` entry defines one token in the output filename:
+
+| Key | Type | Description |
+|---|---|---|
+| `col` | str | CSV column header whose value is used |
+| `prefix` | str | String prepended to the value (`"S"`, `"T"`, `""` for none) |
+| `fmt` | str | `""` → raw string · `"02d"` → zero-padded integer · `"d"` → plain integer |
+
+Tokens are joined with `output_sep` (default `"_"`).
 A column whose cell is empty in the CSV is silently skipped.
 
-Example: with `("Session", "S", "02d")` and cell value `9`, the token is `S09`.
+Example: with `col = "avSession"`, `prefix = "S"`, `fmt = "02d"` and cell value `9`, the token is `S09`.
 
 
 ## Test the source code
@@ -448,9 +506,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 ## Changes
 
-- Version 0.1:
+- Version 1.0:
 
     * Initial version.
     * Support for ANY audio files and ANY video files per session.
-    * Optional crop, copyright overlay, rotation, SPPAS export,
+    * Optional crop, copyright overlay, rotation, mono 16 kHz WAV export,
       MP4 and WebM montage.

@@ -33,7 +33,7 @@ import shutil
 import tempfile
 import unittest
 
-from aviss.core.audio_ops import AudioOps
+from aviss.core.audio_ops import avAudioOps
 
 # ---------------------------------------------------------------------------
 
@@ -49,7 +49,7 @@ class TestGetAudioInfo(unittest.TestCase):
     # -----------------------------------------------------------------------
 
     def test_returns_expected_keys(self):
-        info = AudioOps.get_audio_info(TEST_WAV)
+        info = avAudioOps.get_audio_info(TEST_WAV)
         self.assertIn("framerate",  info)
         self.assertIn("nchannels",  info)
         self.assertIn("sampwidth",  info)
@@ -58,34 +58,34 @@ class TestGetAudioInfo(unittest.TestCase):
     # -----------------------------------------------------------------------
 
     def test_duration_is_positive(self):
-        info = AudioOps.get_audio_info(TEST_WAV)
+        info = avAudioOps.get_audio_info(TEST_WAV)
         self.assertGreater(info["duration"], 0.)
 
     # -----------------------------------------------------------------------
 
     def test_framerate_is_positive(self):
-        info = AudioOps.get_audio_info(TEST_WAV)
+        info = avAudioOps.get_audio_info(TEST_WAV)
         self.assertGreater(info["framerate"], 0)
 
     # -----------------------------------------------------------------------
 
     def test_type_error_non_string(self):
         with self.assertRaises(TypeError):
-            AudioOps.get_audio_info(None)
+            avAudioOps.get_audio_info(None)
         with self.assertRaises(TypeError):
-            AudioOps.get_audio_info(42)
+            avAudioOps.get_audio_info(42)
 
     # -----------------------------------------------------------------------
 
     def test_type_error_empty_string(self):
         with self.assertRaises(TypeError):
-            AudioOps.get_audio_info("   ")
+            avAudioOps.get_audio_info("   ")
 
     # -----------------------------------------------------------------------
 
     def test_file_not_found(self):
         with self.assertRaises(FileNotFoundError):
-            AudioOps.get_audio_info("/nonexistent/path/rec.wav")
+            avAudioOps.get_audio_info("/nonexistent/path/rec.wav")
 
 # ---------------------------------------------------------------------------
 
@@ -95,28 +95,28 @@ class TestAudioDuration(unittest.TestCase):
     # -----------------------------------------------------------------------
 
     def test_returns_positive_float(self):
-        duration = AudioOps.audio_duration(TEST_WAV)
+        duration = avAudioOps.audio_duration(TEST_WAV)
         self.assertIsInstance(duration, float)
         self.assertGreater(duration, 0.)
 
     # -----------------------------------------------------------------------
 
     def test_consistent_with_get_audio_info(self):
-        info     = AudioOps.get_audio_info(TEST_WAV)
-        duration = AudioOps.audio_duration(TEST_WAV)
+        info     = avAudioOps.get_audio_info(TEST_WAV)
+        duration = avAudioOps.audio_duration(TEST_WAV)
         self.assertAlmostEqual(info["duration"], duration, places=3)
 
     # -----------------------------------------------------------------------
 
     def test_type_error_non_string(self):
         with self.assertRaises(TypeError):
-            AudioOps.audio_duration(None)
+            avAudioOps.audio_duration(None)
 
     # -----------------------------------------------------------------------
 
     def test_file_not_found(self):
         with self.assertRaises(FileNotFoundError):
-            AudioOps.audio_duration("/nonexistent/path/rec.wav")
+            avAudioOps.audio_duration("/nonexistent/path/rec.wav")
 
 # ---------------------------------------------------------------------------
 
@@ -142,7 +142,7 @@ class TestExtractAudioFromVideo(unittest.TestCase):
 
     def test_creates_wav_file(self):
         audio_out = os.path.join(self.__tmp_dir, "extracted.wav")
-        AudioOps.extract_audio_from_video(self.__test_mp4, audio_out)
+        avAudioOps.extract_audio_from_video(self.__test_mp4, audio_out)
         self.assertTrue(os.path.isfile(audio_out))
         self.assertGreater(os.path.getsize(audio_out), 0)
 
@@ -150,8 +150,8 @@ class TestExtractAudioFromVideo(unittest.TestCase):
 
     def test_extracted_audio_is_readable(self):
         audio_out = os.path.join(self.__tmp_dir, "extracted.wav")
-        AudioOps.extract_audio_from_video(self.__test_mp4, audio_out)
-        info = AudioOps.get_audio_info(audio_out)
+        avAudioOps.extract_audio_from_video(self.__test_mp4, audio_out)
+        info = avAudioOps.get_audio_info(audio_out)
         self.assertGreater(info["duration"], 0.)
 
     # -----------------------------------------------------------------------
@@ -159,24 +159,24 @@ class TestExtractAudioFromVideo(unittest.TestCase):
     def test_type_error_video_path(self):
         audio_out = os.path.join(self.__tmp_dir, "out.wav")
         with self.assertRaises(TypeError):
-            AudioOps.extract_audio_from_video(None, audio_out)
+            avAudioOps.extract_audio_from_video(None, audio_out)
         with self.assertRaises(TypeError):
-            AudioOps.extract_audio_from_video("", audio_out)
+            avAudioOps.extract_audio_from_video("", audio_out)
 
     # -----------------------------------------------------------------------
 
     def test_type_error_audio_out(self):
         with self.assertRaises(TypeError):
-            AudioOps.extract_audio_from_video(self.__test_mp4, None)
+            avAudioOps.extract_audio_from_video(self.__test_mp4, None)
         with self.assertRaises(TypeError):
-            AudioOps.extract_audio_from_video(self.__test_mp4, "")
+            avAudioOps.extract_audio_from_video(self.__test_mp4, "")
 
     # -----------------------------------------------------------------------
 
     def test_file_not_found_video(self):
         audio_out = os.path.join(self.__tmp_dir, "out.wav")
         with self.assertRaises(FileNotFoundError):
-            AudioOps.extract_audio_from_video("/nonexistent/video.mp4", audio_out)
+            avAudioOps.extract_audio_from_video("/nonexistent/video.mp4", audio_out)
 
 # ---------------------------------------------------------------------------
 
@@ -193,20 +193,20 @@ class TestTrimAudio(unittest.TestCase):
 
     def test_trim_from_beginning_shortens_audio(self):
         audio_out    = os.path.join(self.__tmp_dir, "trimmed.wav")
-        original_dur = AudioOps.audio_duration(TEST_WAV)
+        original_dur = avAudioOps.audio_duration(TEST_WAV)
         trim_dur     = 0.5
-        AudioOps.trim_audio(TEST_WAV, trim_dur, audio_out, begin=True)
-        result_dur   = AudioOps.audio_duration(audio_out)
+        avAudioOps.trim_audio(TEST_WAV, trim_dur, audio_out, begin=True)
+        result_dur   = avAudioOps.audio_duration(audio_out)
         self.assertAlmostEqual(original_dur - trim_dur, result_dur, delta=0.05)
 
     # -----------------------------------------------------------------------
 
     def test_trim_from_end_shortens_audio(self):
         audio_out    = os.path.join(self.__tmp_dir, "trimmed_end.wav")
-        original_dur = AudioOps.audio_duration(TEST_WAV)
+        original_dur = avAudioOps.audio_duration(TEST_WAV)
         trim_dur     = 0.5
-        AudioOps.trim_audio(TEST_WAV, trim_dur, audio_out, begin=False)
-        result_dur   = AudioOps.audio_duration(audio_out)
+        avAudioOps.trim_audio(TEST_WAV, trim_dur, audio_out, begin=False)
+        result_dur   = avAudioOps.audio_duration(audio_out)
         self.assertAlmostEqual(original_dur - trim_dur, result_dur, delta=0.05)
 
     # -----------------------------------------------------------------------
@@ -214,47 +214,47 @@ class TestTrimAudio(unittest.TestCase):
     def test_type_error_audio_in(self):
         audio_out = os.path.join(self.__tmp_dir, "out.wav")
         with self.assertRaises(TypeError):
-            AudioOps.trim_audio(None, 1.0, audio_out)
+            avAudioOps.trim_audio(None, 1.0, audio_out)
         with self.assertRaises(TypeError):
-            AudioOps.trim_audio("", 1.0, audio_out)
+            avAudioOps.trim_audio("", 1.0, audio_out)
 
     # -----------------------------------------------------------------------
 
     def test_type_error_audio_out(self):
         with self.assertRaises(TypeError):
-            AudioOps.trim_audio(TEST_WAV, 1.0, None)
+            avAudioOps.trim_audio(TEST_WAV, 1.0, None)
         with self.assertRaises(TypeError):
-            AudioOps.trim_audio(TEST_WAV, 1.0, "")
+            avAudioOps.trim_audio(TEST_WAV, 1.0, "")
 
     # -----------------------------------------------------------------------
 
     def test_type_error_trim_duration(self):
         audio_out = os.path.join(self.__tmp_dir, "out.wav")
         with self.assertRaises(TypeError):
-            AudioOps.trim_audio(TEST_WAV, "1.0", audio_out)
+            avAudioOps.trim_audio(TEST_WAV, "1.0", audio_out)
         with self.assertRaises(TypeError):
-            AudioOps.trim_audio(TEST_WAV, None, audio_out)
+            avAudioOps.trim_audio(TEST_WAV, None, audio_out)
 
     # -----------------------------------------------------------------------
 
     def test_value_error_trim_duration_zero(self):
         audio_out = os.path.join(self.__tmp_dir, "out.wav")
         with self.assertRaises(ValueError):
-            AudioOps.trim_audio(TEST_WAV, 0., audio_out)
+            avAudioOps.trim_audio(TEST_WAV, 0., audio_out)
 
     # -----------------------------------------------------------------------
 
     def test_value_error_trim_duration_negative(self):
         audio_out = os.path.join(self.__tmp_dir, "out.wav")
         with self.assertRaises(ValueError):
-            AudioOps.trim_audio(TEST_WAV, -1., audio_out)
+            avAudioOps.trim_audio(TEST_WAV, -1., audio_out)
 
     # -----------------------------------------------------------------------
 
     def test_file_not_found(self):
         audio_out = os.path.join(self.__tmp_dir, "out.wav")
         with self.assertRaises(FileNotFoundError):
-            AudioOps.trim_audio("/nonexistent/rec.wav", 1.0, audio_out)
+            avAudioOps.trim_audio("/nonexistent/rec.wav", 1.0, audio_out)
 
 # ---------------------------------------------------------------------------
 
@@ -271,29 +271,29 @@ class TestAddSilence(unittest.TestCase):
 
     def test_prepend_silence_lengthens_audio(self):
         audio_out    = os.path.join(self.__tmp_dir, "prepend.wav")
-        original_dur = AudioOps.audio_duration(TEST_WAV)
+        original_dur = avAudioOps.audio_duration(TEST_WAV)
         silence_dur  = 1.0
-        AudioOps.add_silence(TEST_WAV, silence_dur, audio_out, begin=True)
-        result_dur   = AudioOps.audio_duration(audio_out)
+        avAudioOps.add_silence(TEST_WAV, silence_dur, audio_out, begin=True)
+        result_dur   = avAudioOps.audio_duration(audio_out)
         self.assertAlmostEqual(original_dur + silence_dur, result_dur, delta=0.05)
 
     # -----------------------------------------------------------------------
 
     def test_append_silence_lengthens_audio(self):
         audio_out    = os.path.join(self.__tmp_dir, "append.wav")
-        original_dur = AudioOps.audio_duration(TEST_WAV)
+        original_dur = avAudioOps.audio_duration(TEST_WAV)
         silence_dur  = 1.0
-        AudioOps.add_silence(TEST_WAV, silence_dur, audio_out, begin=False)
-        result_dur   = AudioOps.audio_duration(audio_out)
+        avAudioOps.add_silence(TEST_WAV, silence_dur, audio_out, begin=False)
+        result_dur   = avAudioOps.audio_duration(audio_out)
         self.assertAlmostEqual(original_dur + silence_dur, result_dur, delta=0.05)
 
     # -----------------------------------------------------------------------
 
     def test_output_preserves_framerate(self):
         audio_out = os.path.join(self.__tmp_dir, "silence.wav")
-        info_in   = AudioOps.get_audio_info(TEST_WAV)
-        AudioOps.add_silence(TEST_WAV, 0.5, audio_out, begin=True)
-        info_out  = AudioOps.get_audio_info(audio_out)
+        info_in   = avAudioOps.get_audio_info(TEST_WAV)
+        avAudioOps.add_silence(TEST_WAV, 0.5, audio_out, begin=True)
+        info_out  = avAudioOps.get_audio_info(audio_out)
         self.assertEqual(info_in["framerate"], info_out["framerate"])
         self.assertEqual(info_in["nchannels"], info_out["nchannels"])
 
@@ -302,47 +302,150 @@ class TestAddSilence(unittest.TestCase):
     def test_type_error_audio_in(self):
         audio_out = os.path.join(self.__tmp_dir, "out.wav")
         with self.assertRaises(TypeError):
-            AudioOps.add_silence(None, 1.0, audio_out)
+            avAudioOps.add_silence(None, 1.0, audio_out)
         with self.assertRaises(TypeError):
-            AudioOps.add_silence("", 1.0, audio_out)
+            avAudioOps.add_silence("", 1.0, audio_out)
 
     # -----------------------------------------------------------------------
 
     def test_type_error_audio_out(self):
         with self.assertRaises(TypeError):
-            AudioOps.add_silence(TEST_WAV, 1.0, None)
+            avAudioOps.add_silence(TEST_WAV, 1.0, None)
         with self.assertRaises(TypeError):
-            AudioOps.add_silence(TEST_WAV, 1.0, "")
+            avAudioOps.add_silence(TEST_WAV, 1.0, "")
 
     # -----------------------------------------------------------------------
 
     def test_type_error_silence_duration(self):
         audio_out = os.path.join(self.__tmp_dir, "out.wav")
         with self.assertRaises(TypeError):
-            AudioOps.add_silence(TEST_WAV, "1.0", audio_out)
+            avAudioOps.add_silence(TEST_WAV, "1.0", audio_out)
         with self.assertRaises(TypeError):
-            AudioOps.add_silence(TEST_WAV, None, audio_out)
+            avAudioOps.add_silence(TEST_WAV, None, audio_out)
 
     # -----------------------------------------------------------------------
 
     def test_value_error_silence_duration_zero(self):
         audio_out = os.path.join(self.__tmp_dir, "out.wav")
         with self.assertRaises(ValueError):
-            AudioOps.add_silence(TEST_WAV, 0., audio_out)
+            avAudioOps.add_silence(TEST_WAV, 0., audio_out)
 
     # -----------------------------------------------------------------------
 
     def test_value_error_silence_duration_negative(self):
         audio_out = os.path.join(self.__tmp_dir, "out.wav")
         with self.assertRaises(ValueError):
-            AudioOps.add_silence(TEST_WAV, -0.5, audio_out)
+            avAudioOps.add_silence(TEST_WAV, -0.5, audio_out)
 
     # -----------------------------------------------------------------------
 
     def test_file_not_found(self):
         audio_out = os.path.join(self.__tmp_dir, "out.wav")
         with self.assertRaises(FileNotFoundError):
-            AudioOps.add_silence("/nonexistent/rec.wav", 1.0, audio_out)
+            avAudioOps.add_silence("/nonexistent/rec.wav", 1.0, audio_out)
+
+# ---------------------------------------------------------------------------
+
+
+class TestToMono(unittest.TestCase):
+
+    def setUp(self):
+        self.__tmp_dir = tempfile.mkdtemp()
+
+    def tearDown(self):
+        shutil.rmtree(self.__tmp_dir)
+
+    # -----------------------------------------------------------------------
+
+    def test_output_is_mono(self):
+        audio_out = os.path.join(self.__tmp_dir, "mono.wav")
+        avAudioOps.to_mono(TEST_WAV, audio_out)
+        info = avAudioOps.get_audio_info(audio_out)
+        self.assertEqual(1, info["nchannels"])
+
+    # -----------------------------------------------------------------------
+
+    def test_mono_input_preserves_framerate(self):
+        audio_out = os.path.join(self.__tmp_dir, "mono.wav")
+        info_in   = avAudioOps.get_audio_info(TEST_WAV)
+        avAudioOps.to_mono(TEST_WAV, audio_out)
+        info_out  = avAudioOps.get_audio_info(audio_out)
+        self.assertEqual(info_in["framerate"], info_out["framerate"])
+
+    # -----------------------------------------------------------------------
+
+    def test_type_error_audio_in(self):
+        audio_out = os.path.join(self.__tmp_dir, "out.wav")
+        with self.assertRaises(TypeError):
+            avAudioOps.to_mono(None, audio_out)
+        with self.assertRaises(TypeError):
+            avAudioOps.to_mono("", audio_out)
+
+    # -----------------------------------------------------------------------
+
+    def test_type_error_audio_out(self):
+        with self.assertRaises(TypeError):
+            avAudioOps.to_mono(TEST_WAV, None)
+        with self.assertRaises(TypeError):
+            avAudioOps.to_mono(TEST_WAV, "")
+
+    # -----------------------------------------------------------------------
+
+    def test_file_not_found(self):
+        audio_out = os.path.join(self.__tmp_dir, "out.wav")
+        with self.assertRaises(FileNotFoundError):
+            avAudioOps.to_mono("/nonexistent/rec.wav", audio_out)
+
+# ---------------------------------------------------------------------------
+
+
+class TestToMono16k(unittest.TestCase):
+
+    def setUp(self):
+        self.__tmp_dir = tempfile.mkdtemp()
+
+    def tearDown(self):
+        shutil.rmtree(self.__tmp_dir)
+
+    # -----------------------------------------------------------------------
+
+    def test_output_is_mono(self):
+        audio_out = os.path.join(self.__tmp_dir, "mono16k.wav")
+        avAudioOps.to_mono_16k(TEST_WAV, audio_out)
+        info = avAudioOps.get_audio_info(audio_out)
+        self.assertEqual(1, info["nchannels"])
+
+    # -----------------------------------------------------------------------
+
+    def test_output_framerate_is_16000(self):
+        audio_out = os.path.join(self.__tmp_dir, "mono16k.wav")
+        avAudioOps.to_mono_16k(TEST_WAV, audio_out)
+        info = avAudioOps.get_audio_info(audio_out)
+        self.assertEqual(16000, info["framerate"])
+
+    # -----------------------------------------------------------------------
+
+    def test_type_error_audio_in(self):
+        audio_out = os.path.join(self.__tmp_dir, "out.wav")
+        with self.assertRaises(TypeError):
+            avAudioOps.to_mono_16k(None, audio_out)
+        with self.assertRaises(TypeError):
+            avAudioOps.to_mono_16k("", audio_out)
+
+    # -----------------------------------------------------------------------
+
+    def test_type_error_audio_out(self):
+        with self.assertRaises(TypeError):
+            avAudioOps.to_mono_16k(TEST_WAV, None)
+        with self.assertRaises(TypeError):
+            avAudioOps.to_mono_16k(TEST_WAV, "")
+
+    # -----------------------------------------------------------------------
+
+    def test_file_not_found(self):
+        audio_out = os.path.join(self.__tmp_dir, "out.wav")
+        with self.assertRaises(FileNotFoundError):
+            avAudioOps.to_mono_16k("/nonexistent/rec.wav", audio_out)
 
 # ---------------------------------------------------------------------------
 
@@ -359,11 +462,11 @@ class TestAdjustAudioAtClap(unittest.TestCase):
 
     def test_equal_claps_copies_file(self):
         audio_out = os.path.join(self.__tmp_dir, "equal.wav")
-        AudioOps.adjust_audio_at_clap(TEST_WAV, 2.0, 2.0, audio_out)
+        avAudioOps.adjust_audio_at_clap(TEST_WAV, 2.0, 2.0, audio_out)
         self.assertTrue(os.path.isfile(audio_out))
         self.assertAlmostEqual(
-            AudioOps.audio_duration(TEST_WAV),
-            AudioOps.audio_duration(audio_out),
+            avAudioOps.audio_duration(TEST_WAV),
+            avAudioOps.audio_duration(audio_out),
             delta=0.01
         )
 
@@ -371,20 +474,20 @@ class TestAdjustAudioAtClap(unittest.TestCase):
 
     def test_audio_clap_later_trims_beginning(self):
         audio_out    = os.path.join(self.__tmp_dir, "trimmed.wav")
-        original_dur = AudioOps.audio_duration(TEST_WAV)
+        original_dur = avAudioOps.audio_duration(TEST_WAV)
         # audio_clap=2.0, reference=1.0 → delta=-1.0 → trim 1.0s from start
-        AudioOps.adjust_audio_at_clap(TEST_WAV, 2.0, 1.0, audio_out)
-        result_dur   = AudioOps.audio_duration(audio_out)
+        avAudioOps.adjust_audio_at_clap(TEST_WAV, 2.0, 1.0, audio_out)
+        result_dur   = avAudioOps.audio_duration(audio_out)
         self.assertAlmostEqual(original_dur - 1.0, result_dur, delta=0.05)
 
     # -----------------------------------------------------------------------
 
     def test_audio_clap_earlier_prepends_silence(self):
         audio_out    = os.path.join(self.__tmp_dir, "padded.wav")
-        original_dur = AudioOps.audio_duration(TEST_WAV)
+        original_dur = avAudioOps.audio_duration(TEST_WAV)
         # audio_clap=1.0, reference=2.0 → delta=+1.0 → prepend 1.0s silence
-        AudioOps.adjust_audio_at_clap(TEST_WAV, 1.0, 2.0, audio_out)
-        result_dur   = AudioOps.audio_duration(audio_out)
+        avAudioOps.adjust_audio_at_clap(TEST_WAV, 1.0, 2.0, audio_out)
+        result_dur   = avAudioOps.audio_duration(audio_out)
         self.assertAlmostEqual(original_dur + 1.0, result_dur, delta=0.05)
 
     # -----------------------------------------------------------------------
@@ -392,33 +495,33 @@ class TestAdjustAudioAtClap(unittest.TestCase):
     def test_type_error_audio_in(self):
         audio_out = os.path.join(self.__tmp_dir, "out.wav")
         with self.assertRaises(TypeError):
-            AudioOps.adjust_audio_at_clap(None, 1.0, 1.0, audio_out)
+            avAudioOps.adjust_audio_at_clap(None, 1.0, 1.0, audio_out)
         with self.assertRaises(TypeError):
-            AudioOps.adjust_audio_at_clap("", 1.0, 1.0, audio_out)
+            avAudioOps.adjust_audio_at_clap("", 1.0, 1.0, audio_out)
 
     # -----------------------------------------------------------------------
 
     def test_type_error_audio_out(self):
         with self.assertRaises(TypeError):
-            AudioOps.adjust_audio_at_clap(TEST_WAV, 1.0, 1.0, None)
+            avAudioOps.adjust_audio_at_clap(TEST_WAV, 1.0, 1.0, None)
         with self.assertRaises(TypeError):
-            AudioOps.adjust_audio_at_clap(TEST_WAV, 1.0, 1.0, "")
+            avAudioOps.adjust_audio_at_clap(TEST_WAV, 1.0, 1.0, "")
 
     # -----------------------------------------------------------------------
 
     def test_type_error_clap_times(self):
         audio_out = os.path.join(self.__tmp_dir, "out.wav")
         with self.assertRaises(TypeError):
-            AudioOps.adjust_audio_at_clap(TEST_WAV, "1.0", 1.0, audio_out)
+            avAudioOps.adjust_audio_at_clap(TEST_WAV, "1.0", 1.0, audio_out)
         with self.assertRaises(TypeError):
-            AudioOps.adjust_audio_at_clap(TEST_WAV, 1.0, None, audio_out)
+            avAudioOps.adjust_audio_at_clap(TEST_WAV, 1.0, None, audio_out)
 
     # -----------------------------------------------------------------------
 
     def test_file_not_found(self):
         audio_out = os.path.join(self.__tmp_dir, "out.wav")
         with self.assertRaises(FileNotFoundError):
-            AudioOps.adjust_audio_at_clap("/nonexistent/rec.wav", 1.0, 1.0, audio_out)
+            avAudioOps.adjust_audio_at_clap("/nonexistent/rec.wav", 1.0, 1.0, audio_out)
 
 # ---------------------------------------------------------------------------
 
@@ -435,75 +538,75 @@ class TestAdjustAudioDuration(unittest.TestCase):
 
     def test_shorter_audio_is_padded(self):
         audio_out    = os.path.join(self.__tmp_dir, "padded.wav")
-        original_dur = AudioOps.audio_duration(TEST_WAV)
+        original_dur = avAudioOps.audio_duration(TEST_WAV)
         target_dur   = original_dur + 2.0
-        AudioOps.adjust_audio_duration(TEST_WAV, target_dur, audio_out)
-        self.assertAlmostEqual(target_dur, AudioOps.audio_duration(audio_out), delta=0.05)
+        avAudioOps.adjust_audio_duration(TEST_WAV, target_dur, audio_out)
+        self.assertAlmostEqual(target_dur, avAudioOps.audio_duration(audio_out), delta=0.05)
 
     # -----------------------------------------------------------------------
 
     def test_longer_audio_is_trimmed(self):
         audio_out    = os.path.join(self.__tmp_dir, "trimmed.wav")
-        original_dur = AudioOps.audio_duration(TEST_WAV)
+        original_dur = avAudioOps.audio_duration(TEST_WAV)
         target_dur   = original_dur - 1.0
-        AudioOps.adjust_audio_duration(TEST_WAV, target_dur, audio_out)
-        self.assertAlmostEqual(target_dur, AudioOps.audio_duration(audio_out), delta=0.05)
+        avAudioOps.adjust_audio_duration(TEST_WAV, target_dur, audio_out)
+        self.assertAlmostEqual(target_dur, avAudioOps.audio_duration(audio_out), delta=0.05)
 
     # -----------------------------------------------------------------------
 
     def test_equal_duration_copies_file(self):
         audio_out    = os.path.join(self.__tmp_dir, "copy.wav")
-        original_dur = AudioOps.audio_duration(TEST_WAV)
-        AudioOps.adjust_audio_duration(TEST_WAV, original_dur, audio_out)
+        original_dur = avAudioOps.audio_duration(TEST_WAV)
+        avAudioOps.adjust_audio_duration(TEST_WAV, original_dur, audio_out)
         self.assertTrue(os.path.isfile(audio_out))
-        self.assertAlmostEqual(original_dur, AudioOps.audio_duration(audio_out), delta=0.01)
+        self.assertAlmostEqual(original_dur, avAudioOps.audio_duration(audio_out), delta=0.01)
 
     # -----------------------------------------------------------------------
 
     def test_type_error_audio_in(self):
         audio_out = os.path.join(self.__tmp_dir, "out.wav")
         with self.assertRaises(TypeError):
-            AudioOps.adjust_audio_duration(None, 5.0, audio_out)
+            avAudioOps.adjust_audio_duration(None, 5.0, audio_out)
         with self.assertRaises(TypeError):
-            AudioOps.adjust_audio_duration("", 5.0, audio_out)
+            avAudioOps.adjust_audio_duration("", 5.0, audio_out)
 
     # -----------------------------------------------------------------------
 
     def test_type_error_audio_out(self):
         with self.assertRaises(TypeError):
-            AudioOps.adjust_audio_duration(TEST_WAV, 5.0, None)
+            avAudioOps.adjust_audio_duration(TEST_WAV, 5.0, None)
         with self.assertRaises(TypeError):
-            AudioOps.adjust_audio_duration(TEST_WAV, 5.0, "")
+            avAudioOps.adjust_audio_duration(TEST_WAV, 5.0, "")
 
     # -----------------------------------------------------------------------
 
     def test_type_error_target_duration(self):
         audio_out = os.path.join(self.__tmp_dir, "out.wav")
         with self.assertRaises(TypeError):
-            AudioOps.adjust_audio_duration(TEST_WAV, "5.0", audio_out)
+            avAudioOps.adjust_audio_duration(TEST_WAV, "5.0", audio_out)
         with self.assertRaises(TypeError):
-            AudioOps.adjust_audio_duration(TEST_WAV, None, audio_out)
+            avAudioOps.adjust_audio_duration(TEST_WAV, None, audio_out)
 
     # -----------------------------------------------------------------------
 
     def test_value_error_target_duration_zero(self):
         audio_out = os.path.join(self.__tmp_dir, "out.wav")
         with self.assertRaises(ValueError):
-            AudioOps.adjust_audio_duration(TEST_WAV, 0., audio_out)
+            avAudioOps.adjust_audio_duration(TEST_WAV, 0., audio_out)
 
     # -----------------------------------------------------------------------
 
     def test_value_error_target_duration_negative(self):
         audio_out = os.path.join(self.__tmp_dir, "out.wav")
         with self.assertRaises(ValueError):
-            AudioOps.adjust_audio_duration(TEST_WAV, -1., audio_out)
+            avAudioOps.adjust_audio_duration(TEST_WAV, -1., audio_out)
 
     # -----------------------------------------------------------------------
 
     def test_file_not_found(self):
         audio_out = os.path.join(self.__tmp_dir, "out.wav")
         with self.assertRaises(FileNotFoundError):
-            AudioOps.adjust_audio_duration("/nonexistent/rec.wav", 5.0, audio_out)
+            avAudioOps.adjust_audio_duration("/nonexistent/rec.wav", 5.0, audio_out)
 
 # ---------------------------------------------------------------------------
 

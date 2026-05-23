@@ -7,12 +7,12 @@ synchronization workflow.
 
 | Class | Role |
 |---|---|
-| `MediaFile` | One media file (audio or video) with its clap time and optional crop region |
-| `Session` | One recording session: a pair of media files, a delay, and an expected duration |
-| `SyncResult` | Output of a pipeline run: success flag, synced file paths, processing report |
-| `CsvReader` | Parse an AViSS CSV file into a list of `Session` objects |
-| `Pipeline` | Execute all synchronization steps for one `Session`, return a `SyncResult` |
-| `Exporter` | Apply optional post-pipeline operations (rotation, SPPAS export, montage) |
+| `avMediaFile` | One media file (audio or video) with its clap time and optional crop region |
+| `avSession` | One recording session: a pair of media files, a delay, and an expected duration |
+| `avSyncResult` | Output of a pipeline run: success flag, synced file paths, processing report |
+| `avCsvReader` | Parse an AViSS CSV file into a list of `avSession` objects |
+| `avPipeline` | Execute all synchronization steps for one `avSession`, return a `avSyncResult` |
+| `avExporter` | Apply optional post-pipeline operations (rotation, SPPAS export, montage) |
 | `cfg` | Central configuration object (column names, output fps, CRF, copyright…) |
 
 ## Workflow
@@ -21,13 +21,13 @@ synchronization workflow.
 CSV file
    │
    ▼
-CsvReader.read()  →  [Session, Session, …]
+avCsvReader.read()  →  [avSession, avSession, …]
                             │
                             ▼
-                       Pipeline.run()  →  SyncResult
+                       avPipeline.run()  →  avSyncResult
                                                │
                                                ▼
-                                          Exporter
+                                          avExporter
                                     (to_sppas / montage)
 ```
 
@@ -36,16 +36,16 @@ CsvReader.read()  →  [Session, Session, …]
 Synchronize one row of a CSV file:
 
 ```python
-from aviss import CsvReader, Pipeline, Exporter
+from aviss import avCsvReader, avPipeline, avExporter
 
-reader   = CsvReader("corpus/sessions.csv")
+reader   = avCsvReader("corpus/sessions.csv")
 session  = reader.read_row(1)
 
-pipeline = Pipeline(session)
+pipeline = avPipeline(session)
 result   = pipeline.run()
 
 if result.success is True:
-    exporter = Exporter(result, stem="Laurent_S09_sent",
+    exporter = avExporter(result, stem="Laurent_S09_sent",
                         work_dir="Laurent_S09_sent")
     exporter.to_sppas()
     exporter.montage()
@@ -54,13 +54,13 @@ if result.success is True:
 Synchronize all rows:
 
 ```python
-from aviss import CsvReader, Pipeline
+from aviss import avCsvReader, avPipeline
 
-reader   = CsvReader("corpus/sessions.csv")
+reader   = avCsvReader("corpus/sessions.csv")
 sessions = reader.read()
 
 for session in sessions:
-    result = Pipeline(session).run()
+    result = avPipeline(session).run()
     if result.success is False:
         print(result.report)
 ```

@@ -33,13 +33,13 @@ import shutil
 
 import audioopy.aio
 
-from aviss.utils import check_file, run_command
+from aviss.utils import aviss_logger, check_file, run_command
 
 # ---------------------------------------------------------------------------
 # Audio metadata
 # ---------------------------------------------------------------------------
 
-class AudioOps:
+class avAudioOps:
     """Static methods for audio file operations used by the AViSS pipeline.
 
     audioopy is used for reading audio metadata (duration, framerate, channels,
@@ -47,10 +47,10 @@ class AudioOps:
     concatenation, resampling, channel mixing).
 
     :example:
-    >>> info = AudioOps.get_audio_info("/data/rec.wav")
+    >>> info = avAudioOps.get_audio_info("/data/rec.wav")
     >>> info["duration"]
     248.32
-    >>> AudioOps.audio_duration("/data/rec.wav")
+    >>> avAudioOps.audio_duration("/data/rec.wav")
     248.32
 
     """
@@ -179,7 +179,7 @@ class AudioOps:
         :raises: IOError: audioopy could not read the file.
 
         """
-        info = AudioOps.get_audio_info(path)
+        info = avAudioOps.get_audio_info(path)
         return info["duration"]
 
     # ---------------------------------------------------------------------------
@@ -211,7 +211,7 @@ class AudioOps:
             raise ValueError("trim_duration must be strictly positive.")
         check_file(audio_in)
 
-        cur_dur = AudioOps.audio_duration(audio_in)
+        cur_dur = avAudioOps.audio_duration(audio_in)
         remaining = cur_dur - float(trim_duration)
 
         if begin is True:
@@ -252,7 +252,7 @@ class AudioOps:
             raise ValueError("silence_duration must be strictly positive.")
         check_file(audio_in)
 
-        info = AudioOps.get_audio_info(audio_in)
+        info = avAudioOps.get_audio_info(audio_in)
         silence_tmp = os.path.join(os.path.dirname(audio_out), "_silence_tmp.wav")
 
         # Generate a silent WAV matching the input format.
@@ -312,15 +312,16 @@ class AudioOps:
         delta = float(reference_clap) - float(audio_clap)
 
         if delta == 0.:
+            aviss_logger.write("Already matching. Nothing to do.")
             shutil.copy(audio_in, audio_out)
 
         elif delta < 0.:
-            # The reference clap is before the audio clap: trim the beginning.
-            AudioOps.trim_audio(audio_in, -delta, audio_out, begin=True)
+            aviss_logger.write(f"Trim the beginning of the audio of {-delta:f} seconds")
+            avAudioOps.trim_audio(audio_in, -delta, audio_out, begin=True)
 
         else:
-            # The reference clap is after the audio clap: prepend silence.
-            AudioOps.add_silence(audio_in, delta, audio_out, begin=True)
+            aviss_logger.write(f"Add {delta:f} seconds of silence at the beginning of the audio")
+            avAudioOps.add_silence(audio_in, delta, audio_out, begin=True)
 
     # ---------------------------------------------------------------------------
 
@@ -353,19 +354,21 @@ class AudioOps:
             raise ValueError("target_duration must be strictly positive.")
         check_file(audio_in)
 
-        cur_dur = AudioOps.audio_duration(audio_in)
+        cur_dur = avAudioOps.audio_duration(audio_in)
+        aviss_logger.write(f"Duration of the audio is {cur_dur:f} seconds")
         delta = float(target_duration) - cur_dur
 
         if delta == 0.:
+            aviss_logger.write("Already matching. Nothing to do.")
             shutil.copy(audio_in, audio_out)
 
         elif delta > 0.:
-            # Audio is shorter than expected: pad the end with silence.
-            AudioOps.add_silence(audio_in, delta, audio_out, begin=False)
+            aviss_logger.write(f"Add {delta:f} seconds of silence at the end of the audio")
+            avAudioOps.add_silence(audio_in, delta, audio_out, begin=False)
 
         else:
-            # Audio is longer than expected: trim the end.
-            AudioOps.trim_audio(audio_in, -delta, audio_out, begin=False)
+            aviss_logger.write(f"Trim the end of the audio of {-delta:f} seconds")
+            avAudioOps.trim_audio(audio_in, -delta, audio_out, begin=False)
 
     # ---------------------------------------------------------------------------
     # SPPAS preparation
@@ -390,7 +393,7 @@ class AudioOps:
             raise TypeError("audio_out must be a non-empty string.")
         check_file(audio_in)
 
-        info = AudioOps.get_audio_info(audio_in)
+        info = avAudioOps.get_audio_info(audio_in)
         if info["nchannels"] == 1:
             shutil.copy(audio_in, audio_out)
             return
