@@ -450,6 +450,41 @@ result must be a single audio file before synchronization.
 Requires `sox`. Both input files must be mono WAV at the same sample rate.
 
 
+### extract_audio.py — extract audio from a video
+
+Extracts the audio track of a video file and converts it to mono WAV at
+48 kHz, 16-bit PCM.
+
+```bash
+> python scripts/extract_audio.py video.mp4
+```
+
+| Argument | Description |
+|---|---|
+| `video` | Input video file |
+
+The output file is written next to the input video with a `.wav` extension.
+Requires `ffmpeg`.
+
+
+### mp4_to_webm.py — convert MP4 to WebM
+
+Converts an MP4 video to WebM (libvpx-vp9, two-pass encoding, CRF 16).
+An optional audio file can replace the video's audio track in the output.
+
+```bash
+> python scripts/mp4_to_webm.py video.mp4 [audio.wav]
+```
+
+| Argument | Description |
+|---|---|
+| `video` | Input MP4 file |
+| `audio` | Optional audio file to mux into the output |
+
+The output file is written next to the input video with a `.webm` extension.
+Requires `ffmpeg`.
+
+
 ## Projects using AViSS
 
 AViSS was developed for the following corpora at LPL, CNRS:

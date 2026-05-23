@@ -270,7 +270,17 @@ aviss_logger = AViSSLogger()
 # ---------------------------------------------------------------------------
 
 
-def run_command(command: str) -> list:
+def __collect_output_lines(result) -> list:
+    lines = []
+    for stream in (result.stdout, result.stderr):
+        if stream is not None:
+            for line in stream.decode(errors="replace").splitlines():
+                if len(line.strip()) > 0:
+                    lines.append(line.strip())
+    return lines
+
+
+def run_command(command: str, check_returncode: bool = False) -> list:
     """Execute a shell command, log it, and return its output lines.
 
     The command is split with shlex so it is safe to pass a full command
@@ -278,9 +288,12 @@ def run_command(command: str) -> list:
     to aviss_logger.
 
     :param command: (str) Full command string to execute.
+    :param check_returncode: (bool) If True, raise EnvironmentError when the
+        command exits with a non-zero return code.
     :return: (list) List of non-empty output lines (stdout + stderr).
     :raises: TypeError: command is not a non-empty string.
-    :raises: EnvironmentError: The command could not be executed.
+    :raises: EnvironmentError: The command could not be executed, or exited
+        with a non-zero return code and check_returncode is True.
 
     :example:
     >>> lines = run_command("ffmpeg -version")
@@ -303,18 +316,18 @@ def run_command(command: str) -> list:
     except OSError as e:
         raise EnvironmentError(f"Command could not be executed: {command!r}. Reason: {e}.")
 
-    lines = []
-    for stream in (result.stdout, result.stderr):
-        if stream is not None:
-            for line in stream.decode(errors="replace").splitlines():
-                if len(line.strip()) > 0:
-                    lines.append(line.strip())
+    lines = __collect_output_lines(result)
 
     if len(lines) == 0:
         aviss_logger.write("Done.")
     else:
         for line in lines:
             aviss_logger.write(line)
+
+    if check_returncode is True and result.returncode != 0:
+        raise EnvironmentError(
+            f"Command exited with code {result.returncode}: {command!r}."
+        )
 
     return lines
 

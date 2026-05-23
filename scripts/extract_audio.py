@@ -1,8 +1,8 @@
 """
-:filename: mix_mono.py
+:filename: extract_audio.py
 :author: Brigitte Bigi
 :contact: contact@sppas.org
-:summary: Mix two mono audio files into a single mono file.
+:summary: Extract the audio track from a video file as WAV 48 kHz 16-bit.
 
 ..
     This file is part of AViSS.
@@ -29,14 +29,14 @@
 Usage
 -----
 
-    python mix_mono.py audio1.wav audio2.wav output.wav
+    python extract_audio.py video
 
-Both input files must be mono WAV. The output is a mono WAV at the same
-sample rate and bit depth as audio1.
+The output file is written next to the input video with a .wav extension.
+The audio is converted to 48 kHz, 16-bit PCM.
 
 Requirements
 ------------
-    sox
+    ffmpeg
 
 """
 
@@ -50,12 +50,10 @@ from aviss.utils import check_file, check_command, run_command
 
 PROGRAM = os.path.abspath(__file__)
 parser = ArgumentParser(
-    usage=f"python {os.path.basename(PROGRAM)} audio1 audio2 output",
-    description="Mix two mono audio files into a single mono file."
+    usage=f"python {os.path.basename(PROGRAM)} video",
+    description="Extract the audio track from a video file as WAV 48 kHz 16-bit."
 )
-parser.add_argument("audio1", help="First mono WAV file.")
-parser.add_argument("audio2", help="Second mono WAV file.")
-parser.add_argument("output", help="Output mono WAV file.")
+parser.add_argument("video", help="Input video file.")
 
 if len(sys.argv) <= 1:
     parser.print_help()
@@ -66,24 +64,25 @@ args = parser.parse_args()
 # ---------------------------------------------------------------------------
 
 try:
-    check_command("sox")
-    check_file(args.audio1)
-    check_file(args.audio2)
+    check_command("ffmpeg")
+    check_file(args.video)
 except (EnvironmentError, FileNotFoundError, ValueError) as e:
     print(f"ERROR: {e}")
     sys.exit(1)
 
-if os.path.isfile(args.output) is True:
-    print(f"ERROR: output file already exists: {args.output}")
+wav_out = os.path.splitext(args.video)[0] + ".wav"
+if os.path.isfile(wav_out) is True:
+    print(f"ERROR: output file already exists: {wav_out}")
     sys.exit(1)
 
-# Sox merges two mono files into one mono file by averaging the two channels.
 try:
-    run_command(f"sox -m '{args.audio1}' '{args.audio2}' '{args.output}'",
-                check_returncode=True)
-    check_file(args.output)
+    run_command(
+        f"ffmpeg -i '{args.video}' -vn -c:a pcm_s16le -ar 48000 '{wav_out}'",
+        check_returncode=True
+    )
+    check_file(wav_out)
 except (EnvironmentError, FileNotFoundError, ValueError) as e:
     print(f"ERROR: {e}")
     sys.exit(1)
 
-print(f"Done: {args.output}")
+print(f"Done: {wav_out}")
