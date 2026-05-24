@@ -805,12 +805,12 @@ Requires <code>ffmpeg</code>.</p>
 
 <h2>Projects using AViSS</h2>
 
-<p>AViSS was developed for the following corpora at LPL, CNRS:</p>
-
-<ul>
-<li>CLeLfPC — Corpus de Lecture en Langue Française Parlée Complétée</li>
-<li>AutoCuedSpeech — automatic annotation of cued speech recordings</li>
-</ul>
+<p>AViSS was developed at LPL, CNRS, to prepare the
+<a href="https://hdl.handle.net/11403/clelfpc">CLeLfPC corpus</a>
+(Corpus de Lecture en Langue Française Parlée Complétée).
+This work is carried out in the framework of the
+<a href="https://auto-cuedspeech.org">AutoCuedSpeech</a> project,
+which partially funded AViSS development.</p>
 
 <p><em>Contact the author if you want to add a project here.</em></p>
 
@@ -860,10 +860,15 @@ along with this program. If not, see <a href="https://www.gnu.org/licenses/">htt
 <li><p>Version 1.0:</p>
 
 <ul>
-<li>Initial version.</li>
-<li>Support for ANY audio files and ANY video files per session.</li>
-<li>Optional crop, copyright overlay, rotation, mono 16 kHz WAV export,
-MP4 and WebM montage.</li>
+<li>Initial version. Faithful Python migration of the original montage
+scripts (B. Bigi, CNRS/LPL 2021-2024) distributed with CLeLfPC.</li>
+<li>Frame-accurate, clap-based synchronization of audio and video files.</li>
+<li>Support for any number of audio and video files per session.</li>
+<li>Optional video crop, copyright overlay, rotation (portrait mode).</li>
+<li>Mono 16 kHz WAV output (all channels mixed down).</li>
+<li>Optional MP4 montage (H.264/AAC) and WebM montage (libvpx-vp9, two-pass).</li>
+<li>Batch processing from a CSV file.</li>
+<li>Fully configurable column names and output filename structure.</li>
 </ul></li>
 </ul>
     </section>
