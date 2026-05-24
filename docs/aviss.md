@@ -1978,8 +1978,9 @@ def __step_prepare(self) -> None:
         """
     for cmd in avPipeline.REQUIRED_COMMANDS:
         check_command(cmd)
-    if self.__session.all_files_exist() is False:
-        raise FileNotFoundError('One or more media files declared in the session do not exist on disk.')
+    missing = [m.path for m in self.__session.audios + self.__session.videos if m.exists() is False]
+    if len(missing) > 0:
+        raise FileNotFoundError('Media file(s) not found: ' + ', '.join((repr(p) for p in missing)))
     self.__stem = build_output_name(self.__session.output_name_meta, cfg.output.output_name_cols, cfg.output.output_sep)
     if len(self.__stem) == 0:
         raise ValueError('The output filename stem is empty. Check cfg.output.output_name_cols and the CSV metadata columns.')
@@ -2601,7 +2602,7 @@ def __all_synced_audios(self) -> list:
     """Return all full-quality audio files for this stem, in session order.
 
         Full-quality files are named <stem>*-audio.wav (original sample rate
-        and channel count, before the 16 kHz mono conversion for SPPAS).
+        and channel count, before the 16 kHz mono conversion).
 
         :return: (list) Sorted list of paths to -audio.wav files.
 
@@ -2612,7 +2613,7 @@ def __all_synced_audios(self) -> list:
 *Return all full-quality audio files for this stem, in session order.*
 
 Full-quality files are named <stem>*-audio.wav (original sample rate
-and channel count, before the 16 kHz mono conversion for SPPAS).
+and channel count, before the 16 kHz mono conversion).
 
 ##### Returns
 

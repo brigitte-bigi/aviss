@@ -134,6 +134,33 @@ def _build_parser() -> argparse.ArgumentParser:
 # ---------------------------------------------------------------------------
 
 
+def _report_failure(stem: str, work_dir: str, report: list) -> None:
+    print(f"  FAILED: {stem}")
+    for message in report:
+        print(f"    {message}")
+    if os.path.isdir(work_dir) is False:
+        fail_log = stem + "-failed.log"
+        with open(fail_log, "w", encoding="utf-8") as fh:
+            for message in report:
+                fh.write(message + "\n")
+        print(f"    Log: {fail_log}")
+
+
+def _run_exports(result, args: argparse.Namespace, stem: str, work_dir: str) -> bool:
+    try:
+        exporter = avExporter(result, stem=stem, work_dir=work_dir)
+        if cfg.output.rotate is not None:
+            exporter.rotate(transpose_list=cfg.output.rotate)
+        if args.montage is True:
+            exporter.montage()
+        if args.webm is True:
+            exporter.webm()
+    except Exception as e:
+        print(f"  Export failed: {e}")
+        return False
+    return True
+
+
 def _process_session(session, args: argparse.Namespace) -> bool:
     """Run the pipeline and optional exports for a single session.
 
@@ -161,32 +188,25 @@ def _process_session(session, args: argparse.Namespace) -> bool:
             print(f"    {message}")
 
     if result.success is False:
-        print(f"  FAILED: {stem}")
-        for message in result.report:
-            if message.startswith("ERROR") is True:
-                print(f"    {message}")
+        _report_failure(stem, work_dir, result.report)
         return False
 
-    # Optional export operations.
     if args.montage is True or args.webm is True or cfg.output.rotate is not None:
-        try:
-            exporter = avExporter(result, stem=stem, work_dir=work_dir)
-
-            if cfg.output.rotate is not None:
-                exporter.rotate(transpose_list=cfg.output.rotate)
-            if args.montage is True:
-                exporter.montage()
-            if args.webm is True:
-                exporter.webm()
-        
-        except Exception as e:
-            print(f"  Export failed: {e}")
+        if _run_exports(result, args, stem, work_dir) is False:
             return False
 
     print(f"  OK: {stem}")
     return True
 
 # ---------------------------------------------------------------------------
+
+
+def _print_summary(n_ok: int, n_failed: int, failed_stems: list) -> None:
+    print(f"\nDone: {n_ok} succeeded, {n_failed} failed.")
+    if len(failed_stems) > 0:
+        print("Failed sessions:")
+        for stem in failed_stems:
+            print(f"  - {stem}")
 
 
 def _cmd_sync(args: argparse.Namespace) -> int:
@@ -229,16 +249,23 @@ def _cmd_sync(args: argparse.Namespace) -> int:
         return 0
 
     print(f"  {len(sessions)} session(s) to process.")
-    n_ok     = 0
-    n_failed = 0
+    n_ok      = 0
+    n_failed  = 0
+    failed_stems = []
     for session in sessions:
         success = _process_session(session, args)
         if success is True:
             n_ok += 1
         else:
             n_failed += 1
+            stem = build_output_name(
+                session.output_name_meta,
+                cfg.output.output_name_cols,
+                cfg.output.output_sep
+            )
+            failed_stems.append(stem)
 
-    print(f"\nDone: {n_ok} succeeded, {n_failed} failed.")
+    _print_summary(n_ok, n_failed, failed_stems)
     return 0 if n_failed == 0 else 1
 
 # ---------------------------------------------------------------------------

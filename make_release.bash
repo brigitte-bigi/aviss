@@ -15,7 +15,7 @@ PACKAGE_NAME=`pwd`/${PROGRAM_NAME}-${PROGRAM_VERSION}.zip
 echo "Create release for AViSS - "$PROGRAM_VERSION
 
 echo "Create documentation"
-python makedoc.py
+.venv/bin/python makedoc.py
 
 echo "Delete any __pycache__ folder"
   for pycache in `find . -name "__pycache__"`;
@@ -35,7 +35,7 @@ echo "Create 'zip' archive" $PACKAGE_NAME
   fi
 
 echo "Create wheel"
-python -m build
+.venv/bin/python -m build
 
 # transfert to pypi.org:
 # .venv/bin/twine upload -r pypi dist/aviss-${PROGRAM_VERSION}-py3-none-any.whl

@@ -405,7 +405,7 @@ class avAudioOps:
 
     @staticmethod
     def to_mono_16k(audio_in: str, audio_out: str) -> None:
-        """Convert an audio file to mono at 16000 Hz for SPPAS processing.
+        """Convert an audio file to mono at 16000 Hz.
 
         :param audio_in: (str) Path to the input audio file.
         :param audio_out: (str) Path for the output mono 16000 Hz WAV file.

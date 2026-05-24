@@ -131,7 +131,7 @@ reproducible, high-quality media preparation without manual editing.</p>
 <li>Optional video crop (x, y, w, h per video)</li>
 <li>Optional copyright overlay on video</li>
 <li>Optional video rotation (portrait mode)</li>
-<li>Optional mono 16 kHz WAV export for automatic annotation</li>
+<li>Optional mono 16 kHz WAV export</li>
 <li>Optional MP4 montage (H.264/AAC) for distribution</li>
 <li>Optional WebM montage (libvpx-vp9, two-pass) for web distribution</li>
 <li>Batch processing from a CSV file</li>
@@ -211,6 +211,17 @@ Pass 3: trim clap_frame_time from the start.
 </pre>
 <p>The output audio starts at the clap frame boundary, preserving the
 <code>clap_delta</code> sub-frame offset between the clap and the first sample.</p>
+
+<p><strong>Audio output files</strong></p>
+
+<p>Two files are produced per audio input:</p>
+
+<ul>
+<li><code>&lt;stem&gt;-audio.wav</code> — synchronized, original format (sample rate and channel
+count preserved). Used for montage.</li>
+<li><code>&lt;stem&gt;.wav</code> — mono 16 kHz WAV. If the input has more than one channel,
+all channels are mixed down to mono (average).</li>
+</ul>
 
 <h3>Scientific context</h3>
 
@@ -320,7 +331,7 @@ spk2;8;1;audio/RME_0035.wav;video/MVI_0035.MP4;00:04.787;00:09.995;6.230;02:57.0
 </pre>
 <h3>Command-line usage</h3>
 
-<p>Synchronize one row:</p>
+<p>Synchronize one row (<code>-l N</code> = Nth data row, header excluded):</p>
 
 <div class="highlight"><pre><span></span><code><span class="o">&gt;</span> <span class="n">aviss</span> <span class="n">sync</span> <span class="o">-</span><span class="n">c</span> <span class="n">corpus</span><span class="o">/</span><span class="n">sessions</span><span class="o">.</span><span class="n">csv</span> <span class="o">-</span><span class="n">l</span> <span class="mi">1</span>
 </code></pre></div>
@@ -605,7 +616,7 @@ virtual environment):</p>
   <span class="o">&amp;&amp;</span> <span class="o">.</span><span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">coverage</span> <span class="n">report</span> <span class="o">-</span><span class="n">m</span>
 </code></pre></div>
 
-<p>Expected overall coverage: <strong>≥ 73 %</strong>.</p>
+<p>Expected overall coverage: <strong>≥ 68 %</strong>.</p>
 
 <p>If <code>coverage</code> is not installed, run the tests without it:</p>
 

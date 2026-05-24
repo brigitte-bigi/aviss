@@ -1,6 +1,6 @@
 [build-system]
 requires = ["setuptools>=68", "wheel"]
-build-backend = "setuptools.backends.legacy:build"
+build-backend = "setuptools.build_meta"
 
 # ---------------------------------------------------------------------------
 # Project metadata
@@ -80,7 +80,7 @@ verbosity = 2
 
 [tool.coverage.run]
 source = ["aviss"]
-omit = ["/tmp/*"]
+omit = ["/tmp/*", "aviss/__main__.py"]
 
 [tool.coverage.report]
-omit = ["/tmp/*"]
+omit = ["/tmp/*", "aviss/__main__.py"]

@@ -105,7 +105,7 @@ class avExporter:
         """Return all full-quality audio files for this stem, in session order.
 
         Full-quality files are named <stem>*-audio.wav (original sample rate
-        and channel count, before the 16 kHz mono conversion for SPPAS).
+        and channel count, before the 16 kHz mono conversion).
 
         :return: (list) Sorted list of paths to -audio.wav files.
 

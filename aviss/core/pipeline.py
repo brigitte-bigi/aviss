@@ -173,9 +173,13 @@ class avPipeline:
         for cmd in avPipeline.REQUIRED_COMMANDS:
             check_command(cmd)
 
-        if self.__session.all_files_exist() is False:
+        missing = [
+            m.path for m in self.__session.audios + self.__session.videos
+            if m.exists() is False
+        ]
+        if len(missing) > 0:
             raise FileNotFoundError(
-                "One or more media files declared in the session do not exist on disk."
+                "Media file(s) not found: " + ", ".join(repr(p) for p in missing)
             )
 
         self.__stem = build_output_name(

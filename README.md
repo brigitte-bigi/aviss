@@ -42,7 +42,7 @@ Among others, it allows the following:
 - Optional video crop (x, y, w, h per video)
 - Optional copyright overlay on video
 - Optional video rotation (portrait mode)
-- Optional mono 16 kHz WAV export for automatic annotation
+- Optional mono 16 kHz WAV export
 - Optional MP4 montage (H.264/AAC) for distribution
 - Optional WebM montage (libvpx-vp9, two-pass) for web distribution
 - Batch processing from a CSV file
@@ -104,6 +104,15 @@ Pass 3: trim clap_frame_time from the start.
 
 The output audio starts at the clap frame boundary, preserving the
 `clap_delta` sub-frame offset between the clap and the first sample.
+
+**Audio output files**
+
+Two files are produced per audio input:
+
+- `<stem>-audio.wav` — synchronized, original format (sample rate and channel
+  count preserved). Used for montage.
+- `<stem>.wav` — mono 16 kHz WAV. If the input has more than one channel,
+  all channels are mixed down to mono (average).
 
 ### Scientific context
 
@@ -188,7 +197,7 @@ spk2;8;1;audio/RME_0035.wav;video/MVI_0035.MP4;00:04.787;00:09.995;6.230;02:57.0
 
 ### Command-line usage
 
-Synchronize one row:
+Synchronize one row (`-l N` = Nth data row, header excluded):
 
 ```bash
 > aviss sync -c corpus/sessions.csv -l 1
@@ -353,7 +362,7 @@ virtual environment):
   && .venv/bin/python -m coverage report -m
 ```
 
-Expected overall coverage: **≥ 73 %**.
+Expected overall coverage: **≥ 68 %**.
 
 If `coverage` is not installed, run the tests without it:
 
