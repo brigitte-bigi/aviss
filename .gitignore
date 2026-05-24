@@ -27,8 +27,8 @@ tests/data/
 demo_S01/
 *_work/
 
-# Generated documentation
-docs/
+# Generated documentation — committed intentionally
+# docs/
 
 # User settings override (contains local paths, never commit)
 settings_user.py

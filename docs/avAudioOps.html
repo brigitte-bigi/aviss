@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+
+        <head>
+            
+            <title>AViSS doc</title>
+
+            <meta charset="utf-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+            <meta name="description" content="Python Class Documentation of avAudioOps. Static methods for audio file operations used by the AViSS pipeline." />
+
+            <link rel="logo icon" href="./statics/aviss.png" />
+            <link rel="stylesheet" href="./Whakerexa-2.1/wexa_statics/css/wexa.css" type="text/css" />
+            <link rel="stylesheet" href="./Whakerexa-2.1/wexa_statics/css/layout.css" type="text/css" />
+            <link rel="stylesheet" href="./Whakerexa-2.1/wexa_statics/css/book.css" type="text/css" />
+            <link rel="stylesheet" href="./Whakerexa-2.1/wexa_statics/css/menu.css" type="text/css" />
+            <link rel="stylesheet" href="./Whakerexa-2.1/wexa_statics/css/code.css" type="text/css" />
+            <link rel="stylesheet" href="./statics/clamming.css" type="text/css" />
+
+            <!-- Whakerexa JS loader: ES6 modules on http(s), bundle on file:// -->
+            <script>
+            (function () {
+              const usingFile = (window.location.protocol === 'file:');
+              const s = document.createElement('script');
+            
+              if (usingFile) {
+                s.src = './Whakerexa-2.1/wexa_statics/js/wexa.bundle.js';
+              } else {
+                s.type = 'module';
+                s.src = './Whakerexa-2.1/wexa_statics/js/wexa.js';
+              }
+            
+              s.onload = function () {
+                window.Wexa.onload.addLoadFunction(function () {
+                  const book = new window.Wexa.Book("main-content");
+                  book.fill_table(false);
+                });
+              };
+            
+              document.head.appendChild(s);
+            })();
+            </script>
+
+       </head>
+       
+       <body class="light">
+        <header>
+
+            <a role="button" class="skip" href="#main-content" aria-label="Go to main content">
+                Go to main content
+            </a>
+            <nav>
+                <ul role="menubar">
+                    <li role="none">
+                        <button id="btn-contrast" role="menuitem" class="print-off" onclick="window.Wexa.accessibility.switch_contrast_scheme()" aria-label="Contrast">
+                            <img class="nav-item-img" src="./Whakerexa-2.1/wexa_statics/icons/contrast_switcher.jpg" alt="Contrast" id="img-contrast"/>
+                        </button>
+                    </li>
+                    <li role="none">
+                        <button id="btn-theme" class="print-off" role="menuitem" onclick="window.Wexa.accessibility.switch_color_scheme()" aria-label="Theme" >
+                            <img class="nav-item-img" src="./Whakerexa-2.1/wexa_statics/icons/theme_switcher.png" alt="Theme" id="img-theme"/>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        
+    <h1>AViSS 1.0</h1>
+        <p><img class="small-logo" src="./statics/aviss.png" alt="Software logo"/></p>
+        <p><a class="external-link" href="https://github.com/brigitte-bigi/AViSS.git">https://github.com/brigitte-bigi/AViSS.git</a></p>
+    </header>
+    <nav id="nav-book" class="side-nav">
+    <h1>AViSS 1.0</h1>
+    <img class="small-logo center" src="./statics/aviss.png" alt=""/>
+        <p><a class="external-link" href="https://github.com/brigitte-bigi/AViSS.git">https://github.com/brigitte-bigi/AViSS.git</a></p>
+    <ul>
+<li><a role="button" tabindex="0" aria-disabled="true"> &crarr; Prev. Module</a></li>
+<li><a role="button" tabindex="0" aria-disabled="true"> &uarr; Prev. Class</a></li>
+<li><a role="button" tabindex="0" href="index.html"> &#8962; Index</a></li>
+<li><a role="button" tabindex="0" href="avVideoOps.html"> &darr; Next Class</a></li>
+<li><a role="button" tabindex="0" href="aviss.html"> &rdsh; Next Module</a></li>
+    </ul>
+    <h2>Table of Contents</h2>
+    <ul id="toc"></ul>
+    <hr>
+    <p><small>Automatically created</small></p><p><small>by <a class="external-link" href="https://clamming.sf.net">ClammingPy</a></small></p>
+</nav>
+    <main id="main-content">
+    <section id="#aviss.core">    <h1>Module aviss.core</h1>
+<section id="#avAudioOps">
+<h2>Class avAudioOps</h2>
+
+<section>
+<h3 id="#description_avAudioOps">Description</h3>
+    <article class="docstring">
+<p><em>Static methods for audio file operations used by the AViSS pipeline.</em></p>
+
+<p>audioopy is used for reading audio metadata (duration, framerate, channels,
+sample width). sox is used for all audio transformations (trim, silence,
+concatenation, resampling, channel mixing).</p>
+
+<h5>Example</h5>
+
+<div class="highlight"><pre><span></span><code> <span class="o">&gt;&gt;&gt;</span> <span class="n">info</span> <span class="o">=</span> <span class="n">avAudioOps</span><span class="o">.</span><span class="n">get_audio_info</span><span class="p">(</span><span class="s2">&quot;/data/rec.wav&quot;</span><span class="p">)</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;duration&quot;</span><span class="p">]</span>
+ <span class="o">&gt;</span> <span class="mf">248.32</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">avAudioOps</span><span class="o">.</span><span class="n">audio_duration</span><span class="p">(</span><span class="s2">&quot;/data/rec.wav&quot;</span><span class="p">)</span>
+ <span class="o">&gt;</span> <span class="mf">248.32</span>
+</code></pre></div>
+
+    </article>
+</section>
+<section>
+<h3 id="#public_fct_avAudioOps">Public functions</h3>
+<h4>get_audio_info</h4>
+
+    <article class="docstring">
+<p><em>Return basic metadata of an audio file via audioopy.</em></p>
+
+<h5>Example</h5>
+
+<div class="highlight"><pre><span></span><code> <span class="o">&gt;&gt;&gt;</span> <span class="n">info</span> <span class="o">=</span> <span class="n">get_audio_info</span><span class="p">(</span><span class="s2">&quot;/data/rec.wav&quot;</span><span class="p">)</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;duration&quot;</span><span class="p">]</span>
+ <span class="o">&gt;</span> <span class="mf">248.32</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;framerate&quot;</span><span class="p">]</span>
+ <span class="o">&gt;</span> <span class="mi">44100</span>
+</code></pre></div>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>path</strong>: (<em>str</em>) Path to the audio file.</li>
+</ul>
+
+<h5>Returns</h5>
+
+<ul>
+<li><strong>(dict) Keys</strong>: "framerate"(<em>int</em>), "nchannels" (int), "sampwidth" (int, bytes), "duration" (float, seconds).</li>
+</ul>
+
+<h5>Raises</h5>
+
+<ul>
+<li><em>TypeError</em>: path is not a non-empty string.</li>
+<li><em>FileNotFoundError</em>: The file does not exist.</li>
+<li><em>IOError</em>: audioopy could not read the file.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_audio_info</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return basic metadata of an audio file via audioopy.</span>
+
+<span class="sd">        :example:</span>
+<span class="sd">        &gt;&gt;&gt; info = get_audio_info(&quot;/data/rec.wav&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; info[&quot;duration&quot;]</span>
+<span class="sd">        248.32</span>
+<span class="sd">        &gt;&gt;&gt; info[&quot;framerate&quot;]</span>
+<span class="sd">        44100</span>
+
+<span class="sd">        :param path: (str) Path to the audio file.</span>
+<span class="sd">        :return: (dict) Keys: &quot;framerate&quot; (int), &quot;nchannels&quot; (int),</span>
+<span class="sd">                 &quot;sampwidth&quot; (int, bytes), &quot;duration&quot; (float, seconds).</span>
+<span class="sd">        :raises: TypeError: path is not a non-empty string.</span>
+<span class="sd">        :raises: FileNotFoundError: The file does not exist.</span>
+<span class="sd">        :raises: IOError: audioopy could not read the file.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;path must be a non-empty string.&#39;</span><span class="p">)</span>
+    <span class="n">check_file</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">fa</span> <span class="o">=</span> <span class="n">audioopy</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;framerate&#39;</span><span class="p">:</span> <span class="n">fa</span><span class="o">.</span><span class="n">get_framerate</span><span class="p">(),</span> <span class="s1">&#39;nchannels&#39;</span><span class="p">:</span> <span class="n">fa</span><span class="o">.</span><span class="n">get_nchannels</span><span class="p">(),</span> <span class="s1">&#39;sampwidth&#39;</span><span class="p">:</span> <span class="n">fa</span><span class="o">.</span><span class="n">get_sampwidth</span><span class="p">(),</span> <span class="s1">&#39;duration&#39;</span><span class="p">:</span> <span class="n">fa</span><span class="o">.</span><span class="n">get_duration</span><span class="p">()}</span>
+        <span class="n">fa</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;audioopy could not read </span><span class="si">{</span><span class="n">path</span><span class="si">!r}</span><span class="s1">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">info</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>open_audio</h4>
+
+    <article class="docstring">
+<p><em>Return a path to a readable WAV file, converting with sox if needed.</em></p>
+
+<p>If audioopy can open the file directly, the original path is returned.
+Otherwise a 16-bit WAV conversion is written to work_dir and that path
+is returned instead.</p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>path</strong>: (<em>str</em>) Path to the audio file.</li>
+<li><strong>work_dir</strong>: (<em>str</em>) Directory where the converted file is written.</li>
+</ul>
+
+<h5>Returns</h5>
+
+<ul>
+<li>(<em>str</em>) Path to a WAV file readable by audioopy.</li>
+</ul>
+
+<h5>Raises</h5>
+
+<ul>
+<li><em>TypeError</em>: path or work_dir is not a non-empty string.</li>
+<li><em>FileNotFoundError</em>: path does not exist.</li>
+<li><em>IOError</em>: Conversion with sox failed.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">open_audio</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">work_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a path to a readable WAV file, converting with sox if needed.</span>
+
+<span class="sd">        If audioopy can open the file directly, the original path is returned.</span>
+<span class="sd">        Otherwise a 16-bit WAV conversion is written to work_dir and that path</span>
+<span class="sd">        is returned instead.</span>
+
+<span class="sd">        :param path: (str) Path to the audio file.</span>
+<span class="sd">        :param work_dir: (str) Directory where the converted file is written.</span>
+<span class="sd">        :return: (str) Path to a WAV file readable by audioopy.</span>
+<span class="sd">        :raises: TypeError: path or work_dir is not a non-empty string.</span>
+<span class="sd">        :raises: FileNotFoundError: path does not exist.</span>
+<span class="sd">        :raises: IOError: Conversion with sox failed.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;path must be a non-empty string.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">work_dir</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">work_dir</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;work_dir must be a non-empty string.&#39;</span><span class="p">)</span>
+    <span class="n">check_file</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">fa</span> <span class="o">=</span> <span class="n">audioopy</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">fa</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">path</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="n">converted</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">work_dir</span><span class="p">,</span> <span class="s1">&#39;audio_converted.wav&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">converted</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Conversion target already exists: </span><span class="si">{</span><span class="n">converted</span><span class="si">!r}</span><span class="s1">. Remove it before retrying.&#39;</span><span class="p">)</span>
+    <span class="n">run_command</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;sox &#39;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&#39; -b 16 &#39;</span><span class="si">{</span><span class="n">converted</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+    <span class="n">check_file</span><span class="p">(</span><span class="n">converted</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">converted</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>extract_audio_from_video</h4>
+
+    <article class="docstring">
+<p><em>Extract the audio track of a video and re-encode it as 16-bit PCM WAV.</em></p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>video_path</strong>: (<em>str</em>) Path to the input video file.</li>
+<li><strong>audio_out</strong>: (<em>str</em>) Path for the output WAV file.</li>
+</ul>
+
+<h5>Raises</h5>
+
+<ul>
+<li><em>TypeError</em>: video<em>path or audio</em>out is not a non-empty string.</li>
+<li><em>FileNotFoundError</em>: video_path does not exist.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">extract_audio_from_video</span><span class="p">(</span><span class="n">video_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">audio_out</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract the audio track of a video and re-encode it as 16-bit PCM WAV.</span>
+
+<span class="sd">        :param video_path: (str) Path to the input video file.</span>
+<span class="sd">        :param audio_out: (str) Path for the output WAV file.</span>
+<span class="sd">        :raises: TypeError: video_path or audio_out is not a non-empty string.</span>
+<span class="sd">        :raises: FileNotFoundError: video_path does not exist.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">video_path</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">video_path</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;video_path must be a non-empty string.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">audio_out</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">audio_out</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;audio_out must be a non-empty string.&#39;</span><span class="p">)</span>
+    <span class="n">check_file</span><span class="p">(</span><span class="n">video_path</span><span class="p">)</span>
+    <span class="n">command</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;ffmpeg -i &#39;</span><span class="si">{</span><span class="n">video_path</span><span class="si">}</span><span class="s2">&#39; -vn -acodec pcm_s16le &#39;</span><span class="si">{</span><span class="n">audio_out</span><span class="si">}</span><span class="s2">&#39; -nostdin -y&quot;</span>
+    <span class="n">run_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>audio_duration</h4>
+
+    <article class="docstring">
+<p><em>Return the duration of an audio file in seconds.</em></p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>path</strong>: (<em>str</em>) Path to the audio file.</li>
+</ul>
+
+<h5>Returns</h5>
+
+<ul>
+<li>(<em>float</em>) Duration in seconds.</li>
+</ul>
+
+<h5>Raises</h5>
+
+<ul>
+<li><em>TypeError</em>: path is not a non-empty string.</li>
+<li><em>FileNotFoundError</em>: The file does not exist.</li>
+<li><em>IOError</em>: audioopy could not read the file.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">audio_duration</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the duration of an audio file in seconds.</span>
+
+<span class="sd">        :param path: (str) Path to the audio file.</span>
+<span class="sd">        :return: (float) Duration in seconds.</span>
+<span class="sd">        :raises: TypeError: path is not a non-empty string.</span>
+<span class="sd">        :raises: FileNotFoundError: The file does not exist.</span>
+<span class="sd">        :raises: IOError: audioopy could not read the file.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="n">info</span> <span class="o">=</span> <span class="n">avAudioOps</span><span class="o">.</span><span class="n">get_audio_info</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">info</span><span class="p">[</span><span class="s1">&#39;duration&#39;</span><span class="p">]</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>trim_audio</h4>
+
+    <article class="docstring">
+<p><em>Trim a fixed duration from the beginning or the end of an audio file.</em></p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>audio_in</strong>: (<em>str</em>) Path to the input audio file.</li>
+<li><strong>trim_duration</strong>: (<em>float</em>) Duration to remove (seconds).</li>
+<li><strong>audio_out</strong>: (<em>str</em>) Path for the output audio file.</li>
+<li><strong>begin</strong>: (<em>bool</em>) True to trim from the beginning, False from the end.</li>
+</ul>
+
+<h5>Raises</h5>
+
+<ul>
+<li><em>TypeError</em>: audio<em>in or audio</em>out is not a non-empty string.</li>
+<li><em>TypeError</em>: trim_duration is not a number.</li>
+<li><em>ValueError</em>: trim_duration is not strictly positive.</li>
+<li><em>FileNotFoundError</em>: audio_in does not exist.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">trim_audio</span><span class="p">(</span><span class="n">audio_in</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">trim_duration</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">audio_out</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">begin</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Trim a fixed duration from the beginning or the end of an audio file.</span>
+
+<span class="sd">        :param audio_in: (str) Path to the input audio file.</span>
+<span class="sd">        :param trim_duration: (float) Duration to remove (seconds).</span>
+<span class="sd">        :param audio_out: (str) Path for the output audio file.</span>
+<span class="sd">        :param begin: (bool) True to trim from the beginning, False from the end.</span>
+<span class="sd">        :raises: TypeError: audio_in or audio_out is not a non-empty string.</span>
+<span class="sd">        :raises: TypeError: trim_duration is not a number.</span>
+<span class="sd">        :raises: ValueError: trim_duration is not strictly positive.</span>
+<span class="sd">        :raises: FileNotFoundError: audio_in does not exist.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">audio_in</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">audio_in</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;audio_in must be a non-empty string.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">audio_out</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">audio_out</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;audio_out must be a non-empty string.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">trim_duration</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;trim_duration must be a number.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">trim_duration</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;trim_duration must be strictly positive.&#39;</span><span class="p">)</span>
+    <span class="n">check_file</span><span class="p">(</span><span class="n">audio_in</span><span class="p">)</span>
+    <span class="n">cur_dur</span> <span class="o">=</span> <span class="n">avAudioOps</span><span class="o">.</span><span class="n">audio_duration</span><span class="p">(</span><span class="n">audio_in</span><span class="p">)</span>
+    <span class="n">remaining</span> <span class="o">=</span> <span class="n">cur_dur</span> <span class="o">-</span> <span class="nb">float</span><span class="p">(</span><span class="n">trim_duration</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">begin</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">trim_start</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">trim_duration</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">trim_start</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">command</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;sox &#39;</span><span class="si">{</span><span class="n">audio_in</span><span class="si">}</span><span class="s2">&#39; &#39;</span><span class="si">{</span><span class="n">audio_out</span><span class="si">}</span><span class="s2">&#39; trim </span><span class="si">{</span><span class="n">trim_start</span><span class="si">:</span><span class="s2">f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">remaining</span><span class="si">:</span><span class="s2">f</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">run_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>add_silence</h4>
+
+    <article class="docstring">
+<p><em>Prepend or append silence to an audio file.</em></p>
+
+<p>The silence is generated with the same framerate, channel count and
+sample width as the input file.</p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>audio_in</strong>: (<em>str</em>) Path to the input audio file.</li>
+<li><strong>silence_duration</strong>: (<em>float</em>) Duration of silence to add (seconds).</li>
+<li><strong>audio_out</strong>: (<em>str</em>) Path for the output audio file.</li>
+<li><strong>begin</strong>: (<em>bool</em>) True to prepend silence, False to append it.</li>
+</ul>
+
+<h5>Raises</h5>
+
+<ul>
+<li><em>TypeError</em>: audio<em>in or audio</em>out is not a non-empty string.</li>
+<li><em>TypeError</em>: silence_duration is not a number.</li>
+<li><em>ValueError</em>: silence_duration is not strictly positive.</li>
+<li><em>FileNotFoundError</em>: audio_in does not exist.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">add_silence</span><span class="p">(</span><span class="n">audio_in</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">silence_duration</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">audio_out</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">begin</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Prepend or append silence to an audio file.</span>
+
+<span class="sd">        The silence is generated with the same framerate, channel count and</span>
+<span class="sd">        sample width as the input file.</span>
+
+<span class="sd">        :param audio_in: (str) Path to the input audio file.</span>
+<span class="sd">        :param silence_duration: (float) Duration of silence to add (seconds).</span>
+<span class="sd">        :param audio_out: (str) Path for the output audio file.</span>
+<span class="sd">        :param begin: (bool) True to prepend silence, False to append it.</span>
+<span class="sd">        :raises: TypeError: audio_in or audio_out is not a non-empty string.</span>
+<span class="sd">        :raises: TypeError: silence_duration is not a number.</span>
+<span class="sd">        :raises: ValueError: silence_duration is not strictly positive.</span>
+<span class="sd">        :raises: FileNotFoundError: audio_in does not exist.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">audio_in</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">audio_in</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;audio_in must be a non-empty string.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">audio_out</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">audio_out</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;audio_out must be a non-empty string.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">silence_duration</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;silence_duration must be a number.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">silence_duration</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;silence_duration must be strictly positive.&#39;</span><span class="p">)</span>
+    <span class="n">check_file</span><span class="p">(</span><span class="n">audio_in</span><span class="p">)</span>
+    <span class="n">info</span> <span class="o">=</span> <span class="n">avAudioOps</span><span class="o">.</span><span class="n">get_audio_info</span><span class="p">(</span><span class="n">audio_in</span><span class="p">)</span>
+    <span class="n">silence_tmp</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">audio_out</span><span class="p">),</span> <span class="s1">&#39;_silence_tmp.wav&#39;</span><span class="p">)</span>
+    <span class="n">command</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;sox -n -r </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;framerate&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2"> -c </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;nchannels&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2"> -b </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;sampwidth&#39;</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">8</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2"> &#39;</span><span class="si">{</span><span class="n">silence_tmp</span><span class="si">}</span><span class="s2">&#39; trim 0.0 </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">silence_duration</span><span class="p">)</span><span class="si">:</span><span class="s2">f</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">run_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">begin</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;sox &#39;</span><span class="si">{</span><span class="n">silence_tmp</span><span class="si">}</span><span class="s2">&#39; &#39;</span><span class="si">{</span><span class="n">audio_in</span><span class="si">}</span><span class="s2">&#39; &#39;</span><span class="si">{</span><span class="n">audio_out</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;sox &#39;</span><span class="si">{</span><span class="n">audio_in</span><span class="si">}</span><span class="s2">&#39; &#39;</span><span class="si">{</span><span class="n">silence_tmp</span><span class="si">}</span><span class="s2">&#39; &#39;</span><span class="si">{</span><span class="n">audio_out</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+    <span class="n">run_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">silence_tmp</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">silence_tmp</span><span class="p">)</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>adjust_audio_at_clap</h4>
+
+    <article class="docstring">
+<p><em>Align an audio file so that its clap matches a reference clap time.</em></p>
+
+<p>The reference clap is typically the video clap time (plus delay).
+Three cases are handled:
+- clap times are equal: the file is copied unchanged.
+- audio clap is later than reference: the beginning is trimmed.
+- audio clap is earlier than reference: silence is prepended.</p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>audio_in</strong>: (<em>str</em>) Path to the input audio file.</li>
+<li><strong>audio_clap</strong>: (<em>float</em>) Time of the clap in the audio file (seconds).</li>
+<li><strong>reference_clap</strong>: (<em>float</em>) Target clap time to align to (seconds).</li>
+<li><strong>audio_out</strong>: (<em>str</em>) Path for the output audio file.</li>
+</ul>
+
+<h5>Raises</h5>
+
+<ul>
+<li><em>TypeError</em>: audio<em>in or audio</em>out is not a non-empty string.</li>
+<li><em>TypeError</em>: audio<em>clap or reference</em>clap is not a number.</li>
+<li><em>FileNotFoundError</em>: audio_in does not exist.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">adjust_audio_at_clap</span><span class="p">(</span><span class="n">audio_in</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">audio_clap</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">reference_clap</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">audio_out</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Align an audio file so that its clap matches a reference clap time.</span>
+
+<span class="sd">        The reference clap is typically the video clap time (plus delay).</span>
+<span class="sd">        Three cases are handled:</span>
+<span class="sd">            - clap times are equal: the file is copied unchanged.</span>
+<span class="sd">            - audio clap is later than reference: the beginning is trimmed.</span>
+<span class="sd">            - audio clap is earlier than reference: silence is prepended.</span>
+
+<span class="sd">        :param audio_in: (str) Path to the input audio file.</span>
+<span class="sd">        :param audio_clap: (float) Time of the clap in the audio file (seconds).</span>
+<span class="sd">        :param reference_clap: (float) Target clap time to align to (seconds).</span>
+<span class="sd">        :param audio_out: (str) Path for the output audio file.</span>
+<span class="sd">        :raises: TypeError: audio_in or audio_out is not a non-empty string.</span>
+<span class="sd">        :raises: TypeError: audio_clap or reference_clap is not a number.</span>
+<span class="sd">        :raises: FileNotFoundError: audio_in does not exist.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">audio_in</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">audio_in</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;audio_in must be a non-empty string.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">audio_out</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">audio_out</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;audio_out must be a non-empty string.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">audio_clap</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;audio_clap must be a number.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">reference_clap</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;reference_clap must be a number.&#39;</span><span class="p">)</span>
+    <span class="n">check_file</span><span class="p">(</span><span class="n">audio_in</span><span class="p">)</span>
+    <span class="n">delta</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">reference_clap</span><span class="p">)</span> <span class="o">-</span> <span class="nb">float</span><span class="p">(</span><span class="n">audio_clap</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">delta</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="n">aviss_logger</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Already matching. Nothing to do.&#39;</span><span class="p">)</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">audio_in</span><span class="p">,</span> <span class="n">audio_out</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">delta</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="n">aviss_logger</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Trim the beginning of the audio of </span><span class="si">{</span><span class="o">-</span><span class="n">delta</span><span class="si">:</span><span class="s1">f</span><span class="si">}</span><span class="s1"> seconds&#39;</span><span class="p">)</span>
+        <span class="n">avAudioOps</span><span class="o">.</span><span class="n">trim_audio</span><span class="p">(</span><span class="n">audio_in</span><span class="p">,</span> <span class="o">-</span><span class="n">delta</span><span class="p">,</span> <span class="n">audio_out</span><span class="p">,</span> <span class="n">begin</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">aviss_logger</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Add </span><span class="si">{</span><span class="n">delta</span><span class="si">:</span><span class="s1">f</span><span class="si">}</span><span class="s1"> seconds of silence at the beginning of the audio&#39;</span><span class="p">)</span>
+        <span class="n">avAudioOps</span><span class="o">.</span><span class="n">add_silence</span><span class="p">(</span><span class="n">audio_in</span><span class="p">,</span> <span class="n">delta</span><span class="p">,</span> <span class="n">audio_out</span><span class="p">,</span> <span class="n">begin</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>adjust_audio_duration</h4>
+
+    <article class="docstring">
+<p><em>Pad or trim an audio file to match a target duration.</em></p>
+
+<p>Three cases are handled:
+- durations are equal: the file is copied unchanged.
+- audio is shorter than target: silence is appended.
+- audio is longer than target: the end is trimmed.</p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>audio_in</strong>: (<em>str</em>) Path to the input audio file.</li>
+<li><strong>target_duration</strong>: (<em>float</em>) Expected output duration (seconds).</li>
+<li><strong>audio_out</strong>: (<em>str</em>) Path for the output audio file.</li>
+</ul>
+
+<h5>Raises</h5>
+
+<ul>
+<li><em>TypeError</em>: audio<em>in or audio</em>out is not a non-empty string.</li>
+<li><em>TypeError</em>: target_duration is not a number.</li>
+<li><em>ValueError</em>: target_duration is not strictly positive.</li>
+<li><em>FileNotFoundError</em>: audio_in does not exist.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">adjust_audio_duration</span><span class="p">(</span><span class="n">audio_in</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">target_duration</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">audio_out</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Pad or trim an audio file to match a target duration.</span>
+
+<span class="sd">        Three cases are handled:</span>
+<span class="sd">            - durations are equal: the file is copied unchanged.</span>
+<span class="sd">            - audio is shorter than target: silence is appended.</span>
+<span class="sd">            - audio is longer than target: the end is trimmed.</span>
+
+<span class="sd">        :param audio_in: (str) Path to the input audio file.</span>
+<span class="sd">        :param target_duration: (float) Expected output duration (seconds).</span>
+<span class="sd">        :param audio_out: (str) Path for the output audio file.</span>
+<span class="sd">        :raises: TypeError: audio_in or audio_out is not a non-empty string.</span>
+<span class="sd">        :raises: TypeError: target_duration is not a number.</span>
+<span class="sd">        :raises: ValueError: target_duration is not strictly positive.</span>
+<span class="sd">        :raises: FileNotFoundError: audio_in does not exist.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">audio_in</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">audio_in</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;audio_in must be a non-empty string.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">audio_out</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">audio_out</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;audio_out must be a non-empty string.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target_duration</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;target_duration must be a number.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">target_duration</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;target_duration must be strictly positive.&#39;</span><span class="p">)</span>
+    <span class="n">check_file</span><span class="p">(</span><span class="n">audio_in</span><span class="p">)</span>
+    <span class="n">cur_dur</span> <span class="o">=</span> <span class="n">avAudioOps</span><span class="o">.</span><span class="n">audio_duration</span><span class="p">(</span><span class="n">audio_in</span><span class="p">)</span>
+    <span class="n">aviss_logger</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Duration of the audio is </span><span class="si">{</span><span class="n">cur_dur</span><span class="si">:</span><span class="s1">f</span><span class="si">}</span><span class="s1"> seconds&#39;</span><span class="p">)</span>
+    <span class="n">delta</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">target_duration</span><span class="p">)</span> <span class="o">-</span> <span class="n">cur_dur</span>
+    <span class="k">if</span> <span class="n">delta</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="n">aviss_logger</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Already matching. Nothing to do.&#39;</span><span class="p">)</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">audio_in</span><span class="p">,</span> <span class="n">audio_out</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">delta</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="n">aviss_logger</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Add </span><span class="si">{</span><span class="n">delta</span><span class="si">:</span><span class="s1">f</span><span class="si">}</span><span class="s1"> seconds of silence at the end of the audio&#39;</span><span class="p">)</span>
+        <span class="n">avAudioOps</span><span class="o">.</span><span class="n">add_silence</span><span class="p">(</span><span class="n">audio_in</span><span class="p">,</span> <span class="n">delta</span><span class="p">,</span> <span class="n">audio_out</span><span class="p">,</span> <span class="n">begin</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">aviss_logger</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Trim the end of the audio of </span><span class="si">{</span><span class="o">-</span><span class="n">delta</span><span class="si">:</span><span class="s1">f</span><span class="si">}</span><span class="s1"> seconds&#39;</span><span class="p">)</span>
+        <span class="n">avAudioOps</span><span class="o">.</span><span class="n">trim_audio</span><span class="p">(</span><span class="n">audio_in</span><span class="p">,</span> <span class="o">-</span><span class="n">delta</span><span class="p">,</span> <span class="n">audio_out</span><span class="p">,</span> <span class="n">begin</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>to_mono</h4>
+
+    <article class="docstring">
+<p><em>Mix all channels down to mono, keeping the original sample rate.</em></p>
+
+<p>If the input is already mono, the file is copied unchanged.</p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>audio_in</strong>: (<em>str</em>) Path to the input audio file.</li>
+<li><strong>audio_out</strong>: (<em>str</em>) Path for the output mono WAV file.</li>
+</ul>
+
+<h5>Raises</h5>
+
+<ul>
+<li><em>TypeError</em>: audio<em>in or audio</em>out is not a non-empty string.</li>
+<li><em>FileNotFoundError</em>: audio_in does not exist.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">to_mono</span><span class="p">(</span><span class="n">audio_in</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">audio_out</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Mix all channels down to mono, keeping the original sample rate.</span>
+
+<span class="sd">        If the input is already mono, the file is copied unchanged.</span>
+
+<span class="sd">        :param audio_in: (str) Path to the input audio file.</span>
+<span class="sd">        :param audio_out: (str) Path for the output mono WAV file.</span>
+<span class="sd">        :raises: TypeError: audio_in or audio_out is not a non-empty string.</span>
+<span class="sd">        :raises: FileNotFoundError: audio_in does not exist.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">audio_in</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">audio_in</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;audio_in must be a non-empty string.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">audio_out</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">audio_out</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;audio_out must be a non-empty string.&#39;</span><span class="p">)</span>
+    <span class="n">check_file</span><span class="p">(</span><span class="n">audio_in</span><span class="p">)</span>
+    <span class="n">info</span> <span class="o">=</span> <span class="n">avAudioOps</span><span class="o">.</span><span class="n">get_audio_info</span><span class="p">(</span><span class="n">audio_in</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">info</span><span class="p">[</span><span class="s1">&#39;nchannels&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">audio_in</span><span class="p">,</span> <span class="n">audio_out</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="n">command</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;sox &#39;</span><span class="si">{</span><span class="n">audio_in</span><span class="si">}</span><span class="s2">&#39; &#39;</span><span class="si">{</span><span class="n">audio_out</span><span class="si">}</span><span class="s2">&#39; channels 1&quot;</span>
+    <span class="n">run_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>to_mono_16k</h4>
+
+    <article class="docstring">
+<p><em>Convert an audio file to mono at 16000 Hz for SPPAS processing.</em></p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>audio_in</strong>: (<em>str</em>) Path to the input audio file.</li>
+<li><strong>audio_out</strong>: (<em>str</em>) Path for the output mono 16000 Hz WAV file.</li>
+</ul>
+
+<h5>Raises</h5>
+
+<ul>
+<li><em>TypeError</em>: audio<em>in or audio</em>out is not a non-empty string.</li>
+<li><em>FileNotFoundError</em>: audio_in does not exist.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">to_mono_16k</span><span class="p">(</span><span class="n">audio_in</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">audio_out</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert an audio file to mono at 16000 Hz for SPPAS processing.</span>
+
+<span class="sd">        :param audio_in: (str) Path to the input audio file.</span>
+<span class="sd">        :param audio_out: (str) Path for the output mono 16000 Hz WAV file.</span>
+<span class="sd">        :raises: TypeError: audio_in or audio_out is not a non-empty string.</span>
+<span class="sd">        :raises: FileNotFoundError: audio_in does not exist.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">audio_in</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">audio_in</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;audio_in must be a non-empty string.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">audio_out</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">audio_out</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;audio_out must be a non-empty string.&#39;</span><span class="p">)</span>
+    <span class="n">check_file</span><span class="p">(</span><span class="n">audio_in</span><span class="p">)</span>
+    <span class="n">command</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;sox &#39;</span><span class="si">{</span><span class="n">audio_in</span><span class="si">}</span><span class="s2">&#39; -r 16000 &#39;</span><span class="si">{</span><span class="n">audio_out</span><span class="si">}</span><span class="s2">&#39; channels 1&quot;</span>
+    <span class="n">run_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+</code></pre></div>
+
+    </details>
+
+
+</section>
+</section>    </section>    </main>
+    
+            <footer>
+                <p class="copyright">Copyright (C) 2026  Brigitte Bigi, CNRS, Laboratoire Parole et Langage, Aix-en-Provence, France</p>
+            </footer>
+        
+</body>
+</html>

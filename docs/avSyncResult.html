@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+
+        <head>
+            
+            <title>AViSS doc</title>
+
+            <meta charset="utf-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+            <meta name="description" content="Python Class Documentation of avSyncResult. Represent the output of a synchronization pipeline run." />
+
+            <link rel="logo icon" href="./statics/aviss.png" />
+            <link rel="stylesheet" href="./Whakerexa-2.1/wexa_statics/css/wexa.css" type="text/css" />
+            <link rel="stylesheet" href="./Whakerexa-2.1/wexa_statics/css/layout.css" type="text/css" />
+            <link rel="stylesheet" href="./Whakerexa-2.1/wexa_statics/css/book.css" type="text/css" />
+            <link rel="stylesheet" href="./Whakerexa-2.1/wexa_statics/css/menu.css" type="text/css" />
+            <link rel="stylesheet" href="./Whakerexa-2.1/wexa_statics/css/code.css" type="text/css" />
+            <link rel="stylesheet" href="./statics/clamming.css" type="text/css" />
+
+            <!-- Whakerexa JS loader: ES6 modules on http(s), bundle on file:// -->
+            <script>
+            (function () {
+              const usingFile = (window.location.protocol === 'file:');
+              const s = document.createElement('script');
+            
+              if (usingFile) {
+                s.src = './Whakerexa-2.1/wexa_statics/js/wexa.bundle.js';
+              } else {
+                s.type = 'module';
+                s.src = './Whakerexa-2.1/wexa_statics/js/wexa.js';
+              }
+            
+              s.onload = function () {
+                window.Wexa.onload.addLoadFunction(function () {
+                  const book = new window.Wexa.Book("main-content");
+                  book.fill_table(false);
+                });
+              };
+            
+              document.head.appendChild(s);
+            })();
+            </script>
+
+       </head>
+       
+       <body class="light">
+        <header>
+
+            <a role="button" class="skip" href="#main-content" aria-label="Go to main content">
+                Go to main content
+            </a>
+            <nav>
+                <ul role="menubar">
+                    <li role="none">
+                        <button id="btn-contrast" role="menuitem" class="print-off" onclick="window.Wexa.accessibility.switch_contrast_scheme()" aria-label="Contrast">
+                            <img class="nav-item-img" src="./Whakerexa-2.1/wexa_statics/icons/contrast_switcher.jpg" alt="Contrast" id="img-contrast"/>
+                        </button>
+                    </li>
+                    <li role="none">
+                        <button id="btn-theme" class="print-off" role="menuitem" onclick="window.Wexa.accessibility.switch_color_scheme()" aria-label="Theme" >
+                            <img class="nav-item-img" src="./Whakerexa-2.1/wexa_statics/icons/theme_switcher.png" alt="Theme" id="img-theme"/>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        
+    <h1>AViSS 1.0</h1>
+        <p><img class="small-logo" src="./statics/aviss.png" alt="Software logo"/></p>
+        <p><a class="external-link" href="https://github.com/brigitte-bigi/AViSS.git">https://github.com/brigitte-bigi/AViSS.git</a></p>
+    </header>
+    <nav id="nav-book" class="side-nav">
+    <h1>AViSS 1.0</h1>
+    <img class="small-logo center" src="./statics/aviss.png" alt=""/>
+        <p><a class="external-link" href="https://github.com/brigitte-bigi/AViSS.git">https://github.com/brigitte-bigi/AViSS.git</a></p>
+    <ul>
+<li><a role="button" tabindex="0" href="aviss.core.html"> &crarr; Prev. Module</a></li>
+<li><a role="button" tabindex="0" href="avSession.html"> &uarr; Prev. Class</a></li>
+<li><a role="button" tabindex="0" href="index.html"> &#8962; Index</a></li>
+<li><a role="button" tabindex="0" href="avCsvReader.html"> &darr; Next Class</a></li>
+<li><a role="button" tabindex="0" aria-disabled="true"> &rdsh; Next Module</a></li>
+    </ul>
+    <h2>Table of Contents</h2>
+    <ul id="toc"></ul>
+    <hr>
+    <p><small>Automatically created</small></p><p><small>by <a class="external-link" href="https://clamming.sf.net">ClammingPy</a></small></p>
+</nav>
+    <main id="main-content">
+    <section id="#aviss">    <h1>Module aviss</h1>
+<section id="#avSyncResult">
+<h2>Class avSyncResult</h2>
+
+<section>
+<h3 id="#description_avSyncResult">Description</h3>
+    <article class="docstring">
+<p><em>Represent the output of a synchronization pipeline run.</em></p>
+
+<p>A avSyncResult is produced by the pipeline after processing one avSession.
+It stores the paths of the files produced (synchronized media and
+optional montage video) and a human-readable processing report.</p>
+
+<h5>Example</h5>
+
+<div class="highlight"><pre><span></span><code> <span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="n">avSyncResult</span><span class="p">()</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">r</span><span class="o">.</span><span class="n">add_synced_file</span><span class="p">(</span><span class="s2">&quot;/out/Laurent_S09_s2.wav&quot;</span><span class="p">)</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">r</span><span class="o">.</span><span class="n">add_synced_file</span><span class="p">(</span><span class="s2">&quot;/out/Laurent_S09_s2.mp4&quot;</span><span class="p">)</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">synced_files</span><span class="p">)</span>
+ <span class="o">&gt;</span> <span class="mi">2</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">r</span><span class="o">.</span><span class="n">success</span>
+ <span class="o">&gt;</span> <span class="kc">False</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">r</span><span class="o">.</span><span class="n">success</span> <span class="o">=</span> <span class="kc">True</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">r</span><span class="o">.</span><span class="n">success</span>
+ <span class="o">&gt;</span> <span class="kc">True</span>
+</code></pre></div>
+
+    </article>
+</section>
+<section>
+<h3 id="#constructor_avSyncResult">Constructor</h3>
+<h4>__init__</h4>
+
+    <article class="docstring">
+<p><em>Initialize an empty avSyncResult.</em></p>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize an empty avSyncResult.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__synced_files</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__montage_file</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__success</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__report</span> <span class="o">=</span> <span class="p">[]</span>
+</code></pre></div>
+
+    </details>
+
+
+</section>
+<section>
+<h3 id="#public_fct_avSyncResult">Public functions</h3>
+<h4>get_synced_files</h4>
+
+    <article class="docstring">
+<p><em>Return the list of paths of synchronized output files.</em></p>
+
+<h5>Returns</h5>
+
+<ul>
+<li>(<em>list</em>) List of file path strings.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_synced_files</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the list of paths of synchronized output files.</span>
+
+<span class="sd">        :return: (list) List of file path strings.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__synced_files</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>add_synced_file</h4>
+
+    <article class="docstring">
+<p><em>Append a synchronized output file path to the result.</em></p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>path</strong>: (<em>str</em>) Path to a produced synchronized file.</li>
+</ul>
+
+<h5>Raises</h5>
+
+<ul>
+<li><em>TypeError</em>: The given value is not a non-empty string.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_synced_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Append a synchronized output file path to the result.</span>
+
+<span class="sd">        :param path: (str) Path to a produced synchronized file.</span>
+<span class="sd">        :raises: TypeError: The given value is not a non-empty string.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;path must be a non-empty string.&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__synced_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>get_montage_file</h4>
+
+    <article class="docstring">
+<p><em>Return the path to the optional montage video, or None.</em></p>
+
+<h5>Returns</h5>
+
+<ul>
+<li>(<em>str</em>|None) Montage file path, or None if not produced.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_montage_file</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the path to the optional montage video, or None.</span>
+
+<span class="sd">        :return: (str|None) Montage file path, or None if not produced.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__montage_file</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>set_montage_file</h4>
+
+    <article class="docstring">
+<p><em>Set the path to the optional montage video.</em></p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>value</strong>: (<em>str</em>|None) Montage file path, or None.</li>
+</ul>
+
+<h5>Raises</h5>
+
+<ul>
+<li><em>TypeError</em>: The given value is not a non-empty string or None.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_montage_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the path to the optional montage video.</span>
+
+<span class="sd">        :param value: (str|None) Montage file path, or None.</span>
+<span class="sd">        :raises: TypeError: The given value is not a non-empty string or None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;montage_file must be a non-empty string or None.&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__montage_file</span> <span class="o">=</span> <span class="n">value</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>get_success</h4>
+
+    <article class="docstring">
+<p><em>Return True if the pipeline completed without error.</em></p>
+
+<h5>Returns</h5>
+
+<ul>
+<li>(<em>bool</em>) True if the synchronization succeeded.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_success</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return True if the pipeline completed without error.</span>
+
+<span class="sd">        :return: (bool) True if the synchronization succeeded.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__success</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>set_success</h4>
+
+    <article class="docstring">
+<p><em>Set the success flag of this result.</em></p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>value</strong>: (<em>bool</em>) True if the pipeline completed without error.</li>
+</ul>
+
+<h5>Raises</h5>
+
+<ul>
+<li><em>TypeError</em>: The given value is not a boolean.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_success</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the success flag of this result.</span>
+
+<span class="sd">        :param value: (bool) True if the pipeline completed without error.</span>
+<span class="sd">        :raises: TypeError: The given value is not a boolean.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;success must be a boolean.&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__success</span> <span class="o">=</span> <span class="n">value</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>get_report</h4>
+
+    <article class="docstring">
+<p><em>Return the processing report as a list of message strings.</em></p>
+
+<h5>Returns</h5>
+
+<ul>
+<li>(<em>list</em>) List of report message strings.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_report</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the processing report as a list of message strings.</span>
+
+<span class="sd">        :return: (list) List of report message strings.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__report</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>add_message</h4>
+
+    <article class="docstring">
+<p><em>Append a message to the processing report.</em></p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>message</strong>: (<em>str</em>) Message to append.</li>
+</ul>
+
+<h5>Raises</h5>
+
+<ul>
+<li><em>TypeError</em>: The given value is not a string.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Append a message to the processing report.</span>
+
+<span class="sd">        :param message: (str) Message to append.</span>
+<span class="sd">        :raises: TypeError: The given value is not a string.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;message must be a string.&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__report</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+</code></pre></div>
+
+    </details>
+
+
+</section>
+<section>
+<h3 id="#overloads_avSyncResult">Overloads</h3>
+<h4>__repr__</h4>
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;OK&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__success</span> <span class="ow">is</span> <span class="kc">True</span> <span class="k">else</span> <span class="s1">&#39;FAILED&#39;</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__synced_files</span><span class="p">)</span>
+    <span class="n">montage</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;, montage=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__montage_file</span><span class="si">!r}</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__montage_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;avSyncResult(</span><span class="si">{</span><span class="n">status</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s1"> synced file(s)</span><span class="si">{</span><span class="n">montage</span><span class="si">}</span><span class="s1">)&#39;</span>
+</code></pre></div>
+
+    </details>
+
+
+</section>
+</section>    </section>    </main>
+    
+            <footer>
+                <p class="copyright">Copyright (C) 2026  Brigitte Bigi, CNRS, Laboratoire Parole et Langage, Aix-en-Provence, France</p>
+            </footer>
+        
+</body>
+</html>

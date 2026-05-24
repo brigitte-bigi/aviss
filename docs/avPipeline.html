@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+
+        <head>
+            
+            <title>AViSS doc</title>
+
+            <meta charset="utf-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+            <meta name="description" content="Python Class Documentation of avPipeline. Orchestrate the AViSS synchronization pipeline for one avSession." />
+
+            <link rel="logo icon" href="./statics/aviss.png" />
+            <link rel="stylesheet" href="./Whakerexa-2.1/wexa_statics/css/wexa.css" type="text/css" />
+            <link rel="stylesheet" href="./Whakerexa-2.1/wexa_statics/css/layout.css" type="text/css" />
+            <link rel="stylesheet" href="./Whakerexa-2.1/wexa_statics/css/book.css" type="text/css" />
+            <link rel="stylesheet" href="./Whakerexa-2.1/wexa_statics/css/menu.css" type="text/css" />
+            <link rel="stylesheet" href="./Whakerexa-2.1/wexa_statics/css/code.css" type="text/css" />
+            <link rel="stylesheet" href="./statics/clamming.css" type="text/css" />
+
+            <!-- Whakerexa JS loader: ES6 modules on http(s), bundle on file:// -->
+            <script>
+            (function () {
+              const usingFile = (window.location.protocol === 'file:');
+              const s = document.createElement('script');
+            
+              if (usingFile) {
+                s.src = './Whakerexa-2.1/wexa_statics/js/wexa.bundle.js';
+              } else {
+                s.type = 'module';
+                s.src = './Whakerexa-2.1/wexa_statics/js/wexa.js';
+              }
+            
+              s.onload = function () {
+                window.Wexa.onload.addLoadFunction(function () {
+                  const book = new window.Wexa.Book("main-content");
+                  book.fill_table(false);
+                });
+              };
+            
+              document.head.appendChild(s);
+            })();
+            </script>
+
+       </head>
+       
+       <body class="light">
+        <header>
+
+            <a role="button" class="skip" href="#main-content" aria-label="Go to main content">
+                Go to main content
+            </a>
+            <nav>
+                <ul role="menubar">
+                    <li role="none">
+                        <button id="btn-contrast" role="menuitem" class="print-off" onclick="window.Wexa.accessibility.switch_contrast_scheme()" aria-label="Contrast">
+                            <img class="nav-item-img" src="./Whakerexa-2.1/wexa_statics/icons/contrast_switcher.jpg" alt="Contrast" id="img-contrast"/>
+                        </button>
+                    </li>
+                    <li role="none">
+                        <button id="btn-theme" class="print-off" role="menuitem" onclick="window.Wexa.accessibility.switch_color_scheme()" aria-label="Theme" >
+                            <img class="nav-item-img" src="./Whakerexa-2.1/wexa_statics/icons/theme_switcher.png" alt="Theme" id="img-theme"/>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        
+    <h1>AViSS 1.0</h1>
+        <p><img class="small-logo" src="./statics/aviss.png" alt="Software logo"/></p>
+        <p><a class="external-link" href="https://github.com/brigitte-bigi/AViSS.git">https://github.com/brigitte-bigi/AViSS.git</a></p>
+    </header>
+    <nav id="nav-book" class="side-nav">
+    <h1>AViSS 1.0</h1>
+    <img class="small-logo center" src="./statics/aviss.png" alt=""/>
+        <p><a class="external-link" href="https://github.com/brigitte-bigi/AViSS.git">https://github.com/brigitte-bigi/AViSS.git</a></p>
+    <ul>
+<li><a role="button" tabindex="0" href="aviss.core.html"> &crarr; Prev. Module</a></li>
+<li><a role="button" tabindex="0" href="avCsvReader.html"> &uarr; Prev. Class</a></li>
+<li><a role="button" tabindex="0" href="index.html"> &#8962; Index</a></li>
+<li><a role="button" tabindex="0" href="avExporter.html"> &darr; Next Class</a></li>
+<li><a role="button" tabindex="0" aria-disabled="true"> &rdsh; Next Module</a></li>
+    </ul>
+    <h2>Table of Contents</h2>
+    <ul id="toc"></ul>
+    <hr>
+    <p><small>Automatically created</small></p><p><small>by <a class="external-link" href="https://clamming.sf.net">ClammingPy</a></small></p>
+</nav>
+    <main id="main-content">
+    <section id="#aviss">    <h1>Module aviss</h1>
+<section id="#avPipeline">
+<h2>Class avPipeline</h2>
+
+<section>
+<h3 id="#description_avPipeline">Description</h3>
+    <article class="docstring">
+<p><em>Orchestrate the AViSS synchronization pipeline for one avSession.</em></p>
+
+<p>A avPipeline instance is created for one avSession. Calling run() executes
+all steps and returns a avSyncResult. Intermediate files are written to
+a working directory named after the output filename stem.</p>
+
+<h5>Example</h5>
+
+<div class="highlight"><pre><span></span><code> <span class="o">&gt;&gt;&gt;</span> <span class="n">pipeline</span> <span class="o">=</span> <span class="n">avPipeline</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">result</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">result</span><span class="o">.</span><span class="n">success</span>
+ <span class="o">&gt;</span> <span class="kc">True</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">result</span><span class="o">.</span><span class="n">synced_files</span>
+ <span class="o">&gt;</span> <span class="p">[</span><span class="s1">&#39;/out/Laurent_S09_sent.wav&#39;</span><span class="p">,</span> <span class="s1">&#39;/out/Laurent_S09_sent.mkv&#39;</span><span class="p">]</span>
+</code></pre></div>
+
+    </article>
+</section>
+<section>
+<h3 id="#constructor_avPipeline">Constructor</h3>
+<h4>__init__</h4>
+
+    <article class="docstring">
+<p><em>Initialize the pipeline for the given session.</em></p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>session</strong>: (avSession) avSession to process.</li>
+</ul>
+
+<h5>Raises</h5>
+
+<ul>
+<li><em>TypeError</em>: session is not a avSession instance.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="n">avSession</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize the pipeline for the given session.</span>
+
+<span class="sd">    :param session: (avSession) avSession to process.</span>
+<span class="sd">    :raises: TypeError: session is not a avSession instance.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">avSession</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;session must be a avSession instance.&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__session</span> <span class="o">=</span> <span class="n">session</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__result</span> <span class="o">=</span> <span class="n">avSyncResult</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__work_dir</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__stem</span> <span class="o">=</span> <span class="kc">None</span>
+</code></pre></div>
+
+    </details>
+
+
+</section>
+<section>
+<h3 id="#public_fct_avPipeline">Public functions</h3>
+<h4>run</h4>
+
+    <article class="docstring">
+<p><em>Execute all pipeline steps and return the synchronization result.</em></p>
+
+<h5>Returns</h5>
+
+<ul>
+<li>(avSyncResult) Result of the pipeline run.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">avSyncResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Execute all pipeline steps and return the synchronization result.</span>
+
+<span class="sd">        :return: (avSyncResult) Result of the pipeline run.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__step_prepare</span><span class="p">()</span>
+        <span class="n">audio_items</span><span class="p">,</span> <span class="n">video_items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__step_build_items</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__step_sync_audios</span><span class="p">(</span><span class="n">audio_items</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__step_trim_videos</span><span class="p">(</span><span class="n">video_items</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__step_post_process_videos</span><span class="p">(</span><span class="n">video_items</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__result</span><span class="o">.</span><span class="n">success</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;ERROR: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__result</span><span class="o">.</span><span class="n">success</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__result</span>
+</code></pre></div>
+
+    </details>
+
+
+</section>
+<section>
+<h3 id="#protected_fct_avPipeline">Protected functions</h3>
+<h4>__log</h4>
+
+    <article class="docstring">
+<p><em>Add a message to the result report and write it to the logger.</em></p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>message</strong>: (<em>str</em>) Message to log.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">__log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Add a message to the result report and write it to the logger.</span>
+
+<span class="sd">        :param message: (str) Message to log.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__result</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+    <span class="n">aviss_logger</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>__log_step</h4>
+
+    <article class="docstring">
+<p><em>Write a step separator matching the original script log format.</em></p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>number</strong>: (<em>int</em>) Step number.</li>
+<li><strong>title</strong>: (<em>str</em>) Step title.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">__log_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Write a step separator matching the original script log format.</span>
+
+<span class="sd">        :param number: (int) Step number.</span>
+<span class="sd">        :param title: (str) Step title.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;STEP </span><span class="si">{</span><span class="n">number</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="n">space</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="p">((</span><span class="mi">60</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="p">(</span><span class="s1">&#39;----------------------------------------------------------------&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="p">(</span><span class="n">space</span> <span class="o">+</span> <span class="n">msg</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="p">(</span><span class="s1">&#39;----------------------------------------------------------------&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>__log_ok</h4>
+
+    <article class="docstring">
+<p><em>Write an [  OK  ] confirmation line for the given path.</em></p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>path</strong>: (<em>str</em>) Path to confirm.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">__log_ok</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Write an [  OK  ] confirmation line for the given path.</span>
+
+<span class="sd">        :param path: (str) Path to confirm.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[  OK  ] </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>__log_audio_info</h4>
+
+    <article class="docstring">
+<p><em>Write an audio file info block matching the original script format.</em></p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>path</strong>: (<em>str</em>) Path to the audio file.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">__log_audio_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Write an audio file info block matching the original script format.</span>
+
+<span class="sd">        :param path: (str) Path to the audio file.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="n">info</span> <span class="o">=</span> <span class="n">avAudioOps</span><span class="o">.</span><span class="n">get_audio_info</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39; ... Test audio file: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;    - duration: </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;duration&#39;</span><span class="p">]</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;    - framerate: </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;framerate&#39;</span><span class="p">]</span><span class="si">:</span><span class="s1">d</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;    - channels: </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;nchannels&#39;</span><span class="p">]</span><span class="si">:</span><span class="s1">d</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;    - bitrate: </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;sampwidth&#39;</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">8</span><span class="si">:</span><span class="s1">d</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>__log_video_info</h4>
+
+    <article class="docstring">
+<p><em>Write a video file info block matching the original script format.</em></p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>path</strong>: (<em>str</em>) Path to the video file.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">__log_video_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Write a video file info block matching the original script format.</span>
+
+<span class="sd">        :param path: (str) Path to the video file.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="n">info</span> <span class="o">=</span> <span class="n">avVideoOps</span><span class="o">.</span><span class="n">get_video_info</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="p">(</span><span class="s1">&#39;  - video container: mkv&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  - video codec: libx265 (crf=</span><span class="si">{</span><span class="n">cfg</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">crf</span><span class="si">:</span><span class="s1">d</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">cfg</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">copyright</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  - copyright: </span><span class="si">{</span><span class="n">cfg</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">copyright</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="p">(</span><span class="s1">&#39;  - no audio&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  - fps: </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;fps&#39;</span><span class="p">]</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  - nframes: </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;nframes&#39;</span><span class="p">]</span><span class="si">:</span><span class="s1">d</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  - duration: </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;duration&#39;</span><span class="p">]</span><span class="si">:</span><span class="s1">f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  - size: (</span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;width&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;height&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>__step_prepare</h4>
+
+    <article class="docstring">
+<p><em>Verify dependencies, build the output stem and create the working dir.</em></p>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">__step_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Verify dependencies, build the output stem and create the working dir.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">cmd</span> <span class="ow">in</span> <span class="n">avPipeline</span><span class="o">.</span><span class="n">REQUIRED_COMMANDS</span><span class="p">:</span>
+        <span class="n">check_command</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__session</span><span class="o">.</span><span class="n">all_files_exist</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="s1">&#39;One or more media files declared in the session do not exist on disk.&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__stem</span> <span class="o">=</span> <span class="n">build_output_name</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__session</span><span class="o">.</span><span class="n">output_name_meta</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">output_name_cols</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">output_sep</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__stem</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The output filename stem is empty. Check cfg.output.output_name_cols and the CSV metadata columns.&#39;</span><span class="p">)</span>
+    <span class="n">work_dir_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__stem</span> <span class="o">+</span> <span class="n">cfg</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">work_dir_suffix</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__work_dir</span> <span class="o">=</span> <span class="n">create_working_dir</span><span class="p">(</span><span class="n">work_dir_name</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__log_step</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;Parse CSV and check media files&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39; ... Output working dir: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__work_dir</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">audio</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__session</span><span class="o">.</span><span class="n">audios</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__log_audio_info</span><span class="p">(</span><span class="n">audio</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39; ... Input audio file: </span><span class="si">{</span><span class="n">audio</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__log_ok</span><span class="p">(</span><span class="n">audio</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">video</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__session</span><span class="o">.</span><span class="n">videos</span><span class="p">:</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="n">avVideoOps</span><span class="o">.</span><span class="n">get_video_info</span><span class="p">(</span><span class="n">video</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39; ... Input video file: </span><span class="si">{</span><span class="n">video</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;fps&#39;</span><span class="p">]</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1"> fps)&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__log_ok</span><span class="p">(</span><span class="n">video</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">delay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__session</span><span class="o">.</span><span class="n">delay</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39; ... Given delta: </span><span class="si">{</span><span class="n">delay</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">audio</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__session</span><span class="o">.</span><span class="n">audios</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39; ... Given audio clap: </span><span class="si">{</span><span class="n">audio</span><span class="o">.</span><span class="n">clap_time</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">delay</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">video</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__session</span><span class="o">.</span><span class="n">videos</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39; ... Given video clap: </span><span class="si">{</span><span class="n">video</span><span class="o">.</span><span class="n">clap_time</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">delay</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39; ... Given expected duration: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__session</span><span class="o">.</span><span class="n">duration</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>__step_build_items</h4>
+
+    <article class="docstring">
+<p><em>Compute sync objects and build independent audio and video item lists.</em></p>
+
+<p>All media share the same clap event. The video with the lowest fps
+defines the reference avClapSync used by all audios. Each video gets
+its own avClapSync (frame-accurate at its own fps).</p>
+
+<p>Audio suffixes (from CSV column index):
+audio<em>file  -> ""
+audio</em>file2 -> "<em>audio2", audio</em>file3 -> "_audio3", ...</p>
+
+<p>Video suffixes (from video<em>name or CSV column index):
+single video           -> ""
+multiple, named        -> "</em>" + video_name
+multiple, unnamed      -> "_video2", "_video3", ...</p>
+
+<h5>Returns</h5>
+
+<ul>
+<li>(<em>tuple</em>) (audio<em>items, video</em>items) where each list contains (avMediaFile, avClapSync, out_name) tuples.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">__step_build_items</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute sync objects and build independent audio and video item lists.</span>
+
+<span class="sd">        All media share the same clap event. The video with the lowest fps</span>
+<span class="sd">        defines the reference avClapSync used by all audios. Each video gets</span>
+<span class="sd">        its own avClapSync (frame-accurate at its own fps).</span>
+
+<span class="sd">        Audio suffixes (from CSV column index):</span>
+<span class="sd">            audio_file  -&gt; &quot;&quot;</span>
+<span class="sd">            audio_file2 -&gt; &quot;_audio2&quot;, audio_file3 -&gt; &quot;_audio3&quot;, ...</span>
+
+<span class="sd">        Video suffixes (from video_name or CSV column index):</span>
+<span class="sd">            single video           -&gt; &quot;&quot;</span>
+<span class="sd">            multiple, named        -&gt; &quot;_&quot; + video_name</span>
+<span class="sd">            multiple, unnamed      -&gt; &quot;_video2&quot;, &quot;_video3&quot;, ...</span>
+
+<span class="sd">        :return: (tuple) (audio_items, video_items) where each list contains</span>
+<span class="sd">                 (avMediaFile, avClapSync, out_name) tuples.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__log_step</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Compute synchronization boundaries&#39;</span><span class="p">)</span>
+    <span class="n">videos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__session</span><span class="o">.</span><span class="n">videos</span>
+    <span class="n">audios</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__session</span><span class="o">.</span><span class="n">audios</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__session</span><span class="o">.</span><span class="n">video_names</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">videos</span><span class="p">)</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">audios</span><span class="p">)</span>
+    <span class="n">infos</span> <span class="o">=</span> <span class="p">[</span><span class="n">avVideoOps</span><span class="o">.</span><span class="n">get_video_info</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">path</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">videos</span><span class="p">]</span>
+    <span class="n">ref_idx</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="n">infos</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;fps&#39;</span><span class="p">])</span>
+    <span class="n">ref_sync</span> <span class="o">=</span> <span class="n">avClapSync</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__session</span><span class="p">,</span> <span class="n">infos</span><span class="p">[</span><span class="n">ref_idx</span><span class="p">][</span><span class="s1">&#39;fps&#39;</span><span class="p">],</span> <span class="n">video_clap</span><span class="o">=</span><span class="n">videos</span><span class="p">[</span><span class="n">ref_idx</span><span class="p">]</span><span class="o">.</span><span class="n">clap_time</span><span class="p">)</span>
+    <span class="n">ref_delta</span> <span class="o">=</span> <span class="n">ref_sync</span><span class="o">.</span><span class="n">clap_delta</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  Reference delta: </span><span class="si">{</span><span class="n">ref_delta</span><span class="si">:</span><span class="s1">.6f</span><span class="si">}</span><span class="s1">s (video </span><span class="si">{</span><span class="n">ref_idx</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">infos</span><span class="p">[</span><span class="n">ref_idx</span><span class="p">][</span><span class="s1">&#39;fps&#39;</span><span class="p">]</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1"> fps)&#39;</span><span class="p">)</span>
+    <span class="n">video_syncs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">ref_idx</span><span class="p">:</span>
+            <span class="n">video_syncs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ref_sync</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">video_syncs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">avClapSync</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__session</span><span class="p">,</span> <span class="n">infos</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;fps&#39;</span><span class="p">],</span> <span class="n">video_clap</span><span class="o">=</span><span class="n">videos</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">clap_time</span><span class="p">,</span> <span class="n">reference_delta</span><span class="o">=</span><span class="n">ref_delta</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">sync</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">video_syncs</span><span class="p">,</span> <span class="n">infos</span><span class="p">)):</span>
+        <span class="n">sync</span><span class="o">.</span><span class="n">check_video_duration</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;duration&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39; ... Video </span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s1">: start time value of the frame with the clap: </span><span class="si">{</span><span class="n">sync</span><span class="o">.</span><span class="n">clap_frame_index</span><span class="si">}</span><span class="s1"> frames = </span><span class="si">{</span><span class="n">sync</span><span class="o">.</span><span class="n">clap_frame_time</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1"> seconds&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39; ... ... Delta among the real clap position in the video and the start time of the first frame in the video = </span><span class="si">{</span><span class="n">sync</span><span class="o">.</span><span class="n">clap_delta</span><span class="si">:</span><span class="s1">.6f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39; ... estimated end time of video </span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">sync</span><span class="o">.</span><span class="n">end_frame_index</span><span class="si">}</span><span class="s1"> frames = </span><span class="si">{</span><span class="n">sync</span><span class="o">.</span><span class="n">end_frame_time</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1"> seconds&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">video_suffixes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">video_suffixes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">names</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">video_suffixes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">name</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">video_suffixes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;_video&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">m</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">audio_suffixes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">audio_suffixes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;_audio&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">m</span><span class="p">)]</span>
+    <span class="n">video_items</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">video</span><span class="p">,</span> <span class="n">sync</span><span class="p">,</span> <span class="n">suffix</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">videos</span><span class="p">,</span> <span class="n">video_syncs</span><span class="p">,</span> <span class="n">video_suffixes</span><span class="p">):</span>
+        <span class="n">video_items</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">video</span><span class="p">,</span> <span class="n">sync</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__stem</span> <span class="o">+</span> <span class="n">suffix</span> <span class="o">+</span> <span class="s1">&#39;.mkv&#39;</span><span class="p">))</span>
+    <span class="n">audio_items</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">audio</span><span class="p">,</span> <span class="n">suffix</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">audios</span><span class="p">,</span> <span class="n">audio_suffixes</span><span class="p">):</span>
+        <span class="n">audio_items</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">audio</span><span class="p">,</span> <span class="n">ref_sync</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__stem</span> <span class="o">+</span> <span class="n">suffix</span> <span class="o">+</span> <span class="s1">&#39;.wav&#39;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">audio_items</span><span class="p">,</span> <span class="n">video_items</span><span class="p">)</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>__step_sync_audios</h4>
+
+    <article class="docstring">
+<p><em>Align and trim each audio file to the reference synchronization.</em></p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>audio_items</strong>: (<em>list</em>) List of (audio<em>media, avClapSync, out</em>name) tuples.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">__step_sync_audios</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">audio_items</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Align and trim each audio file to the reference synchronization.</span>
+
+<span class="sd">        :param audio_items: (list) List of (audio_media, avClapSync, out_name) tuples.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__log_step</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;Synchronize audio files&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">audio</span><span class="p">,</span> <span class="n">sync</span><span class="p">,</span> <span class="n">audio_out</span> <span class="ow">in</span> <span class="n">audio_items</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__sync_one_audio</span><span class="p">(</span><span class="n">audio</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">audio</span><span class="o">.</span><span class="n">clap_time</span><span class="p">,</span> <span class="n">sync</span><span class="p">,</span> <span class="n">audio_out</span><span class="p">)</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>__sync_one_audio</h4>
+
+    <article class="docstring">
+<p><em>Align and trim a single audio file.</em></p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>audio_path</strong>: (<em>str</em>) Path to the input audio file.</li>
+<li><strong>raw_clap</strong>: (<em>float</em>) Raw clap time in the audio (seconds).</li>
+<li><strong>sync</strong>: (avClapSync) Synchronization boundaries.</li>
+<li><strong>out_name</strong>: (<em>str</em>) Filename (not path) for the final output.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">__sync_one_audio</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">audio_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">raw_clap</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">sync</span><span class="p">:</span> <span class="n">avClapSync</span><span class="p">,</span> <span class="n">out_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Align and trim a single audio file.</span>
+
+<span class="sd">        :param audio_path: (str) Path to the input audio file.</span>
+<span class="sd">        :param raw_clap: (float) Raw clap time in the audio (seconds).</span>
+<span class="sd">        :param sync: (avClapSync) Synchronization boundaries.</span>
+<span class="sd">        :param out_name: (str) Filename (not path) for the final output.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="n">effective_clap</span> <span class="o">=</span> <span class="n">sync</span><span class="o">.</span><span class="n">get_audio_clap_with_delay</span><span class="p">(</span><span class="n">raw_clap</span><span class="p">)</span>
+    <span class="n">tmp_clap</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__work_dir</span><span class="p">,</span> <span class="s1">&#39;_audio_clap.wav&#39;</span><span class="p">)</span>
+    <span class="n">tmp_dur</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__work_dir</span><span class="p">,</span> <span class="s1">&#39;_audio_dur.wav&#39;</span><span class="p">)</span>
+    <span class="n">raw_name</span> <span class="o">=</span> <span class="n">out_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.wav&#39;</span><span class="p">,</span> <span class="s1">&#39;-audio.wav&#39;</span><span class="p">)</span>
+    <span class="n">final_raw</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__work_dir</span><span class="p">,</span> <span class="n">raw_name</span><span class="p">)</span>
+    <span class="n">final</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__work_dir</span><span class="p">,</span> <span class="n">out_name</span><span class="p">)</span>
+    <span class="n">avAudioOps</span><span class="o">.</span><span class="n">adjust_audio_at_clap</span><span class="p">(</span><span class="n">audio_path</span><span class="p">,</span> <span class="n">effective_clap</span><span class="p">,</span> <span class="n">sync</span><span class="o">.</span><span class="n">audio_reference_clap</span><span class="p">,</span> <span class="n">tmp_clap</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__log_ok</span><span class="p">(</span><span class="n">tmp_clap</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  - expected end time of audio: </span><span class="si">{</span><span class="n">sync</span><span class="o">.</span><span class="n">end_frame_time</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">avAudioOps</span><span class="o">.</span><span class="n">adjust_audio_duration</span><span class="p">(</span><span class="n">tmp_clap</span><span class="p">,</span> <span class="n">sync</span><span class="o">.</span><span class="n">end_frame_time</span><span class="p">,</span> <span class="n">tmp_dur</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__log_ok</span><span class="p">(</span><span class="n">tmp_dur</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  - expected start time of audio: </span><span class="si">{</span><span class="n">sync</span><span class="o">.</span><span class="n">clap_frame_time</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">avAudioOps</span><span class="o">.</span><span class="n">trim_audio</span><span class="p">(</span><span class="n">tmp_dur</span><span class="p">,</span> <span class="n">sync</span><span class="o">.</span><span class="n">clap_frame_time</span><span class="p">,</span> <span class="n">final_raw</span><span class="p">,</span> <span class="n">begin</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__log_ok</span><span class="p">(</span><span class="n">final_raw</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__log_audio_info</span><span class="p">(</span><span class="n">final_raw</span><span class="p">)</span>
+    <span class="n">avAudioOps</span><span class="o">.</span><span class="n">to_mono_16k</span><span class="p">(</span><span class="n">final_raw</span><span class="p">,</span> <span class="n">final</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__log_ok</span><span class="p">(</span><span class="n">final</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__log_audio_info</span><span class="p">(</span><span class="n">final</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">tmp_clap</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">tmp_clap</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">tmp_dur</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">tmp_dur</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__result</span><span class="o">.</span><span class="n">add_synced_file</span><span class="p">(</span><span class="n">final_raw</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__result</span><span class="o">.</span><span class="n">add_synced_file</span><span class="p">(</span><span class="n">final</span><span class="p">)</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>__step_trim_videos</h4>
+
+    <article class="docstring">
+<p><em>Trim each video between its own clap frame and end frame.</em></p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>video_items</strong>: (<em>list</em>) List of (video<em>media, avClapSync, out</em>name) tuples.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">__step_trim_videos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">video_items</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Trim each video between its own clap frame and end frame.</span>
+
+<span class="sd">        :param video_items: (list) List of (video_media, avClapSync, out_name) tuples.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__log_step</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;Trim video files&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">video</span><span class="p">,</span> <span class="n">sync</span><span class="p">,</span> <span class="n">video_out</span> <span class="ow">in</span> <span class="n">video_items</span><span class="p">:</span>
+        <span class="n">out_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__work_dir</span><span class="p">,</span> <span class="n">video_out</span><span class="p">)</span>
+        <span class="n">avVideoOps</span><span class="o">.</span><span class="n">trim</span><span class="p">(</span><span class="n">video</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">sync</span><span class="o">.</span><span class="n">clap_frame_index</span><span class="p">,</span> <span class="n">sync</span><span class="o">.</span><span class="n">end_frame_index</span><span class="p">,</span> <span class="n">out_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__result</span><span class="o">.</span><span class="n">add_synced_file</span><span class="p">(</span><span class="n">out_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__log_ok</span><span class="p">(</span><span class="n">out_path</span><span class="p">)</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>__step_post_process_videos</h4>
+
+    <article class="docstring">
+<p><em>Apply crop and copyright overlay to each trimmed video.</em></p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>video_items</strong>: (<em>list</em>) List of (video<em>media, avClapSync, out</em>name) tuples.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">__step_post_process_videos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">video_items</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Apply crop and copyright overlay to each trimmed video.</span>
+
+<span class="sd">        :param video_items: (list) List of (video_media, avClapSync, out_name) tuples.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__log_step</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;Post-process video files&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">video</span><span class="p">,</span> <span class="n">_sync</span><span class="p">,</span> <span class="n">video_out</span> <span class="ow">in</span> <span class="n">video_items</span><span class="p">:</span>
+        <span class="n">current</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__work_dir</span><span class="p">,</span> <span class="n">video_out</span><span class="p">)</span>
+        <span class="n">current</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__apply_crop</span><span class="p">(</span><span class="n">video</span><span class="p">,</span> <span class="n">current</span><span class="p">)</span>
+        <span class="n">current</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__apply_copyright</span><span class="p">(</span><span class="n">current</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__log_video_info</span><span class="p">(</span><span class="n">current</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__log_ok</span><span class="p">(</span><span class="n">current</span><span class="p">)</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>__apply_crop</h4>
+
+    <article class="docstring">
+<p><em>Apply crop to a video if the media file defines a crop region.</em></p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>media</strong>: (avMediaFile) Media file with optional crop parameters.</li>
+<li><strong>video_path</strong>: (<em>str</em>) Path to the current video file.</li>
+</ul>
+
+<h5>Returns</h5>
+
+<ul>
+<li>(<em>str</em>) Path to the (possibly cropped) video file.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">__apply_crop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">media</span><span class="p">,</span> <span class="n">video_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Apply crop to a video if the media file defines a crop region.</span>
+
+<span class="sd">        :param media: (avMediaFile) Media file with optional crop parameters.</span>
+<span class="sd">        :param video_path: (str) Path to the current video file.</span>
+<span class="sd">        :return: (str) Path to the (possibly cropped) video file.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">media</span><span class="o">.</span><span class="n">has_crop</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">video_path</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  - crop: x=</span><span class="si">{</span><span class="n">media</span><span class="o">.</span><span class="n">crop_x</span><span class="si">}</span><span class="s1"> y=</span><span class="si">{</span><span class="n">media</span><span class="o">.</span><span class="n">crop_y</span><span class="si">}</span><span class="s1"> w=</span><span class="si">{</span><span class="n">media</span><span class="o">.</span><span class="n">crop_w</span><span class="si">}</span><span class="s1"> h=</span><span class="si">{</span><span class="n">media</span><span class="o">.</span><span class="n">crop_h</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">tmp_path</span> <span class="o">=</span> <span class="n">video_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.mkv&#39;</span><span class="p">,</span> <span class="s1">&#39;_tmp_crop.mkv&#39;</span><span class="p">)</span>
+    <span class="n">avVideoOps</span><span class="o">.</span><span class="n">crop</span><span class="p">(</span><span class="n">video_path</span><span class="p">,</span> <span class="n">media</span><span class="o">.</span><span class="n">crop_x</span><span class="p">,</span> <span class="n">media</span><span class="o">.</span><span class="n">crop_y</span><span class="p">,</span> <span class="n">media</span><span class="o">.</span><span class="n">crop_w</span><span class="p">,</span> <span class="n">media</span><span class="o">.</span><span class="n">crop_h</span><span class="p">,</span> <span class="n">tmp_path</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">video_path</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">,</span> <span class="n">video_path</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">video_path</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>__apply_copyright</h4>
+
+    <article class="docstring">
+<p><em>Apply a copyright overlay to a video if configured.</em></p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>video_path</strong>: (<em>str</em>) Path to the current video file.</li>
+</ul>
+
+<h5>Returns</h5>
+
+<ul>
+<li>(<em>str</em>) Path to the (possibly annotated) video file.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">__apply_copyright</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">video_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Apply a copyright overlay to a video if configured.</span>
+
+<span class="sd">        :param video_path: (str) Path to the current video file.</span>
+<span class="sd">        :return: (str) Path to the (possibly annotated) video file.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">cfg</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">copyright</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">video_path</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="p">(</span><span class="s1">&#39;  - copyright overlay applied&#39;</span><span class="p">)</span>
+    <span class="n">tmp_path</span> <span class="o">=</span> <span class="n">video_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.mkv&#39;</span><span class="p">,</span> <span class="s1">&#39;_tmp_copy.mkv&#39;</span><span class="p">)</span>
+    <span class="n">avVideoOps</span><span class="o">.</span><span class="n">add_copyright</span><span class="p">(</span><span class="n">video_path</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">copyright</span><span class="p">,</span> <span class="n">tmp_path</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">video_path</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">,</span> <span class="n">video_path</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">video_path</span>
+</code></pre></div>
+
+    </details>
+
+
+</section>
+</section>    </section>    </main>
+    
+            <footer>
+                <p class="copyright">Copyright (C) 2026  Brigitte Bigi, CNRS, Laboratoire Parole et Langage, Aix-en-Provence, France</p>
+            </footer>
+        
+</body>
+</html>

@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+
+        <head>
+            
+            <title>AViSS doc</title>
+
+            <meta charset="utf-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+            <meta name="description" content="Python Class Documentation of avCsvReader. Parse an AViSS CSV file and produce a list of avSession objects." />
+
+            <link rel="logo icon" href="./statics/aviss.png" />
+            <link rel="stylesheet" href="./Whakerexa-2.1/wexa_statics/css/wexa.css" type="text/css" />
+            <link rel="stylesheet" href="./Whakerexa-2.1/wexa_statics/css/layout.css" type="text/css" />
+            <link rel="stylesheet" href="./Whakerexa-2.1/wexa_statics/css/book.css" type="text/css" />
+            <link rel="stylesheet" href="./Whakerexa-2.1/wexa_statics/css/menu.css" type="text/css" />
+            <link rel="stylesheet" href="./Whakerexa-2.1/wexa_statics/css/code.css" type="text/css" />
+            <link rel="stylesheet" href="./statics/clamming.css" type="text/css" />
+
+            <!-- Whakerexa JS loader: ES6 modules on http(s), bundle on file:// -->
+            <script>
+            (function () {
+              const usingFile = (window.location.protocol === 'file:');
+              const s = document.createElement('script');
+            
+              if (usingFile) {
+                s.src = './Whakerexa-2.1/wexa_statics/js/wexa.bundle.js';
+              } else {
+                s.type = 'module';
+                s.src = './Whakerexa-2.1/wexa_statics/js/wexa.js';
+              }
+            
+              s.onload = function () {
+                window.Wexa.onload.addLoadFunction(function () {
+                  const book = new window.Wexa.Book("main-content");
+                  book.fill_table(false);
+                });
+              };
+            
+              document.head.appendChild(s);
+            })();
+            </script>
+
+       </head>
+       
+       <body class="light">
+        <header>
+
+            <a role="button" class="skip" href="#main-content" aria-label="Go to main content">
+                Go to main content
+            </a>
+            <nav>
+                <ul role="menubar">
+                    <li role="none">
+                        <button id="btn-contrast" role="menuitem" class="print-off" onclick="window.Wexa.accessibility.switch_contrast_scheme()" aria-label="Contrast">
+                            <img class="nav-item-img" src="./Whakerexa-2.1/wexa_statics/icons/contrast_switcher.jpg" alt="Contrast" id="img-contrast"/>
+                        </button>
+                    </li>
+                    <li role="none">
+                        <button id="btn-theme" class="print-off" role="menuitem" onclick="window.Wexa.accessibility.switch_color_scheme()" aria-label="Theme" >
+                            <img class="nav-item-img" src="./Whakerexa-2.1/wexa_statics/icons/theme_switcher.png" alt="Theme" id="img-theme"/>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        
+    <h1>AViSS 1.0</h1>
+        <p><img class="small-logo" src="./statics/aviss.png" alt="Software logo"/></p>
+        <p><a class="external-link" href="https://github.com/brigitte-bigi/AViSS.git">https://github.com/brigitte-bigi/AViSS.git</a></p>
+    </header>
+    <nav id="nav-book" class="side-nav">
+    <h1>AViSS 1.0</h1>
+    <img class="small-logo center" src="./statics/aviss.png" alt=""/>
+        <p><a class="external-link" href="https://github.com/brigitte-bigi/AViSS.git">https://github.com/brigitte-bigi/AViSS.git</a></p>
+    <ul>
+<li><a role="button" tabindex="0" href="aviss.core.html"> &crarr; Prev. Module</a></li>
+<li><a role="button" tabindex="0" href="avSyncResult.html"> &uarr; Prev. Class</a></li>
+<li><a role="button" tabindex="0" href="index.html"> &#8962; Index</a></li>
+<li><a role="button" tabindex="0" href="avPipeline.html"> &darr; Next Class</a></li>
+<li><a role="button" tabindex="0" aria-disabled="true"> &rdsh; Next Module</a></li>
+    </ul>
+    <h2>Table of Contents</h2>
+    <ul id="toc"></ul>
+    <hr>
+    <p><small>Automatically created</small></p><p><small>by <a class="external-link" href="https://clamming.sf.net">ClammingPy</a></small></p>
+</nav>
+    <main id="main-content">
+    <section id="#aviss">    <h1>Module aviss</h1>
+<section id="#avCsvReader">
+<h2>Class avCsvReader</h2>
+
+<section>
+<h3 id="#description_avCsvReader">Description</h3>
+    <article class="docstring">
+<p><em>Parse an AViSS CSV file and produce a list of avSession objects.</em></p>
+
+<p>The CSV file must have a header row as its first line. Column names in
+the header are matched against the names declared in cfg.sync and
+cfg.output. Matching is case-sensitive.</p>
+
+<p>The separator is auto-detected: ';' is tried first, then ','.
+A minimum of 6 columns is required (audio<em>file, audio</em>clap, video<em>file,
+video</em>clap, delay, duration).</p>
+
+<h5>Example</h5>
+
+<div class="highlight"><pre><span></span><code> <span class="o">&gt;&gt;&gt;</span> <span class="n">reader</span> <span class="o">=</span> <span class="n">avCsvReader</span><span class="p">(</span><span class="s2">&quot;corpus/sessions.csv&quot;</span><span class="p">)</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">sessions</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">sessions</span><span class="p">)</span>
+ <span class="o">&gt;</span> <span class="mi">10</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">sessions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">audio</span><span class="o">.</span><span class="n">path</span>
+ <span class="o">&gt;</span> <span class="s1">&#39;/data/corpus/Laurent_S01_s1.wav&#39;</span>
+</code></pre></div>
+
+    </article>
+</section>
+<section>
+<h3 id="#constructor_avCsvReader">Constructor</h3>
+<h4>__init__</h4>
+
+    <article class="docstring">
+<p><em>Initialize the avCsvReader with the path to the CSV file.</em></p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>csv_path</strong>: (<em>str</em>) Path to the CSV file.</li>
+</ul>
+
+<h5>Raises</h5>
+
+<ul>
+<li><em>TypeError</em>: csv_path is not a non-empty string.</li>
+<li><em>FileNotFoundError</em>: The file does not exist.</li>
+<li><em>ValueError</em>: The file is empty.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">csv_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize the avCsvReader with the path to the CSV file.</span>
+
+<span class="sd">    :param csv_path: (str) Path to the CSV file.</span>
+<span class="sd">    :raises: TypeError: csv_path is not a non-empty string.</span>
+<span class="sd">    :raises: FileNotFoundError: The file does not exist.</span>
+<span class="sd">    :raises: ValueError: The file is empty.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">csv_path</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">csv_path</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;csv_path must be a non-empty string.&#39;</span><span class="p">)</span>
+    <span class="n">check_file</span><span class="p">(</span><span class="n">csv_path</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__csv_path</span> <span class="o">=</span> <span class="n">csv_path</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__csv_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">csv_path</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__separator</span> <span class="o">=</span> <span class="kc">None</span>
+</code></pre></div>
+
+    </details>
+
+
+</section>
+<section>
+<h3 id="#public_fct_avCsvReader">Public functions</h3>
+<h4>get_csv_path</h4>
+
+    <article class="docstring">
+<p><em>Return the path to the CSV file.</em></p>
+
+<h5>Returns</h5>
+
+<ul>
+<li>(<em>str</em>) CSV file path.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_csv_path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the path to the CSV file.</span>
+
+<span class="sd">        :return: (str) CSV file path.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__csv_path</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>read</h4>
+
+    <article class="docstring">
+<p><em>Parse the CSV file and return a list of avSession objects.</em></p>
+
+<p>The first row is interpreted as the header. Each subsequent non-empty
+row produces one avSession. Rows with all-empty cells are silently skipped.</p>
+
+<h5>Returns</h5>
+
+<ul>
+<li>(<em>list</em>) List of avSession instances, one per data row.</li>
+</ul>
+
+<h5>Raises</h5>
+
+<ul>
+<li><em>ValueError</em>: The header row is missing or invalid.</li>
+<li><em>ValueError</em>: A data row cannot be parsed into a avSession.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse the CSV file and return a list of avSession objects.</span>
+
+<span class="sd">        The first row is interpreted as the header. Each subsequent non-empty</span>
+<span class="sd">        row produces one avSession. Rows with all-empty cells are silently skipped.</span>
+
+<span class="sd">        :return: (list) List of avSession instances, one per data row.</span>
+<span class="sd">        :raises: ValueError: The header row is missing or invalid.</span>
+<span class="sd">        :raises: ValueError: A data row cannot be parsed into a avSession.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="n">raw_lines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__read_raw_lines</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">raw_lines</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;CSV file </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__csv_path</span><span class="si">!r}</span><span class="s1"> must have at least one header row and one data row.&#39;</span><span class="p">)</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parse_header</span><span class="p">(</span><span class="n">raw_lines</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__check_required_columns</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
+    <span class="n">sessions</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">row_index</span><span class="p">,</span> <span class="n">raw_line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">raw_lines</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">start</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__split_row</span><span class="p">(</span><span class="n">raw_line</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">row</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">all</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">row</span><span class="p">)):</span>
+            <span class="k">continue</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__build_session</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">row_index</span><span class="p">)</span>
+        <span class="n">sessions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">sessions</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>read_row</h4>
+
+    <article class="docstring">
+<p><em>Parse a single data row and return the corresponding avSession.</em></p>
+
+<p>Row numbering starts at 1 (the first data row, after the header).</p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>row_number</strong>: (<em>int</em>) 1-based index of the data row to parse.</li>
+</ul>
+
+<h5>Returns</h5>
+
+<ul>
+<li>(avSession) avSession built from the given row.</li>
+</ul>
+
+<h5>Raises</h5>
+
+<ul>
+<li><em>TypeError</em>: row_number is not an integer.</li>
+<li><em>ValueError</em>: row_number is out of range.</li>
+<li><em>ValueError</em>: The row cannot be parsed into a avSession.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">read_row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row_number</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">avSession</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse a single data row and return the corresponding avSession.</span>
+
+<span class="sd">        Row numbering starts at 1 (the first data row, after the header).</span>
+
+<span class="sd">        :param row_number: (int) 1-based index of the data row to parse.</span>
+<span class="sd">        :return: (avSession) avSession built from the given row.</span>
+<span class="sd">        :raises: TypeError: row_number is not an integer.</span>
+<span class="sd">        :raises: ValueError: row_number is out of range.</span>
+<span class="sd">        :raises: ValueError: The row cannot be parsed into a avSession.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">row_number</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;row_number must be an integer.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">row_number</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;row_number must be &gt;= 1.&#39;</span><span class="p">)</span>
+    <span class="n">raw_lines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__read_raw_lines</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">raw_lines</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;CSV file </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__csv_path</span><span class="si">!r}</span><span class="s1"> must have at least one header row and one data row.&#39;</span><span class="p">)</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parse_header</span><span class="p">(</span><span class="n">raw_lines</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__check_required_columns</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
+    <span class="n">data_lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">ln</span> <span class="k">for</span> <span class="n">ln</span> <span class="ow">in</span> <span class="n">raw_lines</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ln</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">row_number</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_lines</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Row number </span><span class="si">{</span><span class="n">row_number</span><span class="si">}</span><span class="s1"> is out of range. The CSV file has </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">data_lines</span><span class="p">)</span><span class="si">}</span><span class="s1"> data row(s).&#39;</span><span class="p">)</span>
+    <span class="n">row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__split_row</span><span class="p">(</span><span class="n">data_lines</span><span class="p">[</span><span class="n">row_number</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__build_session</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">row_number</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+</code></pre></div>
+
+    </details>
+
+
+</section>
+<section>
+<h3 id="#protected_fct_avCsvReader">Protected functions</h3>
+<h4>__read_raw_lines</h4>
+
+    <article class="docstring">
+<p><em>Read the CSV file and return its non-empty lines as strings.</em></p>
+
+<h5>Returns</h5>
+
+<ul>
+<li>(<em>list</em>) List of raw line strings.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">__read_raw_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Read the CSV file and return its non-empty lines as strings.</span>
+
+<span class="sd">        :return: (list) List of raw line strings.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__csv_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">ln</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">ln</span> <span class="ow">in</span> <span class="n">lines</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ln</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>__split_row</h4>
+
+    <article class="docstring">
+<p><em>Split a CSV row using the detected or auto-detected separator.</em></p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>line</strong>: (<em>str</em>) Raw CSV line.</li>
+</ul>
+
+<h5>Returns</h5>
+
+<ul>
+<li>(<em>list</em>) List of cell strings.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">__split_row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Split a CSV row using the detected or auto-detected separator.</span>
+
+<span class="sd">        :param line: (str) Raw CSV line.</span>
+<span class="sd">        :return: (list) List of cell strings.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__separator</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__separator</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">sep</span> <span class="ow">in</span> <span class="n">avCsvReader</span><span class="o">.</span><span class="n">SEPARATORS</span><span class="p">:</span>
+        <span class="n">parts</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">sep</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">avCsvReader</span><span class="o">.</span><span class="n">MIN_COLUMNS</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__separator</span> <span class="o">=</span> <span class="n">sep</span>
+            <span class="k">return</span> <span class="n">parts</span>
+    <span class="k">return</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">avCsvReader</span><span class="o">.</span><span class="n">SEPARATORS</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>__parse_header</h4>
+
+    <article class="docstring">
+<p><em>Parse the header row and return a list of stripped column names.</em></p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>line</strong>: (<em>str</em>) Raw header line.</li>
+</ul>
+
+<h5>Returns</h5>
+
+<ul>
+<li>(<em>list</em>) List of column name strings.</li>
+</ul>
+
+<h5>Raises</h5>
+
+<ul>
+<li><em>ValueError</em>: The header row has fewer columns than the minimum.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">__parse_header</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse the header row and return a list of stripped column names.</span>
+
+<span class="sd">        :param line: (str) Raw header line.</span>
+<span class="sd">        :return: (list) List of column name strings.</span>
+<span class="sd">        :raises: ValueError: The header row has fewer columns than the minimum.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="n">columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__split_row</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+    <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">avCsvReader</span><span class="o">.</span><span class="n">MIN_COLUMNS</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;CSV header has only </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span><span class="si">}</span><span class="s1"> column(s). At least </span><span class="si">{</span><span class="n">avCsvReader</span><span class="o">.</span><span class="n">MIN_COLUMNS</span><span class="si">}</span><span class="s1"> are required.&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">columns</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>__check_required_columns</h4>
+
+    <article class="docstring">
+<p><em>Raise ValueError if any required synchronization column is missing.</em></p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>header</strong>: (<em>list</em>) List of column names from the header row.</li>
+</ul>
+
+<h5>Raises</h5>
+
+<ul>
+<li><em>ValueError</em>: One or more required columns are absent.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">__check_required_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">header</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raise ValueError if any required synchronization column is missing.</span>
+
+<span class="sd">        :param header: (list) List of column names from the header row.</span>
+<span class="sd">        :raises: ValueError: One or more required columns are absent.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="n">required</span> <span class="o">=</span> <span class="p">[</span><span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_audio_file</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_audio_clap</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_video_file</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_video_clap</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_delay</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_duration</span><span class="p">]</span>
+    <span class="n">missing</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">required</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">header</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The following required columns are missing from the CSV header: </span><span class="si">{</span><span class="n">missing</span><span class="si">}</span><span class="s1">. Check cfg.sync column name settings.&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>__get_cell</h4>
+
+    <article class="docstring">
+<p><em>Return the stripped cell value for the given column name, or "".</em></p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>header</strong>: (<em>list</em>) List of column names.</li>
+<li><strong>row</strong>: (<em>list</em>) List of cell values for the current row.</li>
+<li><strong>col_name</strong>: (<em>str</em>) Column name to look up.</li>
+</ul>
+
+<h5>Returns</h5>
+
+<ul>
+<li>(<em>str</em>) Cell value, or "" if the column is absent or the row is too short.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">__get_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">header</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">col_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the stripped cell value for the given column name, or &quot;&quot;.</span>
+
+<span class="sd">        :param header: (list) List of column names.</span>
+<span class="sd">        :param row: (list) List of cell values for the current row.</span>
+<span class="sd">        :param col_name: (str) Column name to look up.</span>
+<span class="sd">        :return: (str) Cell value, or &quot;&quot; if the column is absent or the row</span>
+<span class="sd">                 is too short.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">col_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">header</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">header</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">col_name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">idx</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">row</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>__resolve_path</h4>
+
+    <article class="docstring">
+<p><em>Resolve a relative file path against the CSV directory.</em></p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>relative</strong>: (<em>str</em>) Relative path as found in the CSV cell.</li>
+</ul>
+
+<h5>Returns</h5>
+
+<ul>
+<li>(<em>str</em>) Absolute path.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">__resolve_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">relative</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Resolve a relative file path against the CSV directory.</span>
+
+<span class="sd">        :param relative: (str) Relative path as found in the CSV cell.</span>
+<span class="sd">        :return: (str) Absolute path.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isabs</span><span class="p">(</span><span class="n">relative</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">relative</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__csv_dir</span><span class="p">,</span> <span class="n">relative</span><span class="p">)</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>__build_crop</h4>
+
+    <article class="docstring">
+<p><em>Extract crop parameters for a video column set.</em></p>
+
+<p>The suffix is "" for the primary video and "2" for the secondary one.
+All four values must be present and non-empty for crop to be applied;
+otherwise (None, None, None, None) is returned.</p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>header</strong>: (<em>list</em>) List of column names.</li>
+<li><strong>row</strong>: (<em>list</em>) List of cell values for the current row.</li>
+<li><strong>suffix</strong>: (<em>str</em>) Column name suffix ("" or "2").</li>
+</ul>
+
+<h5>Returns</h5>
+
+<ul>
+<li>(<em>tuple</em>) (x, y, w, h) as int|None values.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">__build_crop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">header</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">suffix</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract crop parameters for a video column set.</span>
+
+<span class="sd">        The suffix is &quot;&quot; for the primary video and &quot;2&quot; for the secondary one.</span>
+<span class="sd">        All four values must be present and non-empty for crop to be applied;</span>
+<span class="sd">        otherwise (None, None, None, None) is returned.</span>
+
+<span class="sd">        :param header: (list) List of column names.</span>
+<span class="sd">        :param row: (list) List of cell values for the current row.</span>
+<span class="sd">        :param suffix: (str) Column name suffix (&quot;&quot; or &quot;2&quot;).</span>
+<span class="sd">        :return: (tuple) (x, y, w, h) as int|None values.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="n">x_str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_cell</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_video_crop_x</span> <span class="o">+</span> <span class="n">suffix</span><span class="p">)</span>
+    <span class="n">y_str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_cell</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_video_crop_y</span> <span class="o">+</span> <span class="n">suffix</span><span class="p">)</span>
+    <span class="n">w_str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_cell</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_video_crop_w</span> <span class="o">+</span> <span class="n">suffix</span><span class="p">)</span>
+    <span class="n">h_str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_cell</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_video_crop_h</span> <span class="o">+</span> <span class="n">suffix</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_str</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_str</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">w_str</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">h_str</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">x_str</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">y_str</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">w_str</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">h_str</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>__build_media_file</h4>
+
+    <article class="docstring">
+<p><em>Build a avMediaFile from the given column names and crop tuple.</em></p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>header</strong>: (<em>list</em>) List of column names.</li>
+<li><strong>row</strong>: (<em>list</em>) List of cell values.</li>
+<li><strong>col_file</strong>: (<em>str</em>) Column name for the file path.</li>
+<li><strong>col_clap</strong>: (<em>str</em>) Column name for the clap time.</li>
+<li><strong>crop</strong>: (<em>tuple</em>) (x, y, w, h) as int|None.</li>
+<li><strong>row_index</strong>: (<em>int</em>) 1-based row number, used in error messages.</li>
+</ul>
+
+<h5>Returns</h5>
+
+<ul>
+<li>(avMediaFile) Constructed avMediaFile instance.</li>
+</ul>
+
+<h5>Raises</h5>
+
+<ul>
+<li><em>ValueError</em>: A required cell is empty or invalid.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">__build_media_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">header</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">col_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">col_clap</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">crop</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">row_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">avMediaFile</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Build a avMediaFile from the given column names and crop tuple.</span>
+
+<span class="sd">        :param header: (list) List of column names.</span>
+<span class="sd">        :param row: (list) List of cell values.</span>
+<span class="sd">        :param col_file: (str) Column name for the file path.</span>
+<span class="sd">        :param col_clap: (str) Column name for the clap time.</span>
+<span class="sd">        :param crop: (tuple) (x, y, w, h) as int|None.</span>
+<span class="sd">        :param row_index: (int) 1-based row number, used in error messages.</span>
+<span class="sd">        :return: (avMediaFile) Constructed avMediaFile instance.</span>
+<span class="sd">        :raises: ValueError: A required cell is empty or invalid.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="n">path_raw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_cell</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">col_file</span><span class="p">)</span>
+    <span class="n">clap_raw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_cell</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">col_clap</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">path_raw</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Row </span><span class="si">{</span><span class="n">row_index</span><span class="si">}</span><span class="s1">: column </span><span class="si">{</span><span class="n">col_file</span><span class="si">!r}</span><span class="s1"> is empty.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">clap_raw</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Row </span><span class="si">{</span><span class="n">row_index</span><span class="si">}</span><span class="s1">: column </span><span class="si">{</span><span class="n">col_clap</span><span class="si">!r}</span><span class="s1"> is empty.&#39;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">clap_seconds</span> <span class="o">=</span> <span class="n">time_to_seconds</span><span class="p">(</span><span class="n">clap_raw</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Row </span><span class="si">{</span><span class="n">row_index</span><span class="si">}</span><span class="s1">: invalid clap time in column </span><span class="si">{</span><span class="n">col_clap</span><span class="si">!r}</span><span class="s1">. </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+    <span class="n">media</span> <span class="o">=</span> <span class="n">avMediaFile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__resolve_path</span><span class="p">(</span><span class="n">path_raw</span><span class="p">),</span> <span class="n">clap_seconds</span><span class="p">)</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">crop</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">media</span><span class="o">.</span><span class="n">crop_x</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="n">media</span><span class="o">.</span><span class="n">crop_y</span> <span class="o">=</span> <span class="n">y</span>
+        <span class="n">media</span><span class="o">.</span><span class="n">crop_w</span> <span class="o">=</span> <span class="n">w</span>
+        <span class="n">media</span><span class="o">.</span><span class="n">crop_h</span> <span class="o">=</span> <span class="n">h</span>
+    <span class="k">return</span> <span class="n">media</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>__build_session</h4>
+
+    <article class="docstring">
+<p><em>Build a avSession from a parsed header and data row.</em></p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>header</strong>: (<em>list</em>) List of column names.</li>
+<li><strong>row</strong>: (<em>list</em>) List of cell values.</li>
+<li><strong>row_index</strong>: (<em>int</em>) 1-based row number, used in error messages.</li>
+</ul>
+
+<h5>Returns</h5>
+
+<ul>
+<li>(avSession) Constructed avSession instance.</li>
+</ul>
+
+<h5>Raises</h5>
+
+<ul>
+<li><em>ValueError</em>: Any required cell is empty or cannot be parsed.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">__build_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">header</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">row_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">avSession</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Build a avSession from a parsed header and data row.</span>
+
+<span class="sd">        :param header: (list) List of column names.</span>
+<span class="sd">        :param row: (list) List of cell values.</span>
+<span class="sd">        :param row_index: (int) 1-based row number, used in error messages.</span>
+<span class="sd">        :return: (avSession) Constructed avSession instance.</span>
+<span class="sd">        :raises: ValueError: Any required cell is empty or cannot be parsed.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="n">audio_crop</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">audio</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__build_media_file</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_audio_file</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_audio_clap</span><span class="p">,</span> <span class="n">audio_crop</span><span class="p">,</span> <span class="n">row_index</span><span class="p">)</span>
+    <span class="n">video_crop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__build_crop</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">video</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__build_media_file</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_video_file</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_video_clap</span><span class="p">,</span> <span class="n">video_crop</span><span class="p">,</span> <span class="n">row_index</span><span class="p">)</span>
+    <span class="n">delay_raw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_cell</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_delay</span><span class="p">)</span>
+    <span class="n">duration_raw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_cell</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_duration</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">delay</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">delay_raw</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">delay_raw</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mf">0.0</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Row </span><span class="si">{</span><span class="n">row_index</span><span class="si">}</span><span class="s1">: invalid delay value </span><span class="si">{</span><span class="n">delay_raw</span><span class="si">!r}</span><span class="s1">.&#39;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">duration</span> <span class="o">=</span> <span class="n">time_to_seconds</span><span class="p">(</span><span class="n">duration_raw</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Row </span><span class="si">{</span><span class="n">row_index</span><span class="si">}</span><span class="s1">: invalid duration in column </span><span class="si">{</span><span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_duration</span><span class="si">!r}</span><span class="s1">. </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+    <span class="n">session</span> <span class="o">=</span> <span class="n">avSession</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="n">video</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="n">delay</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="n">duration</span><span class="p">)</span>
+    <span class="n">video_name_raw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_cell</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_video_name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">video_name_raw</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">set_video_name</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">video_name_raw</span><span class="p">)</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">col_file</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_audio_file</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">col_file</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">header</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">audio_raw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_cell</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">col_file</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">audio_raw</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">audio_n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__build_media_file</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">col_file</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_audio_clap</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">row_index</span><span class="p">)</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">add_audio</span><span class="p">(</span><span class="n">audio_n</span><span class="p">)</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">col_file</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_video_file</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">col_file</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">header</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">video_raw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_cell</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">col_file</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">video_raw</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">video_crop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__build_crop</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+            <span class="n">video_n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__build_media_file</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">col_file</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_video_clap</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">video_crop</span><span class="p">,</span> <span class="n">row_index</span><span class="p">)</span>
+            <span class="n">name_raw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_cell</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_video_name</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">add_video</span><span class="p">(</span><span class="n">video_n</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name_raw</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">name_raw</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">sync_cols</span> <span class="o">=</span> <span class="p">{</span><span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_audio_file</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_audio_clap</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_video_file</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_video_clap</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_video_name</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_video_crop_x</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_video_crop_y</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_video_crop_w</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_video_crop_h</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_delay</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_duration</span><span class="p">}</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">20</span><span class="p">):</span>
+        <span class="n">suffix</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+        <span class="n">sync_cols</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_audio_file</span> <span class="o">+</span> <span class="n">suffix</span><span class="p">)</span>
+        <span class="n">sync_cols</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_audio_clap</span> <span class="o">+</span> <span class="n">suffix</span><span class="p">)</span>
+        <span class="n">sync_cols</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_video_file</span> <span class="o">+</span> <span class="n">suffix</span><span class="p">)</span>
+        <span class="n">sync_cols</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_video_clap</span> <span class="o">+</span> <span class="n">suffix</span><span class="p">)</span>
+        <span class="n">sync_cols</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_video_name</span> <span class="o">+</span> <span class="n">suffix</span><span class="p">)</span>
+        <span class="n">sync_cols</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_video_crop_x</span> <span class="o">+</span> <span class="n">suffix</span><span class="p">)</span>
+        <span class="n">sync_cols</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_video_crop_y</span> <span class="o">+</span> <span class="n">suffix</span><span class="p">)</span>
+        <span class="n">sync_cols</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_video_crop_w</span> <span class="o">+</span> <span class="n">suffix</span><span class="p">)</span>
+        <span class="n">sync_cols</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">col_video_crop_h</span> <span class="o">+</span> <span class="n">suffix</span><span class="p">)</span>
+    <span class="n">name_col_names</span> <span class="o">=</span> <span class="p">{</span><span class="n">entry</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">cfg</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">output_name_cols</span><span class="p">}</span>
+    <span class="n">output_name_meta</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">col_name</span> <span class="ow">in</span> <span class="n">name_col_names</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_cell</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">col_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">output_name_meta</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">output_name_meta</span> <span class="o">=</span> <span class="n">output_name_meta</span>
+    <span class="n">metadata</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">col_name</span> <span class="ow">in</span> <span class="n">header</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">col_name</span> <span class="ow">in</span> <span class="n">sync_cols</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">col_name</span> <span class="ow">in</span> <span class="n">name_col_names</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_cell</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">col_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">metadata</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="n">metadata</span>
+    <span class="k">return</span> <span class="n">session</span>
+</code></pre></div>
+
+    </details>
+
+
+</section>
+</section>    </section>    </main>
+    
+            <footer>
+                <p class="copyright">Copyright (C) 2026  Brigitte Bigi, CNRS, Laboratoire Parole et Langage, Aix-en-Provence, France</p>
+            </footer>
+        
+</body>
+</html>

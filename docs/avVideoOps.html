@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+
+        <head>
+            
+            <title>AViSS doc</title>
+
+            <meta charset="utf-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+            <meta name="description" content="Python Class Documentation of avVideoOps. Static methods for video file operations used by the AViSS pipeline." />
+
+            <link rel="logo icon" href="./statics/aviss.png" />
+            <link rel="stylesheet" href="./Whakerexa-2.1/wexa_statics/css/wexa.css" type="text/css" />
+            <link rel="stylesheet" href="./Whakerexa-2.1/wexa_statics/css/layout.css" type="text/css" />
+            <link rel="stylesheet" href="./Whakerexa-2.1/wexa_statics/css/book.css" type="text/css" />
+            <link rel="stylesheet" href="./Whakerexa-2.1/wexa_statics/css/menu.css" type="text/css" />
+            <link rel="stylesheet" href="./Whakerexa-2.1/wexa_statics/css/code.css" type="text/css" />
+            <link rel="stylesheet" href="./statics/clamming.css" type="text/css" />
+
+            <!-- Whakerexa JS loader: ES6 modules on http(s), bundle on file:// -->
+            <script>
+            (function () {
+              const usingFile = (window.location.protocol === 'file:');
+              const s = document.createElement('script');
+            
+              if (usingFile) {
+                s.src = './Whakerexa-2.1/wexa_statics/js/wexa.bundle.js';
+              } else {
+                s.type = 'module';
+                s.src = './Whakerexa-2.1/wexa_statics/js/wexa.js';
+              }
+            
+              s.onload = function () {
+                window.Wexa.onload.addLoadFunction(function () {
+                  const book = new window.Wexa.Book("main-content");
+                  book.fill_table(false);
+                });
+              };
+            
+              document.head.appendChild(s);
+            })();
+            </script>
+
+       </head>
+       
+       <body class="light">
+        <header>
+
+            <a role="button" class="skip" href="#main-content" aria-label="Go to main content">
+                Go to main content
+            </a>
+            <nav>
+                <ul role="menubar">
+                    <li role="none">
+                        <button id="btn-contrast" role="menuitem" class="print-off" onclick="window.Wexa.accessibility.switch_contrast_scheme()" aria-label="Contrast">
+                            <img class="nav-item-img" src="./Whakerexa-2.1/wexa_statics/icons/contrast_switcher.jpg" alt="Contrast" id="img-contrast"/>
+                        </button>
+                    </li>
+                    <li role="none">
+                        <button id="btn-theme" class="print-off" role="menuitem" onclick="window.Wexa.accessibility.switch_color_scheme()" aria-label="Theme" >
+                            <img class="nav-item-img" src="./Whakerexa-2.1/wexa_statics/icons/theme_switcher.png" alt="Theme" id="img-theme"/>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        
+    <h1>AViSS 1.0</h1>
+        <p><img class="small-logo" src="./statics/aviss.png" alt="Software logo"/></p>
+        <p><a class="external-link" href="https://github.com/brigitte-bigi/AViSS.git">https://github.com/brigitte-bigi/AViSS.git</a></p>
+    </header>
+    <nav id="nav-book" class="side-nav">
+    <h1>AViSS 1.0</h1>
+    <img class="small-logo center" src="./statics/aviss.png" alt=""/>
+        <p><a class="external-link" href="https://github.com/brigitte-bigi/AViSS.git">https://github.com/brigitte-bigi/AViSS.git</a></p>
+    <ul>
+<li><a role="button" tabindex="0" aria-disabled="true"> &crarr; Prev. Module</a></li>
+<li><a role="button" tabindex="0" href="avAudioOps.html"> &uarr; Prev. Class</a></li>
+<li><a role="button" tabindex="0" href="index.html"> &#8962; Index</a></li>
+<li><a role="button" tabindex="0" href="avClapSync.html"> &darr; Next Class</a></li>
+<li><a role="button" tabindex="0" href="aviss.html"> &rdsh; Next Module</a></li>
+    </ul>
+    <h2>Table of Contents</h2>
+    <ul id="toc"></ul>
+    <hr>
+    <p><small>Automatically created</small></p><p><small>by <a class="external-link" href="https://clamming.sf.net">ClammingPy</a></small></p>
+</nav>
+    <main id="main-content">
+    <section id="#aviss.core">    <h1>Module aviss.core</h1>
+<section id="#avVideoOps">
+<h2>Class avVideoOps</h2>
+
+<section>
+<h3 id="#description_avVideoOps">Description</h3>
+    <article class="docstring">
+<p><em>Static methods for video file operations used by the AViSS pipeline.</em></p>
+
+<p>All methods wrap ffmpeg commands or sppasVideoReader calls.
+sppasVideoReader is used exclusively for reading video metadata because
+it guarantees frame-accurate seeking via OpenCV.</p>
+
+<h5>Example</h5>
+
+<div class="highlight"><pre><span></span><code> <span class="o">&gt;&gt;&gt;</span> <span class="n">info</span> <span class="o">=</span> <span class="n">avVideoOps</span><span class="o">.</span><span class="n">get_video_info</span><span class="p">(</span><span class="s2">&quot;/data/rec.mp4&quot;</span><span class="p">)</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;fps&quot;</span><span class="p">]</span>
+ <span class="o">&gt;</span> <span class="mf">50.0</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;nframes&quot;</span><span class="p">]</span>
+ <span class="o">&gt;</span> <span class="mi">750</span>
+</code></pre></div>
+
+    </article>
+</section>
+<section>
+<h3 id="#public_fct_avVideoOps">Public functions</h3>
+<h4>get_video_info</h4>
+
+    <article class="docstring">
+<p><em>Return basic metadata of a video file via sppasVideoReader.</em></p>
+
+<h5>Example</h5>
+
+<div class="highlight"><pre><span></span><code> <span class="o">&gt;&gt;&gt;</span> <span class="n">info</span> <span class="o">=</span> <span class="n">avVideoOps</span><span class="o">.</span><span class="n">get_video_info</span><span class="p">(</span><span class="s2">&quot;/data/rec.mp4&quot;</span><span class="p">)</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;fps&quot;</span><span class="p">]</span>
+ <span class="o">&gt;</span> <span class="mf">50.0</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;duration&quot;</span><span class="p">]</span>
+ <span class="o">&gt;</span> <span class="mf">15.0</span>
+</code></pre></div>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>path</strong>: (<em>str</em>) Path to the video file.</li>
+</ul>
+
+<h5>Returns</h5>
+
+<ul>
+<li><strong>(dict) Keys</strong>: "fps"(<em>float</em>), "nframes" (int), "duration" (float, seconds), "width" (int), "height" (int).</li>
+</ul>
+
+<h5>Raises</h5>
+
+<ul>
+<li><em>TypeError</em>: path is not a non-empty string.</li>
+<li><em>FileNotFoundError</em>: The file does not exist.</li>
+<li><em>IOError</em>: sppasVideoReader could not open the file.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_video_info</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return basic metadata of a video file via sppasVideoReader.</span>
+
+<span class="sd">        :example:</span>
+<span class="sd">        &gt;&gt;&gt; info = avVideoOps.get_video_info(&quot;/data/rec.mp4&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; info[&quot;fps&quot;]</span>
+<span class="sd">        50.0</span>
+<span class="sd">        &gt;&gt;&gt; info[&quot;duration&quot;]</span>
+<span class="sd">        15.0</span>
+
+<span class="sd">        :param path: (str) Path to the video file.</span>
+<span class="sd">        :return: (dict) Keys: &quot;fps&quot; (float), &quot;nframes&quot; (int),</span>
+<span class="sd">                 &quot;duration&quot; (float, seconds), &quot;width&quot; (int), &quot;height&quot; (int).</span>
+<span class="sd">        :raises: TypeError: path is not a non-empty string.</span>
+<span class="sd">        :raises: FileNotFoundError: The file does not exist.</span>
+<span class="sd">        :raises: IOError: sppasVideoReader could not open the file.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;path must be a non-empty string.&#39;</span><span class="p">)</span>
+    <span class="n">check_file</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">bv</span> <span class="o">=</span> <span class="n">sppasVideoReader</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">bv</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;fps&#39;</span><span class="p">:</span> <span class="n">bv</span><span class="o">.</span><span class="n">get_framerate</span><span class="p">(),</span> <span class="s1">&#39;nframes&#39;</span><span class="p">:</span> <span class="n">bv</span><span class="o">.</span><span class="n">get_nframes</span><span class="p">(),</span> <span class="s1">&#39;duration&#39;</span><span class="p">:</span> <span class="n">bv</span><span class="o">.</span><span class="n">get_duration</span><span class="p">(),</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="n">bv</span><span class="o">.</span><span class="n">get_width</span><span class="p">(),</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="n">bv</span><span class="o">.</span><span class="n">get_height</span><span class="p">()}</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;sppasVideoReader could not open </span><span class="si">{</span><span class="n">path</span><span class="si">!r}</span><span class="s1">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">bv</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">info</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>time_to_frame</h4>
+
+    <article class="docstring">
+<p><em>Return the index of the frame that contains a given time position.</em></p>
+
+<p>The frame index is the integer part of time * fps.
+Frame indices are 0-based: frame 0 covers [0, 1/fps[.</p>
+
+<h5>Example</h5>
+
+<div class="highlight"><pre><span></span><code> <span class="o">&gt;&gt;&gt;</span> <span class="n">avVideoOps</span><span class="o">.</span><span class="n">time_to_frame</span><span class="p">(</span><span class="mf">0.120</span><span class="p">,</span> <span class="mf">25.</span><span class="p">)</span>
+ <span class="o">&gt;</span> <span class="mi">3</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">avVideoOps</span><span class="o">.</span><span class="n">time_to_frame</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">50.</span><span class="p">)</span>
+ <span class="o">&gt;</span> <span class="mi">0</span>
+</code></pre></div>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>time_seconds</strong>: (<em>float</em>) Time position in seconds.</li>
+<li><strong>fps</strong>: (<em>float</em>) Frame rate of the video in frames per second.</li>
+</ul>
+
+<h5>Returns</h5>
+
+<ul>
+<li>(<em>int</em>) 0-based frame index.</li>
+</ul>
+
+<h5>Raises</h5>
+
+<ul>
+<li><em>TypeError</em>: time_seconds or fps is not a number.</li>
+<li><em>ValueError</em>: time_seconds is negative or fps is not positive.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">time_to_frame</span><span class="p">(</span><span class="n">time_seconds</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">fps</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the index of the frame that contains a given time position.</span>
+
+<span class="sd">        The frame index is the integer part of time * fps.</span>
+<span class="sd">        Frame indices are 0-based: frame 0 covers [0, 1/fps[.</span>
+
+<span class="sd">        :example:</span>
+<span class="sd">        &gt;&gt;&gt; avVideoOps.time_to_frame(0.120, 25.)</span>
+<span class="sd">        3</span>
+<span class="sd">        &gt;&gt;&gt; avVideoOps.time_to_frame(0.0, 50.)</span>
+<span class="sd">        0</span>
+
+<span class="sd">        :param time_seconds: (float) Time position in seconds.</span>
+<span class="sd">        :param fps: (float) Frame rate of the video in frames per second.</span>
+<span class="sd">        :return: (int) 0-based frame index.</span>
+<span class="sd">        :raises: TypeError: time_seconds or fps is not a number.</span>
+<span class="sd">        :raises: ValueError: time_seconds is negative or fps is not positive.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">time_seconds</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;time_seconds must be a number.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fps</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;fps must be a number.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">time_seconds</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;time_seconds must be zero or positive.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">fps</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;fps must be strictly positive.&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">time_seconds</span><span class="p">)</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="n">fps</span><span class="p">))</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>frame_to_time</h4>
+
+    <article class="docstring">
+<p><em>Return the start time of a frame given its index and the frame rate.</em></p>
+
+<h5>Example</h5>
+
+<div class="highlight"><pre><span></span><code> <span class="o">&gt;&gt;&gt;</span> <span class="n">avVideoOps</span><span class="o">.</span><span class="n">frame_to_time</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mf">25.</span><span class="p">)</span>
+ <span class="o">&gt;</span> <span class="mf">0.12</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">avVideoOps</span><span class="o">.</span><span class="n">frame_to_time</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">50.</span><span class="p">)</span>
+ <span class="o">&gt;</span> <span class="mf">0.0</span>
+</code></pre></div>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>frame_index</strong>: (<em>int</em>) 0-based frame index.</li>
+<li><strong>fps</strong>: (<em>float</em>) Frame rate of the video in frames per second.</li>
+</ul>
+
+<h5>Returns</h5>
+
+<ul>
+<li>(<em>float</em>) Start time of the frame in seconds.</li>
+</ul>
+
+<h5>Raises</h5>
+
+<ul>
+<li><em>TypeError</em>: frame_index is not an integer or fps is not a number.</li>
+<li><em>ValueError</em>: frame_index is negative or fps is not positive.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">frame_to_time</span><span class="p">(</span><span class="n">frame_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">fps</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the start time of a frame given its index and the frame rate.</span>
+
+<span class="sd">        :example:</span>
+<span class="sd">        &gt;&gt;&gt; avVideoOps.frame_to_time(3, 25.)</span>
+<span class="sd">        0.12</span>
+<span class="sd">        &gt;&gt;&gt; avVideoOps.frame_to_time(0, 50.)</span>
+<span class="sd">        0.0</span>
+
+<span class="sd">        :param frame_index: (int) 0-based frame index.</span>
+<span class="sd">        :param fps: (float) Frame rate of the video in frames per second.</span>
+<span class="sd">        :return: (float) Start time of the frame in seconds.</span>
+<span class="sd">        :raises: TypeError: frame_index is not an integer or fps is not a number.</span>
+<span class="sd">        :raises: ValueError: frame_index is negative or fps is not positive.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frame_index</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;frame_index must be an integer.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fps</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;fps must be a number.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">frame_index</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;frame_index must be zero or positive.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">fps</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;fps must be strictly positive.&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">frame_index</span><span class="p">)</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">fps</span><span class="p">)</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>end_frame_index</h4>
+
+    <article class="docstring">
+<p><em>Return the index of the first frame NOT included in the output.</em></p>
+
+<p>The end frame is computed as 1 + int((clap_time + duration) * fps).
+This guarantees that the last included frame fully covers the expected
+duration.</p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>clap_time</strong>: (<em>float</em>) Clap time in the video (seconds).</li>
+<li><strong>duration</strong>: (<em>float</em>) Expected output duration (seconds).</li>
+<li><strong>fps</strong>: (<em>float</em>) Frame rate in frames per second.</li>
+</ul>
+
+<h5>Returns</h5>
+
+<ul>
+<li>(<em>int</em>) Index of the first excluded frame.</li>
+</ul>
+
+<h5>Raises</h5>
+
+<ul>
+<li><em>TypeError</em>: Any argument is not a number.</li>
+<li><em>ValueError</em>: Any argument is not strictly positive (clap_time &gt;= 0).</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">end_frame_index</span><span class="p">(</span><span class="n">clap_time</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">duration</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">fps</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the index of the first frame NOT included in the output.</span>
+
+<span class="sd">        The end frame is computed as 1 + int((clap_time + duration) * fps).</span>
+<span class="sd">        This guarantees that the last included frame fully covers the expected</span>
+<span class="sd">        duration.</span>
+
+<span class="sd">        :param clap_time: (float) Clap time in the video (seconds).</span>
+<span class="sd">        :param duration: (float) Expected output duration (seconds).</span>
+<span class="sd">        :param fps: (float) Frame rate in frames per second.</span>
+<span class="sd">        :return: (int) Index of the first excluded frame.</span>
+<span class="sd">        :raises: TypeError: Any argument is not a number.</span>
+<span class="sd">        :raises: ValueError: Any argument is not strictly positive (clap_time &gt;= 0).</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">clap_time</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;clap_time must be a number.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">duration</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;duration must be a number.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fps</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;fps must be a number.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">clap_time</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;clap_time must be zero or positive.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">duration</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;duration must be strictly positive.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">fps</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;fps must be strictly positive.&#39;</span><span class="p">)</span>
+    <span class="n">real_end_time</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">clap_time</span><span class="p">)</span> <span class="o">+</span> <span class="nb">float</span><span class="p">(</span><span class="n">duration</span><span class="p">)</span>
+    <span class="k">return</span> <span class="mi">1</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">real_end_time</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="n">fps</span><span class="p">))</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>trim</h4>
+
+    <article class="docstring">
+<p><em>Trim a video between two frame indices and re-encode to MKV/H265.</em></p>
+
+<p>The output covers frames in the range [start<em>frame, end</em>frame[.
+The PTS-STARTPTS filter resets the timestamp origin to zero.</p>
+
+<p>The ':' separator used in ffmpeg filter syntax requires that the
+output path does not contain colons.</p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>video_in</strong>: (<em>str</em>) Path to the input video file.</li>
+<li><strong>start_frame</strong>: (<em>int</em>) Index of the first frame to include (0-based).</li>
+<li><strong>end_frame</strong>: (<em>int</em>) Index of the first frame to exclude.</li>
+<li><strong>video_out</strong>: (<em>str</em>) Path for the output MKV file.</li>
+<li><strong>crf</strong>: (<em>int</em>|None) CRF encoding quality. Uses cfg.output.crf if None.</li>
+</ul>
+
+<h5>Raises</h5>
+
+<ul>
+<li><em>TypeError</em>: Any string argument is not a non-empty string.</li>
+<li><em>TypeError</em>: start<em>frame or end</em>frame is not an integer.</li>
+<li><em>ValueError</em>: start<em>frame is negative or end</em>frame &lt;= start_frame.</li>
+<li><em>FileNotFoundError</em>: video_in does not exist.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">trim</span><span class="p">(</span><span class="n">video_in</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">start_frame</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">end_frame</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">video_out</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">crf</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Trim a video between two frame indices and re-encode to MKV/H265.</span>
+
+<span class="sd">        The output covers frames in the range [start_frame, end_frame[.</span>
+<span class="sd">        The PTS-STARTPTS filter resets the timestamp origin to zero.</span>
+
+<span class="sd">        The &#39;:&#39; separator used in ffmpeg filter syntax requires that the</span>
+<span class="sd">        output path does not contain colons.</span>
+
+<span class="sd">        :param video_in: (str) Path to the input video file.</span>
+<span class="sd">        :param start_frame: (int) Index of the first frame to include (0-based).</span>
+<span class="sd">        :param end_frame: (int) Index of the first frame to exclude.</span>
+<span class="sd">        :param video_out: (str) Path for the output MKV file.</span>
+<span class="sd">        :param crf: (int|None) CRF encoding quality. Uses cfg.output.crf if None.</span>
+<span class="sd">        :raises: TypeError: Any string argument is not a non-empty string.</span>
+<span class="sd">        :raises: TypeError: start_frame or end_frame is not an integer.</span>
+<span class="sd">        :raises: ValueError: start_frame is negative or end_frame &lt;= start_frame.</span>
+<span class="sd">        :raises: FileNotFoundError: video_in does not exist.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">video_in</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">video_in</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;video_in must be a non-empty string.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">video_out</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">video_out</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;video_out must be a non-empty string.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">start_frame</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;start_frame must be an integer.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">end_frame</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;end_frame must be an integer.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">start_frame</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;start_frame must be zero or positive.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">end_frame</span> <span class="o">&lt;=</span> <span class="n">start_frame</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;end_frame must be strictly greater than start_frame.&#39;</span><span class="p">)</span>
+    <span class="n">check_file</span><span class="p">(</span><span class="n">video_in</span><span class="p">)</span>
+    <span class="n">effective_crf</span> <span class="o">=</span> <span class="n">crf</span> <span class="k">if</span> <span class="n">crf</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">cfg</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">crf</span>
+    <span class="n">command</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;ffmpeg -i &#39;</span><span class="si">{</span><span class="n">video_in</span><span class="si">}</span><span class="s2">&#39; -f matroska -vcodec libx265 -crf </span><span class="si">{</span><span class="n">effective_crf</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2"> -pix_fmt yuv420p -vf trim=start_frame=</span><span class="si">{</span><span class="n">start_frame</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2">:end_frame=</span><span class="si">{</span><span class="n">end_frame</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2">,setpts=PTS-STARTPTS -an &#39;</span><span class="si">{</span><span class="n">video_out</span><span class="si">}</span><span class="s2">&#39; -nostdin -y&quot;</span>
+    <span class="n">run_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>crop</h4>
+
+    <article class="docstring">
+<p><em>Crop a video to the given region.</em></p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>video_in</strong>: (<em>str</em>) Path to the input video file.</li>
+<li><strong>x</strong>: (<em>int</em>) Left edge of the crop region (pixels).</li>
+<li><strong>y</strong>: (<em>int</em>) Top edge of the crop region (pixels).</li>
+<li><strong>w</strong>: (<em>int</em>) Width of the crop region (pixels).</li>
+<li><strong>h</strong>: (<em>int</em>) Height of the crop region (pixels).</li>
+<li><strong>video_out</strong>: (<em>str</em>) Path for the output video file.</li>
+</ul>
+
+<h5>Raises</h5>
+
+<ul>
+<li><em>TypeError</em>: Any string argument is not a non-empty string.</li>
+<li><em>TypeError</em>: x, y, w or h is not an integer.</li>
+<li><em>ValueError</em>: x or y is negative, or w or h is not strictly positive.</li>
+<li><em>FileNotFoundError</em>: video_in does not exist.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">crop</span><span class="p">(</span><span class="n">video_in</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">w</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">h</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">video_out</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Crop a video to the given region.</span>
+
+<span class="sd">        :param video_in: (str) Path to the input video file.</span>
+<span class="sd">        :param x: (int) Left edge of the crop region (pixels).</span>
+<span class="sd">        :param y: (int) Top edge of the crop region (pixels).</span>
+<span class="sd">        :param w: (int) Width of the crop region (pixels).</span>
+<span class="sd">        :param h: (int) Height of the crop region (pixels).</span>
+<span class="sd">        :param video_out: (str) Path for the output video file.</span>
+<span class="sd">        :raises: TypeError: Any string argument is not a non-empty string.</span>
+<span class="sd">        :raises: TypeError: x, y, w or h is not an integer.</span>
+<span class="sd">        :raises: ValueError: x or y is negative, or w or h is not strictly positive.</span>
+<span class="sd">        :raises: FileNotFoundError: video_in does not exist.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">video_in</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">video_in</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;video_in must be a non-empty string.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">video_out</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">video_out</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;video_out must be a non-empty string.&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="p">((</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">w</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="n">h</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> must be an integer.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;x must be zero or positive.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;y must be zero or positive.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">w</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;w must be strictly positive.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">h</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;h must be strictly positive.&#39;</span><span class="p">)</span>
+    <span class="n">check_file</span><span class="p">(</span><span class="n">video_in</span><span class="p">)</span>
+    <span class="n">command</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;ffmpeg -i &#39;</span><span class="si">{</span><span class="n">video_in</span><span class="si">}</span><span class="s2">&#39; -filter:v &#39;crop=w=</span><span class="si">{</span><span class="n">w</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2">:h=</span><span class="si">{</span><span class="n">h</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2">:x=</span><span class="si">{</span><span class="n">x</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2">:y=</span><span class="si">{</span><span class="n">y</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2">&#39; &#39;</span><span class="si">{</span><span class="n">video_out</span><span class="si">}</span><span class="s2">&#39; -nostdin -y&quot;</span>
+    <span class="n">run_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>add_copyright</h4>
+
+    <article class="docstring">
+<p><em>Overlay a copyright text on the top-left area of the video.</em></p>
+
+<p>The text is rendered in white Arial 18pt at position (40, 12).
+The ':' character in the copyright string must be escaped as '\:'
+for the ffmpeg drawtext filter.</p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>video_in</strong>: (<em>str</em>) Path to the input video file.</li>
+<li><strong>copyright_text</strong>: (<em>str</em>) Copyright string to overlay.</li>
+<li><strong>video_out</strong>: (<em>str</em>) Path for the output MKV file.</li>
+<li><strong>crf</strong>: (<em>int</em>|None) CRF encoding quality. Uses cfg.output.crf if None.</li>
+</ul>
+
+<h5>Raises</h5>
+
+<ul>
+<li><em>TypeError</em>: Any string argument is not a non-empty string.</li>
+<li><em>FileNotFoundError</em>: video_in does not exist.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">add_copyright</span><span class="p">(</span><span class="n">video_in</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">copyright_text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">video_out</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">crf</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Overlay a copyright text on the top-left area of the video.</span>
+
+<span class="sd">        The text is rendered in white Arial 18pt at position (40, 12).</span>
+<span class="sd">        The &#39;:&#39; character in the copyright string must be escaped as &#39;\\:&#39;</span>
+<span class="sd">        for the ffmpeg drawtext filter.</span>
+
+<span class="sd">        :param video_in: (str) Path to the input video file.</span>
+<span class="sd">        :param copyright_text: (str) Copyright string to overlay.</span>
+<span class="sd">        :param video_out: (str) Path for the output MKV file.</span>
+<span class="sd">        :param crf: (int|None) CRF encoding quality. Uses cfg.output.crf if None.</span>
+<span class="sd">        :raises: TypeError: Any string argument is not a non-empty string.</span>
+<span class="sd">        :raises: FileNotFoundError: video_in does not exist.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">video_in</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">video_in</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;video_in must be a non-empty string.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">copyright_text</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">copyright_text</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;copyright_text must be a non-empty string.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">video_out</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">video_out</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;video_out must be a non-empty string.&#39;</span><span class="p">)</span>
+    <span class="n">check_file</span><span class="p">(</span><span class="n">video_in</span><span class="p">)</span>
+    <span class="n">effective_crf</span> <span class="o">=</span> <span class="n">crf</span> <span class="k">if</span> <span class="n">crf</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">cfg</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">crf</span>
+    <span class="n">command</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;ffmpeg -i &#39;</span><span class="si">{</span><span class="n">video_in</span><span class="si">}</span><span class="s2">&#39; -f matroska -vcodec libx265 -crf </span><span class="si">{</span><span class="n">effective_crf</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2"> -pix_fmt yuv420p -filter_complex &quot;[0:v] drawtext=fontfile=&#39;arial.ttf&#39;:fontsize=18:x=40:y=12:text=&#39;</span><span class="si">{</span><span class="n">copyright_text</span><span class="si">}</span><span class="s2">&#39;:fontcolor=white&quot; -an &#39;</span><span class="si">{</span><span class="n">video_out</span><span class="si">}</span><span class="s2">&#39; -nostdin -y&quot;&quot;&quot;</span>
+    <span class="n">run_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>rotate</h4>
+
+    <article class="docstring">
+<p><em>Rotate a video using the ffmpeg transpose filter.</em></p>
+
+<p>Transpose values:
+0 = 90° counter-clockwise and vertical flip
+1 = 90° clockwise
+2 = 90° counter-clockwise
+3 = 90° clockwise and vertical flip</p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>video_in</strong>: (<em>str</em>) Path to the input video file.</li>
+<li><strong>video_out</strong>: (<em>str</em>) Path for the output video file.</li>
+<li><strong>transpose</strong>: (<em>int</em>) Transpose filter value (0, 1, 2 or 3). Defaults to 2 (90° counter-clockwise, portrait mode).</li>
+</ul>
+
+<h5>Raises</h5>
+
+<ul>
+<li><em>TypeError</em>: video<em>in or video</em>out is not a non-empty string.</li>
+<li><em>TypeError</em>: transpose is not an integer.</li>
+<li><em>ValueError</em>: transpose is not in [0, 3].</li>
+<li><em>FileNotFoundError</em>: video_in does not exist.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">rotate</span><span class="p">(</span><span class="n">video_in</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">video_out</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">transpose</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Rotate a video using the ffmpeg transpose filter.</span>
+
+<span class="sd">        Transpose values:</span>
+<span class="sd">            0 = 90° counter-clockwise and vertical flip</span>
+<span class="sd">            1 = 90° clockwise</span>
+<span class="sd">            2 = 90° counter-clockwise</span>
+<span class="sd">            3 = 90° clockwise and vertical flip</span>
+
+<span class="sd">        :param video_in: (str) Path to the input video file.</span>
+<span class="sd">        :param video_out: (str) Path for the output video file.</span>
+<span class="sd">        :param transpose: (int) Transpose filter value (0, 1, 2 or 3).</span>
+<span class="sd">                          Defaults to 2 (90° counter-clockwise, portrait mode).</span>
+<span class="sd">        :raises: TypeError: video_in or video_out is not a non-empty string.</span>
+<span class="sd">        :raises: TypeError: transpose is not an integer.</span>
+<span class="sd">        :raises: ValueError: transpose is not in [0, 3].</span>
+<span class="sd">        :raises: FileNotFoundError: video_in does not exist.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">video_in</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">video_in</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;video_in must be a non-empty string.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">video_out</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">video_out</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;video_out must be a non-empty string.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">transpose</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;transpose must be an integer.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">transpose</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">transpose</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;transpose must be in [0, 3].&#39;</span><span class="p">)</span>
+    <span class="n">check_file</span><span class="p">(</span><span class="n">video_in</span><span class="p">)</span>
+    <span class="n">command</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;ffmpeg -i &#39;</span><span class="si">{</span><span class="n">video_in</span><span class="si">}</span><span class="s2">&#39; -v 0 -filter:v &#39;transpose=</span><span class="si">{</span><span class="n">transpose</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2">&#39; -qscale 0 &#39;</span><span class="si">{</span><span class="n">video_out</span><span class="si">}</span><span class="s2">&#39; -nostdin -y&quot;</span>
+    <span class="n">run_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>merge_av</h4>
+
+    <article class="docstring">
+<p><em>Merge a video file and an audio file into a single MP4 container.</em></p>
+
+<p>The video and audio streams are copied without re-encoding.
+The output duration is determined by the shortest stream.</p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>video_in</strong>: (<em>str</em>) Path to the input video file (no audio track).</li>
+<li><strong>audio_in</strong>: (<em>str</em>) Path to the input audio file.</li>
+<li><strong>av_out</strong>: (<em>str</em>) Path for the output MP4 file.</li>
+</ul>
+
+<h5>Raises</h5>
+
+<ul>
+<li><em>TypeError</em>: Any argument is not a non-empty string.</li>
+<li><em>FileNotFoundError</em>: video<em>in or audio</em>in does not exist.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">merge_av</span><span class="p">(</span><span class="n">video_in</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">audio_in</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">av_out</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Merge a video file and an audio file into a single MP4 container.</span>
+
+<span class="sd">        The video and audio streams are copied without re-encoding.</span>
+<span class="sd">        The output duration is determined by the shortest stream.</span>
+
+<span class="sd">        :param video_in: (str) Path to the input video file (no audio track).</span>
+<span class="sd">        :param audio_in: (str) Path to the input audio file.</span>
+<span class="sd">        :param av_out: (str) Path for the output MP4 file.</span>
+<span class="sd">        :raises: TypeError: Any argument is not a non-empty string.</span>
+<span class="sd">        :raises: FileNotFoundError: video_in or audio_in does not exist.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">video_in</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">video_in</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;video_in must be a non-empty string.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">audio_in</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">audio_in</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;audio_in must be a non-empty string.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">av_out</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">av_out</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;av_out must be a non-empty string.&#39;</span><span class="p">)</span>
+    <span class="n">check_file</span><span class="p">(</span><span class="n">video_in</span><span class="p">)</span>
+    <span class="n">check_file</span><span class="p">(</span><span class="n">audio_in</span><span class="p">)</span>
+    <span class="n">command</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;ffmpeg -i &#39;</span><span class="si">{</span><span class="n">video_in</span><span class="si">}</span><span class="s2">&#39; -i &#39;</span><span class="si">{</span><span class="n">audio_in</span><span class="si">}</span><span class="s2">&#39; -c:v copy -c:a copy -shortest &#39;</span><span class="si">{</span><span class="n">av_out</span><span class="si">}</span><span class="s2">&#39; -nostdin -y&quot;</span>
+    <span class="n">run_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>to_webm</h4>
+
+    <article class="docstring">
+<p><em>Convert a video file to WebM format using libvpx-vp9 (two-pass).</em></p>
+
+<p>Two-pass encoding is used to achieve better quality at a given CRF.
+Pass 1 analyses the video and writes statistics to /dev/null.
+Pass 2 produces the final WebM file.</p>
+
+<p>If audio_in is provided, its audio track is encoded with libvorbis
+and muxed into the WebM container. Otherwise the output is video-only.</p>
+
+<h5>Example</h5>
+
+<div class="highlight"><pre><span></span><code> <span class="o">&gt;&gt;&gt;</span> <span class="n">avVideoOps</span><span class="o">.</span><span class="n">to_webm</span><span class="p">(</span><span class="s2">&quot;out.mkv&quot;</span><span class="p">,</span> <span class="s2">&quot;out.webm&quot;</span><span class="p">)</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">avVideoOps</span><span class="o">.</span><span class="n">to_webm</span><span class="p">(</span><span class="s2">&quot;out.mkv&quot;</span><span class="p">,</span> <span class="s2">&quot;out.webm&quot;</span><span class="p">,</span> <span class="n">audio_in</span><span class="o">=</span><span class="s2">&quot;out.wav&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>video_in</strong>: (<em>str</em>) Path to the input video file.</li>
+<li><strong>webm_out</strong>: (<em>str</em>) Path for the output WebM file.</li>
+<li><strong>audio_in</strong>: (<em>str</em>|None) Path to an optional audio file to mux. If None, no audio track is included.</li>
+<li><strong>crf</strong>: (<em>int</em>) CRF quality value for libvpx-vp9 in [0, 63]. Lower is better. Defaults to 16.</li>
+</ul>
+
+<h5>Raises</h5>
+
+<ul>
+<li><em>TypeError</em>: video<em>in or webm</em>out is not a non-empty string.</li>
+<li><em>TypeError</em>: audio_in is not a string or None.</li>
+<li><em>TypeError</em>: crf is not an integer.</li>
+<li><em>ValueError</em>: crf is not in range [0, 63].</li>
+<li><em>FileNotFoundError</em>: video<em>in or audio</em>in does not exist.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">to_webm</span><span class="p">(</span><span class="n">video_in</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">webm_out</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">audio_in</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">crf</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a video file to WebM format using libvpx-vp9 (two-pass).</span>
+
+<span class="sd">        Two-pass encoding is used to achieve better quality at a given CRF.</span>
+<span class="sd">        Pass 1 analyses the video and writes statistics to /dev/null.</span>
+<span class="sd">        Pass 2 produces the final WebM file.</span>
+
+<span class="sd">        If audio_in is provided, its audio track is encoded with libvorbis</span>
+<span class="sd">        and muxed into the WebM container. Otherwise the output is video-only.</span>
+
+<span class="sd">        :example:</span>
+<span class="sd">        &gt;&gt;&gt; avVideoOps.to_webm(&quot;out.mkv&quot;, &quot;out.webm&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; avVideoOps.to_webm(&quot;out.mkv&quot;, &quot;out.webm&quot;, audio_in=&quot;out.wav&quot;)</span>
+
+<span class="sd">        :param video_in: (str) Path to the input video file.</span>
+<span class="sd">        :param webm_out: (str) Path for the output WebM file.</span>
+<span class="sd">        :param audio_in: (str|None) Path to an optional audio file to mux.</span>
+<span class="sd">                         If None, no audio track is included.</span>
+<span class="sd">        :param crf: (int) CRF quality value for libvpx-vp9 in [0, 63].</span>
+<span class="sd">                    Lower is better. Defaults to 16.</span>
+<span class="sd">        :raises: TypeError: video_in or webm_out is not a non-empty string.</span>
+<span class="sd">        :raises: TypeError: audio_in is not a string or None.</span>
+<span class="sd">        :raises: TypeError: crf is not an integer.</span>
+<span class="sd">        :raises: ValueError: crf is not in range [0, 63].</span>
+<span class="sd">        :raises: FileNotFoundError: video_in or audio_in does not exist.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">video_in</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">video_in</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;video_in must be a non-empty string.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">webm_out</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">webm_out</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;webm_out must be a non-empty string.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">audio_in</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">audio_in</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">audio_in</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;audio_in must be a non-empty string or None.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">crf</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;crf must be an integer.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">crf</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">crf</span> <span class="o">&gt;</span> <span class="mi">63</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;crf must be in range [0, 63].&#39;</span><span class="p">)</span>
+    <span class="n">check_file</span><span class="p">(</span><span class="n">video_in</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">audio_in</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">check_file</span><span class="p">(</span><span class="n">audio_in</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">audio_in</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">pass1</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;ffmpeg -i &#39;</span><span class="si">{</span><span class="n">video_in</span><span class="si">}</span><span class="s2">&#39; -i &#39;</span><span class="si">{</span><span class="n">audio_in</span><span class="si">}</span><span class="s2">&#39; -b:v 0 -crf </span><span class="si">{</span><span class="n">crf</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2"> -pass 1 -an -f webm -y /dev/null&quot;</span>
+        <span class="n">pass2</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;ffmpeg -i &#39;</span><span class="si">{</span><span class="n">video_in</span><span class="si">}</span><span class="s2">&#39; -i &#39;</span><span class="si">{</span><span class="n">audio_in</span><span class="si">}</span><span class="s2">&#39; -b:v 0 -crf </span><span class="si">{</span><span class="n">crf</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2"> -pass 2 -c:v libvpx-vp9 -c:a libvorbis -q:a 5 -map 0:v:0 -map 1:a:0 &#39;</span><span class="si">{</span><span class="n">webm_out</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pass1</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;ffmpeg -i &#39;</span><span class="si">{</span><span class="n">video_in</span><span class="si">}</span><span class="s2">&#39; -b:v 0 -crf </span><span class="si">{</span><span class="n">crf</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2"> -pass 1 -an -f webm -y /dev/null&quot;</span>
+        <span class="n">pass2</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;ffmpeg -i &#39;</span><span class="si">{</span><span class="n">video_in</span><span class="si">}</span><span class="s2">&#39; -b:v 0 -crf </span><span class="si">{</span><span class="n">crf</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2"> -pass 2 -c:v libvpx-vp9 &#39;</span><span class="si">{</span><span class="n">webm_out</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+    <span class="n">run_command</span><span class="p">(</span><span class="n">pass1</span><span class="p">)</span>
+    <span class="n">run_command</span><span class="p">(</span><span class="n">pass2</span><span class="p">)</span>
+</code></pre></div>
+
+    </details>
+
+
+</section>
+</section>    </section>    </main>
+    
+            <footer>
+                <p class="copyright">Copyright (C) 2026  Brigitte Bigi, CNRS, Laboratoire Parole et Langage, Aix-en-Provence, France</p>
+            </footer>
+        
+</body>
+</html>

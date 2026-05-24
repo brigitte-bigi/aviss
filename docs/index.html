@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+
+        <head>
+            
+            <title>AViSS doc</title>
+
+            <meta charset="utf-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+            <meta name="description" content="Python class documentation" />
+
+            <link rel="logo icon" href="./statics/aviss.png" />
+            <link rel="stylesheet" href="./Whakerexa-2.1/wexa_statics/css/wexa.css" type="text/css" />
+            <link rel="stylesheet" href="./Whakerexa-2.1/wexa_statics/css/layout.css" type="text/css" />
+            <link rel="stylesheet" href="./Whakerexa-2.1/wexa_statics/css/book.css" type="text/css" />
+            <link rel="stylesheet" href="./Whakerexa-2.1/wexa_statics/css/menu.css" type="text/css" />
+            <link rel="stylesheet" href="./Whakerexa-2.1/wexa_statics/css/code.css" type="text/css" />
+            <link rel="stylesheet" href="./statics/clamming.css" type="text/css" />
+
+            <!-- Whakerexa JS loader: ES6 modules on http(s), bundle on file:// -->
+            <script>
+            (function () {
+              const usingFile = (window.location.protocol === 'file:');
+              const s = document.createElement('script');
+            
+              if (usingFile) {
+                s.src = './Whakerexa-2.1/wexa_statics/js/wexa.bundle.js';
+              } else {
+                s.type = 'module';
+                s.src = './Whakerexa-2.1/wexa_statics/js/wexa.js';
+              }
+            
+              s.onload = function () {
+                window.Wexa.onload.addLoadFunction(function () {
+                  const book = new window.Wexa.Book("main-content");
+                  book.fill_table(false);
+                });
+              };
+            
+              document.head.appendChild(s);
+            })();
+            </script>
+
+       </head>
+       
+       <body class="light">
+        <header>
+
+            <a role="button" class="skip" href="#main-content" aria-label="Go to main content">
+                Go to main content
+            </a>
+            <nav>
+                <ul role="menubar">
+                    <li role="none">
+                        <button id="btn-contrast" role="menuitem" class="print-off" onclick="window.Wexa.accessibility.switch_contrast_scheme()" aria-label="Contrast">
+                            <img class="nav-item-img" src="./Whakerexa-2.1/wexa_statics/icons/contrast_switcher.jpg" alt="Contrast" id="img-contrast"/>
+                        </button>
+                    </li>
+                    <li role="none">
+                        <button id="btn-theme" class="print-off" role="menuitem" onclick="window.Wexa.accessibility.switch_color_scheme()" aria-label="Theme" >
+                            <img class="nav-item-img" src="./Whakerexa-2.1/wexa_statics/icons/theme_switcher.png" alt="Theme" id="img-theme"/>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        
+    <h1>AViSS 1.0</h1>
+        <p><img class="small-logo" src="./statics/aviss.png" alt="Software logo"/></p>
+        <p><a class="external-link" href="https://github.com/brigitte-bigi/AViSS.git">https://github.com/brigitte-bigi/AViSS.git</a></p>
+    </header>
+    <nav id="nav-book" class="side-nav">
+    <h1>AViSS 1.0</h1>
+    <img class="small-logo center" src="./statics/aviss.png" alt=""/>
+        <p><a class="external-link" href="https://github.com/brigitte-bigi/AViSS.git">https://github.com/brigitte-bigi/AViSS.git</a></p>
+    <ul>
+<li><a role="button" tabindex="0" aria-disabled="true"> &crarr; Prev. Module</a></li>
+<li><a role="button" tabindex="0" aria-disabled="true"> &uarr; Prev. Class</a></li>
+<li><a role="button" tabindex="0" href="index.html"> &#8962; Index</a></li>
+<li><a role="button" tabindex="0" aria-disabled="true"> &darr; Next Class</a></li>
+<li><a role="button" tabindex="0" aria-disabled="true"> &rdsh; Next Module</a></li>
+    </ul>
+    <h2>Table of Contents</h2>
+    <ul id="toc"></ul>
+    <hr>
+    <p><small>Automatically created</small></p><p><small>by <a class="external-link" href="https://clamming.sf.net">ClammingPy</a></small></p>
+</nav>
+    <main id="main-content">
+    <section id="readme">
+<pre>
+
+-------------------------------------------------------------------------
+
+         █████╗  ██╗   ██╗ ██╗  ███████╗  ███████╗
+        ██╔══██╗ ██║   ██║ ██║  ██╔════╝  ██╔════╝
+        ███████║ ██║   ██║ ██║  ███████╗  ███████╗
+        ██╔══██║ ╚██╗ ██╔╝ ██║       ██║       ██║
+        ██║  ██║  ╚████╔╝  ██║  ███████║  ███████║
+        ╚═╝  ╚═╝   ╚═══╝   ╚═╝  ╚══════╝  ╚══════╝
+
+        Audio-Video Synchronization in Python
+
+        Copyright (C) 2026 Brigitte Bigi, CNRS
+   Laboratoire Parole et Langage, Aix-en-Provence, France
+-------------------------------------------------------------------------
+</pre>
+<h1>AViSS description</h1>
+
+<h2>Overview</h2>
+
+<h3>Use cases</h3>
+
+<p>You recorded a speaker with one or two cameras and one or two separate audio
+recorders. You used a clap to mark a synchronization point. Now you need all
+your media files trimmed and aligned to the exact same frame boundary — ready
+for phonetic analysis or corpus annotation.</p>
+
+<p><code>AViSS</code> is the tool you need.</p>
+
+<h3>Features</h3>
+
+<p>AViSS performs frame-accurate, clap-based synchronization of audio and video
+files for speech corpus recordings. It is designed for researchers who need
+reproducible, high-quality media preparation without manual editing.</p>
+
+<p>Among others, it allows the following:</p>
+
+<ul>
+<li>Frame-accurate video trimming via OpenCV / SPPAS</li>
+<li>Clap-based audio alignment (trim or pad to match the video frame boundary)</li>
+<li>Support for 1 or 2 audio files and 1 or 2 video files per session</li>
+<li>Optional video crop (x, y, w, h per video)</li>
+<li>Optional copyright overlay on video</li>
+<li>Optional video rotation (portrait mode)</li>
+<li>Optional mono 16 kHz WAV export for automatic annotation</li>
+<li>Optional MP4 montage (H.264/AAC) for distribution</li>
+<li>Optional WebM montage (libvpx-vp9, two-pass) for web distribution</li>
+<li>Batch processing from a CSV file</li>
+<li>Fully configurable column names and output filename structure</li>
+</ul>
+
+<h3>How it works</h3>
+
+<p>AViSS is a faithful Python migration of the original montage scripts
+(<code>montage_step1.py</code> / <code>montage.py</code>, B. Bigi, CNRS/LPL 2021-2024)
+distributed with the CLeLfPC corpus (https://hdl.handle.net/11403/clelfpc).
+The algorithm below is reproduced verbatim from those scripts.</p>
+
+<p><strong>Notation</strong></p>
+
+<table>
+<thead>
+<tr>
+  <th>Symbol</th>
+  <th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><code>vc</code></td>
+  <td><code>video_clap + delay</code> — effective clap time in the video (seconds)</td>
+</tr>
+<tr>
+  <td><code>fps</code></td>
+  <td>frame rate of the video (frames/second)</td>
+</tr>
+<tr>
+  <td><code>dur</code></td>
+  <td>expected output duration (seconds)</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Step 1 — clap frame (primary / reference video)</strong></p>
+
+<pre>
+
+clap_frame_index = int(vc * fps)           # floor, 0-based
+clap_frame_time  = clap_frame_index / fps
+clap_delta       = vc - clap_frame_time    # sub-frame offset, in [0, 1/fps)
+</pre>
+<p><strong>Step 2 — end frame (first excluded frame)</strong></p>
+
+<pre>
+
+end_frame_index = 1 + int((vc + dur) * fps)
+end_frame_time  = end_frame_index / fps
+</pre>
+<p><strong>Step 3 — cross-sync (secondary video, fps2 ≠ fps_ref)</strong></p>
+
+<p>When two cameras have different frame rates, the reference camera is the
+one with the lowest fps. Its <code>clap_delta</code> is propagated to the secondary
+camera so both outputs share the same sub-frame offset at the clap.</p>
+
+<pre>
+
+shift_frames     = int(reference_delta * fps2)
+clap_frame_index = int(vc2 * fps2) - shift_frames
+end_frame_index  = 1 + int((vc2 + dur) * fps2) + shift_frames
+</pre>
+<p>Note: the formula uses <code>int(A*fps) - int(d*fps)</code>, not <code>int((A-d)*fps)</code>.
+These can differ by 1 frame when <code>frac(A*fps) &lt; frac(d*fps)</code>.</p>
+
+<p><strong>Audio alignment (per audio file)</strong></p>
+
+<pre>
+
+Pass 1: shift audio so its effective clap (audio_clap + delay)
+        matches vc — trim from the start or prepend silence.
+Pass 2: pad with silence or trim the end to reach end_frame_time.
+Pass 3: trim clap_frame_time from the start.
+</pre>
+<p>The output audio starts at the clap frame boundary, preserving the
+<code>clap_delta</code> sub-frame offset between the clap and the first sample.</p>
+
+<h3>Scientific context</h3>
+
+<p>AViSS was developed at the Laboratoire Parole et Langage (LPL), CNRS,
+Aix-en-Provence, France, for the preparation of speech corpora used in
+phonetic research, including cued speech and read speech corpora.</p>
+
+<h2>Install AViSS</h2>
+
+<h3>Requirements</h3>
+
+<p>The following external programs must be installed and available in the PATH:</p>
+
+<ul>
+<li><code>ffmpeg</code> — video and audio processing</li>
+<li><code>sox</code> — audio processing</li>
+</ul>
+
+<h3>From PyPI</h3>
+
+<div class="highlight"><pre><span></span><code><span class="o">&gt;</span> <span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">aviss</span>
+</code></pre></div>
+
+<h3>From its wheel package</h3>
+
+<p>Download the wheel file (aviss-xxx.whl) and install it with:</p>
+
+<div class="highlight"><pre><span></span><code><span class="o">&gt;</span> <span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">aviss</span><span class="o">-</span><span class="n">xxx</span><span class="o">.</span><span class="n">whl</span>
+</code></pre></div>
+
+<h3>From the repository</h3>
+
+<p>Download or clone the repository, then install in editable mode:</p>
+
+<div class="highlight"><pre><span></span><code><span class="o">&gt;</span> <span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">brigitte</span><span class="o">-</span><span class="n">bigi</span><span class="o">/</span><span class="n">AViSS</span><span class="o">.</span><span class="n">git</span>
+<span class="o">&gt;</span> <span class="n">cd</span> <span class="n">AViSS</span>
+<span class="o">&gt;</span> <span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="o">.</span>
+</code></pre></div>
+
+<h3>AViSS content</h3>
+
+<p>The AViSS package includes the following folders and files:</p>
+
+<ol>
+<li><code>aviss/</code> : the source code of the API</li>
+<li><code>aviss/core/</code> : pipeline, synchronization logic, audio and video operations</li>
+<li><code>scripts/</code> : ready-to-use scripts for common workflows</li>
+<li><code>tests/</code> : unit tests</li>
+<li><code>docs/</code> : code documentation</li>
+<li><code>pyproject.toml</code> : package configuration</li>
+</ol>
+
+<h2>Quick start</h2>
+
+<h3>Prepare the CSV file</h3>
+
+<p>The input CSV file describes one recording session per row. The first row
+is the header. Columns are separated by <code>;</code> (or <code>,</code>).</p>
+
+<p>The following columns are required (names are configurable via <code>settings_user.toml</code>):</p>
+
+<table>
+<thead>
+<tr>
+  <th>Column</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><code>audio_file</code></td>
+  <td>relative path to the audio file</td>
+</tr>
+<tr>
+  <td><code>audio_clap</code></td>
+  <td>clap time in the audio (MM:SS.mmm)</td>
+</tr>
+<tr>
+  <td><code>video_file</code></td>
+  <td>relative path to the video file</td>
+</tr>
+<tr>
+  <td><code>video_clap</code></td>
+  <td>clap time in the video (MM:SS.mmm)</td>
+</tr>
+<tr>
+  <td><code>delay</code></td>
+  <td>offset after the clap before cutting (seconds)</td>
+</tr>
+<tr>
+  <td><code>duration</code></td>
+  <td>expected output duration (MM:SS.mmm)</td>
+</tr>
+</tbody>
+</table>
+
+<p>Optional columns for crop, other media files, and output filename metadata
+are described in the <code>sync</code> section of <a href="#customizing-settings">Customizing settings</a>.</p>
+
+<p>Example:</p>
+
+<pre>
+
+ID;avSession;Serie;audio_file;video_file;audio_clap;video_clap;delay;duration
+spk1;9;2;audio/RME_0038.wav;video/MVI_0038.MP4;00:03.843;00:06.410;0.200;04:08.250
+spk2;8;1;audio/RME_0035.wav;video/MVI_0035.MP4;00:04.787;00:09.995;6.230;02:57.000
+</pre>
+<h3>Command-line usage</h3>
+
+<p>Synchronize one row:</p>
+
+<div class="highlight"><pre><span></span><code><span class="o">&gt;</span> <span class="n">aviss</span> <span class="n">sync</span> <span class="o">-</span><span class="n">c</span> <span class="n">corpus</span><span class="o">/</span><span class="n">sessions</span><span class="o">.</span><span class="n">csv</span> <span class="o">-</span><span class="n">l</span> <span class="mi">1</span>
+</code></pre></div>
+
+<p>Synchronize all rows:</p>
+
+<div class="highlight"><pre><span></span><code><span class="o">&gt;</span> <span class="n">aviss</span> <span class="n">sync</span> <span class="o">-</span><span class="n">c</span> <span class="n">corpus</span><span class="o">/</span><span class="n">sessions</span><span class="o">.</span><span class="n">csv</span>
+</code></pre></div>
+
+<p>Synchronize and produce a distribution MP4:</p>
+
+<div class="highlight"><pre><span></span><code><span class="o">&gt;</span> <span class="n">aviss</span> <span class="n">sync</span> <span class="o">-</span><span class="n">c</span> <span class="n">corpus</span><span class="o">/</span><span class="n">sessions</span><span class="o">.</span><span class="n">csv</span> <span class="o">-</span><span class="n">l</span> <span class="mi">1</span> <span class="o">--</span><span class="n">montage</span>
+</code></pre></div>
+
+<p>Synchronize and produce a WebM for web distribution:</p>
+
+<div class="highlight"><pre><span></span><code><span class="o">&gt;</span> <span class="n">aviss</span> <span class="n">sync</span> <span class="o">-</span><span class="n">c</span> <span class="n">corpus</span><span class="o">/</span><span class="n">sessions</span><span class="o">.</span><span class="n">csv</span> <span class="o">-</span><span class="n">l</span> <span class="mi">1</span> <span class="o">--</span><span class="n">webm</span>
+</code></pre></div>
+
+<p>Print the full processing report:</p>
+
+<div class="highlight"><pre><span></span><code><span class="o">&gt;</span> <span class="n">aviss</span> <span class="n">sync</span> <span class="o">-</span><span class="n">c</span> <span class="n">corpus</span><span class="o">/</span><span class="n">sessions</span><span class="o">.</span><span class="n">csv</span> <span class="o">-</span><span class="n">l</span> <span class="mi">1</span> <span class="o">--</span><span class="n">verbose</span>
+</code></pre></div>
+
+<h3>Python API usage</h3>
+
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">aviss</span><span class="w"> </span><span class="kn">import</span> <span class="n">avCsvReader</span><span class="p">,</span> <span class="n">avPipeline</span><span class="p">,</span> <span class="n">avExporter</span>
+
+<span class="c1"># Parse one row from the CSV</span>
+<span class="n">reader</span>  <span class="o">=</span> <span class="n">avCsvReader</span><span class="p">(</span><span class="s2">&quot;corpus/sessions.csv&quot;</span><span class="p">)</span>
+<span class="n">session</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">read_row</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Run the synchronization pipeline</span>
+<span class="n">pipeline</span> <span class="o">=</span> <span class="n">avPipeline</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
+<span class="n">result</span>   <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">success</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="n">exporter</span> <span class="o">=</span> <span class="n">avExporter</span><span class="p">(</span><span class="n">result</span><span class="p">,</span>
+                        <span class="n">stem</span><span class="o">=</span><span class="s2">&quot;spk1_S09_s2&quot;</span><span class="p">,</span>
+                        <span class="n">work_dir</span><span class="o">=</span><span class="s2">&quot;spk1_S09_s2&quot;</span><span class="p">)</span>
+    <span class="n">exporter</span><span class="o">.</span><span class="n">montage</span><span class="p">()</span>
+
+<span class="c1"># Process all rows</span>
+<span class="n">sessions</span> <span class="o">=</span> <span class="n">avCsvReader</span><span class="p">(</span><span class="s2">&quot;corpus/sessions.csv&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">session</span> <span class="ow">in</span> <span class="n">sessions</span><span class="p">:</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">avPipeline</span><span class="p">(</span><span class="n">session</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">success</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">report</span><span class="p">)</span>
+</code></pre></div>
+
+<h3>Customizing settings</h3>
+
+<p>Place a <code>settings_user.toml</code> file in the same directory as your CSV file,
+then override only what you need:</p>
+
+<div class="highlight"><pre><span></span><code><span class="p">[</span><span class="n">output</span><span class="p">]</span>
+<span class="n">crf</span>       <span class="o">=</span> <span class="mi">14</span>
+<span class="n">video_fps</span> <span class="o">=</span> <span class="mf">25.0</span>
+<span class="n">copyright</span> <span class="o">=</span> <span class="s2">&quot;Copyright (C) 2026 CNRS | LPL&quot;</span>
+
+<span class="c1"># Rotation — one integer per video in order.</span>
+<span class="c1"># -1 = no rotation · 0 = CCW+vflip · 1 = CW · 2 = CCW portrait · 3 = CW+vflip</span>
+<span class="n">rotate</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">]</span>        <span class="c1"># single video, portrait CCW</span>
+<span class="c1"># rotate = [-1, 2] # two videos: front=none, side=CCW portrait</span>
+
+<span class="p">[[</span><span class="n">output</span><span class="o">.</span><span class="n">name_cols</span><span class="p">]]</span>
+<span class="n">col</span>    <span class="o">=</span> <span class="s2">&quot;ID&quot;</span>
+<span class="n">prefix</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<span class="n">fmt</span>    <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+<span class="p">[[</span><span class="n">output</span><span class="o">.</span><span class="n">name_cols</span><span class="p">]]</span>
+<span class="n">col</span>    <span class="o">=</span> <span class="s2">&quot;avSession&quot;</span>
+<span class="n">prefix</span> <span class="o">=</span> <span class="s2">&quot;S&quot;</span>
+<span class="n">fmt</span>    <span class="o">=</span> <span class="s2">&quot;02d&quot;</span>
+
+<span class="p">[[</span><span class="n">output</span><span class="o">.</span><span class="n">name_cols</span><span class="p">]]</span>
+<span class="n">col</span>    <span class="o">=</span> <span class="s2">&quot;SerieLabel&quot;</span>
+<span class="n">prefix</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<span class="n">fmt</span>    <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+<span class="p">[</span><span class="n">sync</span><span class="p">]</span>
+<span class="n">col_audio_file</span> <span class="o">=</span> <span class="s2">&quot;my_audio&quot;</span>
+</code></pre></div>
+
+<p><code>settings_user.toml</code> is loaded automatically from the CSV directory at sync time.</p>
+
+<h4>output keys</h4>
+
+<table>
+<thead>
+<tr>
+  <th>Key</th>
+  <th>Default</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><code>crf</code></td>
+  <td><code>18</code></td>
+  <td>Video encoding quality (H.264 CRF). Lower = better quality, larger file. Range: 0–51.</td>
+</tr>
+<tr>
+  <td><code>video_fps</code></td>
+  <td><code>50.0</code></td>
+  <td>Native frame rate of the recording camera (frames per second).</td>
+</tr>
+<tr>
+  <td><code>copyright</code></td>
+  <td><em>(none)</em></td>
+  <td>Text overlaid on the video (bottom-left). Use <code>\\:</code> to escape colons (ffmpeg).</td>
+</tr>
+<tr>
+  <td><code>rotate</code></td>
+  <td><em>(none)</em></td>
+  <td>Per-video transpose list. See values below.</td>
+</tr>
+<tr>
+  <td><code>output_sep</code></td>
+  <td><code>"_"</code></td>
+  <td>Separator between tokens in the output filename.</td>
+</tr>
+<tr>
+  <td><code>work_dir_suffix</code></td>
+  <td><code>""</code></td>
+  <td>Suffix appended to the working directory name.</td>
+</tr>
+</tbody>
+</table>
+
+<p>Rotate values (one integer per video, in order — <code>-1</code> = no rotation):</p>
+
+<table>
+<thead>
+<tr>
+  <th>Value</th>
+  <th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><code>-1</code></td>
+  <td>No rotation</td>
+</tr>
+<tr>
+  <td><code>0</code></td>
+  <td>90° counter-clockwise + vertical flip</td>
+</tr>
+<tr>
+  <td><code>1</code></td>
+  <td>90° clockwise</td>
+</tr>
+<tr>
+  <td><code>2</code></td>
+  <td>90° counter-clockwise (portrait mode)</td>
+</tr>
+<tr>
+  <td><code>3</code></td>
+  <td>90° clockwise + vertical flip</td>
+</tr>
+</tbody>
+</table>
+
+<h4>sync keys</h4>
+
+<table>
+<thead>
+<tr>
+  <th>Key</th>
+  <th>Default</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><code>col_audio_file</code></td>
+  <td><code>"audio_file"</code></td>
+  <td>CSV column name for the audio file path.</td>
+</tr>
+<tr>
+  <td><code>col_audio_clap</code></td>
+  <td><code>"audio_clap"</code></td>
+  <td>CSV column name for the audio clap time.</td>
+</tr>
+<tr>
+  <td><code>col_video_file</code></td>
+  <td><code>"video_file"</code></td>
+  <td>CSV column name for the video file path.</td>
+</tr>
+<tr>
+  <td><code>col_video_clap</code></td>
+  <td><code>"video_clap"</code></td>
+  <td>CSV column name for the video clap time.</td>
+</tr>
+<tr>
+  <td><code>col_video_name</code></td>
+  <td><code>"video_name"</code></td>
+  <td>CSV column name for the optional video label (used in output filename suffix).</td>
+</tr>
+<tr>
+  <td><code>col_video_crop_x</code></td>
+  <td><code>"video_crop_x"</code></td>
+  <td>CSV column name for the crop left edge (pixels).</td>
+</tr>
+<tr>
+  <td><code>col_video_crop_y</code></td>
+  <td><code>"video_crop_y"</code></td>
+  <td>CSV column name for the crop top edge (pixels).</td>
+</tr>
+<tr>
+  <td><code>col_video_crop_w</code></td>
+  <td><code>"video_crop_w"</code></td>
+  <td>CSV column name for the crop width (pixels).</td>
+</tr>
+<tr>
+  <td><code>col_video_crop_h</code></td>
+  <td><code>"video_crop_h"</code></td>
+  <td>CSV column name for the crop height (pixels).</td>
+</tr>
+<tr>
+  <td><code>col_delay</code></td>
+  <td><code>"delay"</code></td>
+  <td>CSV column name for the delay after the clap (seconds).</td>
+</tr>
+<tr>
+  <td><code>col_duration</code></td>
+  <td><code>"duration"</code></td>
+  <td>CSV column name for the expected output duration.</td>
+</tr>
+</tbody>
+</table>
+
+<h4>output.name_cols format</h4>
+
+<p>Each <code>[[output.name_cols]]</code> entry defines one token in the output filename:</p>
+
+<table>
+<thead>
+<tr>
+  <th>Key</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><code>col</code></td>
+  <td>str</td>
+  <td>CSV column header whose value is used</td>
+</tr>
+<tr>
+  <td><code>prefix</code></td>
+  <td>str</td>
+  <td>String prepended to the value (<code>"S"</code>, <code>"T"</code>, <code>""</code> for none)</td>
+</tr>
+<tr>
+  <td><code>fmt</code></td>
+  <td>str</td>
+  <td><code>""</code> → raw string · <code>"02d"</code> → zero-padded integer · <code>"d"</code> → plain integer</td>
+</tr>
+</tbody>
+</table>
+
+<p>Tokens are joined with <code>output_sep</code> (default <code>"_"</code>).
+A column whose cell is empty in the CSV is silently skipped.</p>
+
+<p>Example: with <code>col = "avSession"</code>, <code>prefix = "S"</code>, <code>fmt = "02d"</code> and cell value <code>9</code>, the token is <code>S09</code>.</p>
+
+<h2>Test the source code</h2>
+
+<p>Install the optional test dependencies:</p>
+
+<div class="highlight"><pre><span></span><code><span class="o">&gt;</span> <span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="s2">&quot;.[dev]&quot;</span>
+</code></pre></div>
+
+<h3>Unit tests</h3>
+
+<p>Run the unit test suite with coverage (requires <code>coverage</code>, included in the
+virtual environment):</p>
+
+<div class="highlight"><pre><span></span><code><span class="o">&gt;</span> <span class="o">.</span><span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">coverage</span> <span class="n">run</span> <span class="o">-</span><span class="n">m</span> <span class="n">unittest</span> <span class="n">discover</span> <span class="o">-</span><span class="n">s</span> <span class="n">tests</span> <span class="o">-</span><span class="n">p</span> <span class="s2">&quot;test_*.py&quot;</span> \
+  <span class="o">&amp;&amp;</span> <span class="o">.</span><span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">coverage</span> <span class="n">report</span> <span class="o">-</span><span class="n">m</span>
+</code></pre></div>
+
+<p>Expected overall coverage: <strong>≥ 73 %</strong>.</p>
+
+<p>If <code>coverage</code> is not installed, run the tests without it:</p>
+
+<div class="highlight"><pre><span></span><code><span class="o">&gt;</span> <span class="o">.</span><span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">unittest</span> <span class="n">discover</span> <span class="o">-</span><span class="n">s</span> <span class="n">tests</span> <span class="o">-</span><span class="n">p</span> <span class="s2">&quot;test_*.py&quot;</span>
+</code></pre></div>
+
+<h3>Integration test</h3>
+
+<p>The integration test uses synthetic media files built from the demo files
+shipped in <code>tests/demo/</code>.</p>
+
+<h4>Generate test data</h4>
+
+<pre>
+
+bash make_test_data.sh [demo_dir] [output_dir] [n_videos] [n_audios]
+</pre>
+<table>
+<thead>
+<tr>
+  <th>Argument</th>
+  <th>Default</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><code>demo_dir</code></td>
+  <td><code>demo</code></td>
+  <td>Directory containing <code>demo.mp4</code> and <code>demo.wav</code></td>
+</tr>
+<tr>
+  <td><code>output_dir</code></td>
+  <td><code>data</code></td>
+  <td>Directory where test files are written</td>
+</tr>
+<tr>
+  <td><code>n_videos</code></td>
+  <td><code>1</code></td>
+  <td>Number of video files to generate</td>
+</tr>
+<tr>
+  <td><code>n_audios</code></td>
+  <td><code>1</code></td>
+  <td>Number of audio files to generate</td>
+</tr>
+</tbody>
+</table>
+
+<p>Each generated video/audio file contains random silence/black before and
+after the content so that every run exercises a different synchronization
+offset.</p>
+
+<p><strong>Single video + single audio (default):</strong></p>
+
+<div class="highlight"><pre><span></span><code><span class="o">&gt;</span> <span class="n">cd</span> <span class="n">tests</span> <span class="o">&amp;&amp;</span> <span class="n">bash</span> <span class="n">make_test_data</span><span class="o">.</span><span class="n">sh</span> <span class="o">&amp;&amp;</span> <span class="n">cd</span> <span class="o">..</span>
+</code></pre></div>
+
+<p>Writes <code>tests/data/test_audio.wav</code>, <code>tests/data/test_video.mp4</code> and
+<code>tests/data/test.csv</code>.</p>
+
+<p><strong>Two videos + one audio:</strong></p>
+
+<div class="highlight"><pre><span></span><code><span class="o">&gt;</span> <span class="n">cd</span> <span class="n">tests</span> <span class="o">&amp;&amp;</span> <span class="n">bash</span> <span class="n">make_test_data</span><span class="o">.</span><span class="n">sh</span> <span class="n">demo</span> <span class="n">data</span> <span class="mi">2</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="n">cd</span> <span class="o">..</span>
+</code></pre></div>
+
+<p>Writes <code>test_video.mp4</code>, <code>test_video2.mp4</code>, <code>test_audio.wav</code> and a CSV
+with columns <code>video_file</code>, <code>video_file2</code>.</p>
+
+<p><strong>Two videos + two audios:</strong></p>
+
+<div class="highlight"><pre><span></span><code><span class="o">&gt;</span> <span class="n">cd</span> <span class="n">tests</span> <span class="o">&amp;&amp;</span> <span class="n">bash</span> <span class="n">make_test_data</span><span class="o">.</span><span class="n">sh</span> <span class="n">demo</span> <span class="n">data</span> <span class="mi">2</span> <span class="mi">2</span> <span class="o">&amp;&amp;</span> <span class="n">cd</span> <span class="o">..</span>
+</code></pre></div>
+
+<p>Then run the pipeline on the first CSV row:</p>
+
+<div class="highlight"><pre><span></span><code><span class="o">&gt;</span> <span class="o">.</span><span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">python</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span> <span class="n">sync</span> <span class="o">-</span><span class="n">c</span> <span class="n">tests</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">test</span><span class="o">.</span><span class="n">csv</span> <span class="o">-</span><span class="n">l</span> <span class="mi">1</span> <span class="o">--</span><span class="n">verbose</span>
+</code></pre></div>
+
+<p><strong>Expected output — audio</strong> (<code>ffprobe tests/data/demo_S01/demo_S01.wav</code>):</p>
+
+<pre>
+
+Duration: 00:00:10.47, bitrate: 256 kb/s
+Stream #0:0: Audio: pcm_s16le, 16000 Hz, 1 channels, s16, 256 kb/s
+</pre>
+<p><strong>Expected output — video</strong> (<code>ffprobe tests/data/demo_S01/demo_S01.mkv</code>):</p>
+
+<pre>
+
+Duration: 00:00:10.47, start: 0.000000, bitrate: 3288 kb/s
+</pre>
+<p>Both files must have the same duration as <code>tests/demo/demo.mp4</code>.</p>
+
+<h2>Scripts</h2>
+
+<h3>mix_mono.py — mix two mono audio files</h3>
+
+<p>Combines two mono WAV files into a single mono WAV by averaging both
+channels. Useful when two microphones recorded the same speaker and the
+result must be a single audio file before synchronization.</p>
+
+<div class="highlight"><pre><span></span><code><span class="o">&gt;</span> <span class="n">python</span> <span class="n">scripts</span><span class="o">/</span><span class="n">mix_mono</span><span class="o">.</span><span class="n">py</span> <span class="n">audio1</span><span class="o">.</span><span class="n">wav</span> <span class="n">audio2</span><span class="o">.</span><span class="n">wav</span> <span class="n">output</span><span class="o">.</span><span class="n">wav</span>
+</code></pre></div>
+
+<table>
+<thead>
+<tr>
+  <th>Argument</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><code>audio1</code></td>
+  <td>First mono WAV file</td>
+</tr>
+<tr>
+  <td><code>audio2</code></td>
+  <td>Second mono WAV file</td>
+</tr>
+<tr>
+  <td><code>output</code></td>
+  <td>Output mono WAV file (must not already exist)</td>
+</tr>
+</tbody>
+</table>
+
+<p>Requires <code>sox</code>. Both input files must be mono WAV at the same sample rate.</p>
+
+<h3>extract_audio.py — extract audio from a video</h3>
+
+<p>Extracts the audio track of a video file and converts it to mono WAV at
+48 kHz, 16-bit PCM.</p>
+
+<div class="highlight"><pre><span></span><code><span class="o">&gt;</span> <span class="n">python</span> <span class="n">scripts</span><span class="o">/</span><span class="n">extract_audio</span><span class="o">.</span><span class="n">py</span> <span class="n">video</span><span class="o">.</span><span class="n">mp4</span>
+</code></pre></div>
+
+<table>
+<thead>
+<tr>
+  <th>Argument</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><code>video</code></td>
+  <td>Input video file</td>
+</tr>
+</tbody>
+</table>
+
+<p>The output file is written next to the input video with a <code>.wav</code> extension.
+Requires <code>ffmpeg</code>.</p>
+
+<h3>mp4<em>to</em>webm.py — convert MP4 to WebM</h3>
+
+<p>Converts an MP4 video to WebM (libvpx-vp9, two-pass encoding, CRF 16).
+An optional audio file can replace the video's audio track in the output.</p>
+
+<div class="highlight"><pre><span></span><code><span class="o">&gt;</span> <span class="n">python</span> <span class="n">scripts</span><span class="o">/</span><span class="n">mp4_to_webm</span><span class="o">.</span><span class="n">py</span> <span class="n">video</span><span class="o">.</span><span class="n">mp4</span> <span class="p">[</span><span class="n">audio</span><span class="o">.</span><span class="n">wav</span><span class="p">]</span>
+</code></pre></div>
+
+<table>
+<thead>
+<tr>
+  <th>Argument</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><code>video</code></td>
+  <td>Input MP4 file</td>
+</tr>
+<tr>
+  <td><code>audio</code></td>
+  <td>Optional audio file to mux into the output</td>
+</tr>
+</tbody>
+</table>
+
+<p>The output file is written next to the input video with a <code>.webm</code> extension.
+Requires <code>ffmpeg</code>.</p>
+
+<h2>Projects using AViSS</h2>
+
+<p>AViSS was developed for the following corpora at LPL, CNRS:</p>
+
+<ul>
+<li>CLeLfPC — Corpus de Lecture en Langue Française Parlée Complétée</li>
+<li>AutoCuedSpeech — automatic annotation of cued speech recordings</li>
+</ul>
+
+<p><em>Contact the author if you want to add a project here.</em></p>
+
+<h2>Help / How to contribute</h2>
+
+<p>If you want to report a bug or suggest a feature, please send an e-mail
+to the author. Any and all constructive comments are welcome.</p>
+
+<p>If you plan to contribute to the code, please read carefully and agree
+both the code of conduct and the code style guide.</p>
+
+<h2>AViSS Documentation</h2>
+
+<p>Documentation is generated from the source code using ClammingPy:
+<a href="https://github.com/brigitte-bigi/ClammingPy">https://github.com/brigitte-bigi/ClammingPy</a></p>
+
+<p>To generate the documentation locally:</p>
+
+<div class="highlight"><pre><span></span><code><span class="o">&gt;</span> <span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">ClammingPy</span>
+<span class="o">&gt;</span> <span class="n">python</span> <span class="n">makedoc</span><span class="o">.</span><span class="n">py</span>
+</code></pre></div>
+
+<h2>License/Copyright</h2>
+
+<p>See the accompanying LICENSE and AUTHORS.md files for the full list of
+contributors.</p>
+
+<p>Copyright (C) 2026 Brigitte Bigi, CNRS
+Laboratoire Parole et Langage, Aix-en-Provence, France</p>
+
+<p>This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.</p>
+
+<p>You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <a href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.</p>
+
+<h2>Changes</h2>
+
+<ul>
+<li><p>Version 1.0:</p>
+
+<ul>
+<li>Initial version.</li>
+<li>Support for ANY audio files and ANY video files per session.</li>
+<li>Optional crop, copyright overlay, rotation, mono 16 kHz WAV export,
+MP4 and WebM montage.</li>
+</ul></li>
+</ul>
+    </section>
+<h1>List of packages:</h1>
+      <h2>aviss.core</h2>
+      <p><a href='aviss.core.html'>Get documentation</a></p>
+      <h2>aviss</h2>
+      <p><a href='aviss.html'>Get documentation</a></p>
+    </main>
+    
+            <footer>
+                <p class="copyright">Copyright (C) 2026  Brigitte Bigi, CNRS, Laboratoire Parole et Langage, Aix-en-Provence, France</p>
+            </footer>
+        
+</body>
+</html>

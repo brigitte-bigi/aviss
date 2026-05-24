@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+
+        <head>
+            
+            <title>AViSS doc</title>
+
+            <meta charset="utf-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+            <meta name="description" content="Python Class Documentation of avSession. Represent one row of the input CSV file." />
+
+            <link rel="logo icon" href="./statics/aviss.png" />
+            <link rel="stylesheet" href="./Whakerexa-2.1/wexa_statics/css/wexa.css" type="text/css" />
+            <link rel="stylesheet" href="./Whakerexa-2.1/wexa_statics/css/layout.css" type="text/css" />
+            <link rel="stylesheet" href="./Whakerexa-2.1/wexa_statics/css/book.css" type="text/css" />
+            <link rel="stylesheet" href="./Whakerexa-2.1/wexa_statics/css/menu.css" type="text/css" />
+            <link rel="stylesheet" href="./Whakerexa-2.1/wexa_statics/css/code.css" type="text/css" />
+            <link rel="stylesheet" href="./statics/clamming.css" type="text/css" />
+
+            <!-- Whakerexa JS loader: ES6 modules on http(s), bundle on file:// -->
+            <script>
+            (function () {
+              const usingFile = (window.location.protocol === 'file:');
+              const s = document.createElement('script');
+            
+              if (usingFile) {
+                s.src = './Whakerexa-2.1/wexa_statics/js/wexa.bundle.js';
+              } else {
+                s.type = 'module';
+                s.src = './Whakerexa-2.1/wexa_statics/js/wexa.js';
+              }
+            
+              s.onload = function () {
+                window.Wexa.onload.addLoadFunction(function () {
+                  const book = new window.Wexa.Book("main-content");
+                  book.fill_table(false);
+                });
+              };
+            
+              document.head.appendChild(s);
+            })();
+            </script>
+
+       </head>
+       
+       <body class="light">
+        <header>
+
+            <a role="button" class="skip" href="#main-content" aria-label="Go to main content">
+                Go to main content
+            </a>
+            <nav>
+                <ul role="menubar">
+                    <li role="none">
+                        <button id="btn-contrast" role="menuitem" class="print-off" onclick="window.Wexa.accessibility.switch_contrast_scheme()" aria-label="Contrast">
+                            <img class="nav-item-img" src="./Whakerexa-2.1/wexa_statics/icons/contrast_switcher.jpg" alt="Contrast" id="img-contrast"/>
+                        </button>
+                    </li>
+                    <li role="none">
+                        <button id="btn-theme" class="print-off" role="menuitem" onclick="window.Wexa.accessibility.switch_color_scheme()" aria-label="Theme" >
+                            <img class="nav-item-img" src="./Whakerexa-2.1/wexa_statics/icons/theme_switcher.png" alt="Theme" id="img-theme"/>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        
+    <h1>AViSS 1.0</h1>
+        <p><img class="small-logo" src="./statics/aviss.png" alt="Software logo"/></p>
+        <p><a class="external-link" href="https://github.com/brigitte-bigi/AViSS.git">https://github.com/brigitte-bigi/AViSS.git</a></p>
+    </header>
+    <nav id="nav-book" class="side-nav">
+    <h1>AViSS 1.0</h1>
+    <img class="small-logo center" src="./statics/aviss.png" alt=""/>
+        <p><a class="external-link" href="https://github.com/brigitte-bigi/AViSS.git">https://github.com/brigitte-bigi/AViSS.git</a></p>
+    <ul>
+<li><a role="button" tabindex="0" href="aviss.core.html"> &crarr; Prev. Module</a></li>
+<li><a role="button" tabindex="0" href="avMediaFile.html"> &uarr; Prev. Class</a></li>
+<li><a role="button" tabindex="0" href="index.html"> &#8962; Index</a></li>
+<li><a role="button" tabindex="0" href="avSyncResult.html"> &darr; Next Class</a></li>
+<li><a role="button" tabindex="0" aria-disabled="true"> &rdsh; Next Module</a></li>
+    </ul>
+    <h2>Table of Contents</h2>
+    <ul id="toc"></ul>
+    <hr>
+    <p><small>Automatically created</small></p><p><small>by <a class="external-link" href="https://clamming.sf.net">ClammingPy</a></small></p>
+</nav>
+    <main id="main-content">
+    <section id="#aviss">    <h1>Module aviss</h1>
+<section id="#avSession">
+<h2>Class avSession</h2>
+
+<section>
+<h3 id="#description_avSession">Description</h3>
+    <article class="docstring">
+<p><em>Represent one row of the input CSV file.</em></p>
+
+<p>A avSession groups:
+- one or more avMediaFile instances for audio,
+- one or more avMediaFile instances for video,
+- timing parameters (delay and duration),
+- output filename metadata (values used to build the output name),
+- free metadata (any other CSV column, stored as a dict).</p>
+
+<p>At least one audio and one video must be provided.</p>
+
+<h5>Example</h5>
+
+<div class="highlight"><pre><span></span><code> <span class="o">&gt;&gt;&gt;</span> <span class="n">audio</span> <span class="o">=</span> <span class="n">avMediaFile</span><span class="p">(</span><span class="s2">&quot;/data/rec.wav&quot;</span><span class="p">,</span> <span class="mf">3.843</span><span class="p">)</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">video</span> <span class="o">=</span> <span class="n">avMediaFile</span><span class="p">(</span><span class="s2">&quot;/data/rec.mp4&quot;</span><span class="p">,</span> <span class="mf">6.410</span><span class="p">)</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="n">avSession</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="n">video</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mf">248.25</span><span class="p">)</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">s</span><span class="o">.</span><span class="n">output_name_meta</span>
+ <span class="o">&gt;</span> <span class="p">{}</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">s</span><span class="o">.</span><span class="n">has_second_audio</span><span class="p">()</span>
+ <span class="o">&gt;</span> <span class="kc">False</span>
+</code></pre></div>
+
+    </article>
+</section>
+<section>
+<h3 id="#constructor_avSession">Constructor</h3>
+<h4>__init__</h4>
+
+    <article class="docstring">
+<p><em>Initialize a avSession with its primary media files and timing.</em></p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>audio</strong>: (avMediaFile) Primary audio file.</li>
+<li><strong>video</strong>: (avMediaFile) Primary video file.</li>
+<li><strong>delay</strong>: (<em>float</em>) Offset applied after the clap (seconds).</li>
+<li><strong>duration</strong>: (<em>float</em>) Expected output duration (seconds).</li>
+</ul>
+
+<h5>Raises</h5>
+
+<ul>
+<li><em>TypeError</em>: audio is not a avMediaFile instance.</li>
+<li><em>ValueError</em>: audio is not an audio file.</li>
+<li><em>TypeError</em>: video is not a avMediaFile instance.</li>
+<li><em>ValueError</em>: video is not a video file.</li>
+<li><em>TypeError</em>: delay is not a number.</li>
+<li><em>TypeError</em>: duration is not a number.</li>
+<li><em>ValueError</em>: duration is not strictly positive.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">audio</span><span class="p">:</span> <span class="n">avMediaFile</span><span class="p">,</span> <span class="n">video</span><span class="p">:</span> <span class="n">avMediaFile</span><span class="p">,</span> <span class="n">delay</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">duration</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize a avSession with its primary media files and timing.</span>
+
+<span class="sd">    :param audio: (avMediaFile) Primary audio file.</span>
+<span class="sd">    :param video: (avMediaFile) Primary video file.</span>
+<span class="sd">    :param delay: (float) Offset applied after the clap (seconds).</span>
+<span class="sd">    :param duration: (float) Expected output duration (seconds).</span>
+<span class="sd">    :raises: TypeError: audio is not a avMediaFile instance.</span>
+<span class="sd">    :raises: ValueError: audio is not an audio file.</span>
+<span class="sd">    :raises: TypeError: video is not a avMediaFile instance.</span>
+<span class="sd">    :raises: ValueError: video is not a video file.</span>
+<span class="sd">    :raises: TypeError: delay is not a number.</span>
+<span class="sd">    :raises: TypeError: duration is not a number.</span>
+<span class="sd">    :raises: ValueError: duration is not strictly positive.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="n">avMediaFile</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;audio must be a avMediaFile instance.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">audio</span><span class="o">.</span><span class="n">is_audio</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The given audio avMediaFile does not have an audio extension: </span><span class="si">{</span><span class="n">audio</span><span class="o">.</span><span class="n">path</span><span class="si">!r}</span><span class="s1">.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">video</span><span class="p">,</span> <span class="n">avMediaFile</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;video must be a avMediaFile instance.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">video</span><span class="o">.</span><span class="n">is_video</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The given video avMediaFile does not have a video extension: </span><span class="si">{</span><span class="n">video</span><span class="o">.</span><span class="n">path</span><span class="si">!r}</span><span class="s1">.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">delay</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;delay must be a number.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">duration</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;duration must be a number.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">duration</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;duration must be strictly positive.&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__audios</span> <span class="o">=</span> <span class="p">[</span><span class="n">audio</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__videos</span> <span class="o">=</span> <span class="p">[</span><span class="n">video</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__video_names</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__delay</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">delay</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__duration</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">duration</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__output_name_meta</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__metadata</span> <span class="o">=</span> <span class="p">{}</span>
+</code></pre></div>
+
+    </details>
+
+
+</section>
+<section>
+<h3 id="#public_fct_avSession">Public functions</h3>
+<h4>get_audios</h4>
+
+    <article class="docstring">
+<p><em>Return a copy of the list of audio avMediaFile objects.</em></p>
+
+<h5>Returns</h5>
+
+<ul>
+<li>(<em>list</em>) List of avMediaFile instances (audio).</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_audios</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a copy of the list of audio avMediaFile objects.</span>
+
+<span class="sd">        :return: (list) List of avMediaFile instances (audio).</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__audios</span><span class="p">)</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>get_videos</h4>
+
+    <article class="docstring">
+<p><em>Return a copy of the list of video avMediaFile objects.</em></p>
+
+<h5>Returns</h5>
+
+<ul>
+<li>(<em>list</em>) List of avMediaFile instances (video).</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_videos</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a copy of the list of video avMediaFile objects.</span>
+
+<span class="sd">        :return: (list) List of avMediaFile instances (video).</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__videos</span><span class="p">)</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>get_video_names</h4>
+
+    <article class="docstring">
+<p><em>Return a copy of the list of optional video output labels.</em></p>
+
+<p>Each element corresponds to the video at the same index.
+None means no label is set for that video.</p>
+
+<h5>Returns</h5>
+
+<ul>
+<li>(<em>list</em>) List of str|None values.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_video_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a copy of the list of optional video output labels.</span>
+
+<span class="sd">        Each element corresponds to the video at the same index.</span>
+<span class="sd">        None means no label is set for that video.</span>
+
+<span class="sd">        :return: (list) List of str|None values.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__video_names</span><span class="p">)</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>add_audio</h4>
+
+    <article class="docstring">
+<p><em>Append an audio avMediaFile to the session.</em></p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>audio</strong>: (avMediaFile) Audio file to add.</li>
+</ul>
+
+<h5>Raises</h5>
+
+<ul>
+<li><em>TypeError</em>: audio is not a avMediaFile instance.</li>
+<li><em>ValueError</em>: audio is not an audio file.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_audio</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">audio</span><span class="p">:</span> <span class="n">avMediaFile</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Append an audio avMediaFile to the session.</span>
+
+<span class="sd">        :param audio: (avMediaFile) Audio file to add.</span>
+<span class="sd">        :raises: TypeError: audio is not a avMediaFile instance.</span>
+<span class="sd">        :raises: ValueError: audio is not an audio file.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="n">avMediaFile</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;audio must be a avMediaFile instance.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">audio</span><span class="o">.</span><span class="n">is_audio</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The given avMediaFile does not have an audio extension: </span><span class="si">{</span><span class="n">audio</span><span class="o">.</span><span class="n">path</span><span class="si">!r}</span><span class="s1">.&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__audios</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">audio</span><span class="p">)</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>add_video</h4>
+
+    <article class="docstring">
+<p><em>Append a video avMediaFile to the session with an optional output label.</em></p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>video</strong>: (avMediaFile) Video file to add.</li>
+<li><strong>name</strong>: (<em>str</em>|None) Optional label used as suffix in the output filename.</li>
+</ul>
+
+<h5>Raises</h5>
+
+<ul>
+<li><em>TypeError</em>: video is not a avMediaFile instance.</li>
+<li><em>ValueError</em>: video is not a video file.</li>
+<li><em>TypeError</em>: name is not a non-empty string or None.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_video</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">video</span><span class="p">:</span> <span class="n">avMediaFile</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Append a video avMediaFile to the session with an optional output label.</span>
+
+<span class="sd">        :param video: (avMediaFile) Video file to add.</span>
+<span class="sd">        :param name: (str|None) Optional label used as suffix in the output filename.</span>
+<span class="sd">        :raises: TypeError: video is not a avMediaFile instance.</span>
+<span class="sd">        :raises: ValueError: video is not a video file.</span>
+<span class="sd">        :raises: TypeError: name is not a non-empty string or None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">video</span><span class="p">,</span> <span class="n">avMediaFile</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;video must be a avMediaFile instance.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">video</span><span class="o">.</span><span class="n">is_video</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The given avMediaFile does not have a video extension: </span><span class="si">{</span><span class="n">video</span><span class="o">.</span><span class="n">path</span><span class="si">!r}</span><span class="s1">.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;name must be a non-empty string or None.&#39;</span><span class="p">)</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__videos</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">video</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__video_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>set_video_name</h4>
+
+    <article class="docstring">
+<p><em>Set the output label for the video at the given index.</em></p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>index</strong>: (<em>int</em>) Index of the video (0-based).</li>
+<li><strong>name</strong>: (<em>str</em>|None) Label, or None to clear.</li>
+</ul>
+
+<h5>Raises</h5>
+
+<ul>
+<li><em>IndexError</em>: index is out of range.</li>
+<li><em>TypeError</em>: name is not a non-empty string or None.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_video_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the output label for the video at the given index.</span>
+
+<span class="sd">        :param index: (int) Index of the video (0-based).</span>
+<span class="sd">        :param name: (str|None) Label, or None to clear.</span>
+<span class="sd">        :raises: IndexError: index is out of range.</span>
+<span class="sd">        :raises: TypeError: name is not a non-empty string or None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__videos</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Video index </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1"> is out of range.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;name must be a non-empty string or None.&#39;</span><span class="p">)</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__video_names</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>get_delay</h4>
+
+    <article class="docstring">
+<p><em>Return the offset applied after the clap (seconds).</em></p>
+
+<h5>Returns</h5>
+
+<ul>
+<li>(<em>float</em>) Delay in seconds.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_delay</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the offset applied after the clap (seconds).</span>
+
+<span class="sd">        :return: (float) Delay in seconds.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__delay</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>set_delay</h4>
+
+    <article class="docstring">
+<p><em>Set the offset applied after the clap.</em></p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>value</strong>: (<em>int</em>|<em>float</em>) Delay in seconds.</li>
+</ul>
+
+<h5>Raises</h5>
+
+<ul>
+<li><em>TypeError</em>: The given value is not a number.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_delay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the offset applied after the clap.</span>
+
+<span class="sd">        :param value: (int|float) Delay in seconds.</span>
+<span class="sd">        :raises: TypeError: The given value is not a number.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;delay must be a number.&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__delay</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>get_duration</h4>
+
+    <article class="docstring">
+<p><em>Return the expected output duration (seconds).</em></p>
+
+<h5>Returns</h5>
+
+<ul>
+<li>(<em>float</em>) Duration in seconds.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_duration</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the expected output duration (seconds).</span>
+
+<span class="sd">        :return: (float) Duration in seconds.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__duration</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>set_duration</h4>
+
+    <article class="docstring">
+<p><em>Set the expected output duration.</em></p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>value</strong>: (<em>int</em>|<em>float</em>) Duration in seconds.</li>
+</ul>
+
+<h5>Raises</h5>
+
+<ul>
+<li><em>TypeError</em>: The given value is not a number.</li>
+<li><em>ValueError</em>: The given value is not strictly positive.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_duration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the expected output duration.</span>
+
+<span class="sd">        :param value: (int|float) Duration in seconds.</span>
+<span class="sd">        :raises: TypeError: The given value is not a number.</span>
+<span class="sd">        :raises: ValueError: The given value is not strictly positive.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;duration must be a number.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;duration must be strictly positive.&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__duration</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>get_output_name_meta</h4>
+
+    <article class="docstring">
+<p><em>Return the dict of values used to build the output filename.</em></p>
+
+<p>Keys are CSV column names as declared in cfg.output.output<em>name</em>cols.
+Values are raw strings read from the CSV.</p>
+
+<h5>Returns</h5>
+
+<ul>
+<li>(<em>dict</em>) Output name metadata.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_output_name_meta</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the dict of values used to build the output filename.</span>
+
+<span class="sd">        Keys are CSV column names as declared in cfg.output.output_name_cols.</span>
+<span class="sd">        Values are raw strings read from the CSV.</span>
+
+<span class="sd">        :return: (dict) Output name metadata.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__output_name_meta</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>set_output_name_meta</h4>
+
+    <article class="docstring">
+<p><em>Set the dict of values used to build the output filename.</em></p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>value</strong>: (<em>dict</em>) Mapping of column name to raw CSV value.</li>
+</ul>
+
+<h5>Raises</h5>
+
+<ul>
+<li><em>TypeError</em>: The given value is not a dict.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_output_name_meta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the dict of values used to build the output filename.</span>
+
+<span class="sd">        :param value: (dict) Mapping of column name to raw CSV value.</span>
+<span class="sd">        :raises: TypeError: The given value is not a dict.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;output_name_meta must be a dict.&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__output_name_meta</span> <span class="o">=</span> <span class="n">value</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>get_metadata</h4>
+
+    <article class="docstring">
+<p><em>Return the dict of free metadata (all other CSV columns).</em></p>
+
+<h5>Returns</h5>
+
+<ul>
+<li>(<em>dict</em>) Free metadata.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the dict of free metadata (all other CSV columns).</span>
+
+<span class="sd">        :return: (dict) Free metadata.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__metadata</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>set_metadata</h4>
+
+    <article class="docstring">
+<p><em>Set the dict of free metadata.</em></p>
+
+<h5>Parameters</h5>
+
+<ul>
+<li><strong>value</strong>: (<em>dict</em>) Mapping of column name to raw CSV value.</li>
+</ul>
+
+<h5>Raises</h5>
+
+<ul>
+<li><em>TypeError</em>: The given value is not a dict.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the dict of free metadata.</span>
+
+<span class="sd">        :param value: (dict) Mapping of column name to raw CSV value.</span>
+<span class="sd">        :raises: TypeError: The given value is not a dict.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;metadata must be a dict.&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__metadata</span> <span class="o">=</span> <span class="n">value</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>has_second_audio</h4>
+
+    <article class="docstring">
+<p><em>Return True if more than one audio file is set.</em></p>
+
+<h5>Returns</h5>
+
+<ul>
+<li>(<em>bool</em>) True if the session has at least two audio files.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">has_second_audio</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return True if more than one audio file is set.</span>
+
+<span class="sd">        :return: (bool) True if the session has at least two audio files.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__audios</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>has_second_video</h4>
+
+    <article class="docstring">
+<p><em>Return True if more than one video file is set.</em></p>
+
+<h5>Returns</h5>
+
+<ul>
+<li>(<em>bool</em>) True if the session has at least two video files.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">has_second_video</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return True if more than one video file is set.</span>
+
+<span class="sd">        :return: (bool) True if the session has at least two video files.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__videos</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span>
+</code></pre></div>
+
+    </details>
+
+
+<h4>all_files_exist</h4>
+
+    <article class="docstring">
+<p><em>Return True if all media files in this session exist on disk.</em></p>
+
+<h5>Returns</h5>
+
+<ul>
+<li>(<em>bool</em>) True if every defined avMediaFile exists on disk.</li>
+</ul>
+
+    </article>
+
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">all_files_exist</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return True if all media files in this session exist on disk.</span>
+
+<span class="sd">        :return: (bool) True if every defined avMediaFile exists on disk.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">media</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__audios</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">__videos</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">media</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span>
+</code></pre></div>
+
+    </details>
+
+
+</section>
+<section>
+<h3 id="#overloads_avSession">Overloads</h3>
+<h4>__repr__</h4>
+
+    <details>
+    <summary>
+View Source
+    </summary>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;avSession(</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__audios</span><span class="p">)</span><span class="si">}</span><span class="s1"> audio, </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__videos</span><span class="p">)</span><span class="si">}</span><span class="s1"> video, delay=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__delay</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">s, duration=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__duration</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">s, meta=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__output_name_meta</span><span class="si">}</span><span class="s1">)&#39;</span>
+</code></pre></div>
+
+    </details>
+
+
+</section>
+</section>    </section>    </main>
+    
+            <footer>
+                <p class="copyright">Copyright (C) 2026  Brigitte Bigi, CNRS, Laboratoire Parole et Langage, Aix-en-Provence, France</p>
+            </footer>
+        
+</body>
+</html>
