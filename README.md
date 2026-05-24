@@ -410,7 +410,7 @@ with columns `video_file`, `video_file2`.
 Then run the pipeline on the first CSV row:
 
 ```bash
-> .venv/bin/python cli.py sync -c tests/data/test.csv -l 1 --verbose
+> .venv/bin/python main.py sync -c tests/data/test.csv -l 1 --verbose
 ```
 
 **Expected output — audio** (`ffprobe tests/data/demo_S01/demo_S01.wav`):

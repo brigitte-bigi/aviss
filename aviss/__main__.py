@@ -1,5 +1,5 @@
 """
-:filename: cli.py
+:filename: __main__.py
 :author: Brigitte Bigi
 :contact: contact@sppas.org
 :summary: Command-line interface for AViSS.

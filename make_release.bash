@@ -24,7 +24,7 @@ echo "Delete any __pycache__ folder"
   done
 
 echo "Create 'zip' archive" $PACKAGE_NAME
-  zip -q -r $PACKAGE_NAME aviss tests docs pyproject.toml *.py *.md *.cff
+  zip -q -r $PACKAGE_NAME aviss scripts tests docs pyproject.toml codemeta.json *.py *.md  
   if [ "$?" != 0 ]; then
       echo -e "${RED}No package created!${NC}"
       popd
@@ -38,4 +38,4 @@ echo "Create wheel"
 python -m build
 
 # transfert to pypi.org:
-# .venv/bin/twine upload -r pypi dist/aviss-0.X-py3-none-any.whl
+# .venv/bin/twine upload -r pypi dist/aviss-${PROGRAM_VERSION}-py3-none-any.whl
