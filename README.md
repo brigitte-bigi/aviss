@@ -496,10 +496,12 @@ Requires `ffmpeg`.
 
 ## Projects using AViSS
 
-AViSS was developed for the following corpora at LPL, CNRS:
-
-- CLeLfPC — Corpus de Lecture en Langue Française Parlée Complétée
-- AutoCuedSpeech — automatic annotation of cued speech recordings
+AViSS was developed at LPL, CNRS, to prepare the
+[CLeLfPC corpus](https://hdl.handle.net/11403/clelfpc)
+(Corpus de Lecture en Langue Française Parlée Complétée).
+This work is carried out in the framework of the
+[AutoCuedSpeech](https://auto-cuedspeech.org) project,
+which partially funded AViSS development.
 
 *Contact the author if you want to add a project here.*
 
@@ -552,7 +554,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 - Version 1.0:
 
-    * Initial version.
-    * Support for ANY audio files and ANY video files per session.
-    * Optional crop, copyright overlay, rotation, mono 16 kHz WAV export,
-      MP4 and WebM montage.
+    * Initial version. Faithful Python migration of the original montage
+      scripts (B. Bigi, CNRS/LPL 2021-2024) distributed with CLeLfPC.
+    * Frame-accurate, clap-based synchronization of audio and video files.
+    * Support for any number of audio and video files per session.
+    * Optional video crop, copyright overlay, rotation (portrait mode).
+    * Mono 16 kHz WAV output (all channels mixed down).
+    * Optional MP4 montage (H.264/AAC) and WebM montage (libvpx-vp9, two-pass).
+    * Batch processing from a CSV file.
+    * Fully configurable column names and output filename structure.
